@@ -1,5 +1,6 @@
 "use client";
 
+import { Tooltip } from "@nextui-org/react";
 import {
   IconBrowserCheck,
   IconCalendarMonth,
@@ -74,45 +75,64 @@ export default function Sidebar() {
           <ul className="flex flex-col">
             {navItems.map((item) => (
               <li key={item.href}>
-                <Link
-                  className={
-                    "group flex items-center transition-colors" +
-                    (pathname.startsWith(item.href) ? " pointer-events-none" : "")
-                  }
-                  href={item.href}
+                <Tooltip
+                  placement="right"
+                  content={item.title}
+                  offset={-156}
+                  delay={500}
+                  closeDelay={0}
+                  isDisabled={expanded}
                 >
-                  <div
+                  <Link
                     className={
-                      "absolute left-3 right-3 h-14 rounded-md transition-all group-hover:bg-indigo-100" +
-                      (expanded ? " w-54" : " w-14") +
-                      (pathname.startsWith(item.href) ? " bg-indigo-200" : "")
+                      "group flex items-center transition-colors focus-visible:outline-none" +
+                      (pathname.startsWith(item.href) ? " pointer-events-none text-gray-50" : "")
                     }
-                  ></div>
-                  <div className="z-10 inline-flex h-16 w-20 items-center justify-center">
-                    {item.icon}
-                  </div>
-                  <span
-                    className={
-                      "z-10 -ml-4 w-40 font-bold transition-all" + (expanded ? "" : " opacity-0")
-                    }
+                    href={item.href}
                   >
-                    {item.title}
-                  </span>
-                </Link>
+                    <div
+                      className={
+                        "absolute left-3 right-3 h-14 rounded-md transition-all group-hover:bg-indigo-100" +
+                        (expanded ? " w-54" : " w-14") +
+                        (pathname.startsWith(item.href) ? " bg-indigo-500" : "")
+                      }
+                    ></div>
+                    <div className="z-10 inline-flex h-16 w-20 items-center justify-center">
+                      {item.icon}
+                    </div>
+                    <span
+                      className={
+                        "z-10 -ml-4 w-40 font-bold transition-opacity" +
+                        (expanded ? "" : " opacity-0")
+                      }
+                    >
+                      {item.title}
+                    </span>
+                  </Link>
+                </Tooltip>
               </li>
             ))}
           </ul>
           {/* TODO: logout */}
-          <a className="flex items-center">
-            <div className="inline-flex h-16 w-20 items-center justify-center">
-              <IconLogout2 size={24} />
-            </div>
-            <span
-              className={"-ml-4 w-40 font-bold transition-all" + (expanded ? "" : " opacity-0")}
-            >
-              Logout
-            </span>
-          </a>
+          <Tooltip
+            placement="right"
+            content="Logout"
+            offset={-156}
+            delay={500}
+            closeDelay={0}
+            isDisabled={expanded}
+          >
+            <a className="flex items-center focus-visible:outline-none">
+              <div className="inline-flex h-16 w-20 items-center justify-center">
+                <IconLogout2 size={24} />
+              </div>
+              <span
+                className={"-ml-4 w-40 font-bold transition-all" + (expanded ? "" : " opacity-0")}
+              >
+                Logout
+              </span>
+            </a>
+          </Tooltip>
         </div>
       </div>
     </nav>
