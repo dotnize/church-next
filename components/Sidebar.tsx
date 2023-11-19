@@ -79,7 +79,7 @@ export default function Sidebar() {
                   placement="right"
                   content={item.title}
                   offset={-156}
-                  delay={500}
+                  delay={400}
                   closeDelay={0}
                   isDisabled={expanded}
                 >
@@ -118,7 +118,7 @@ export default function Sidebar() {
             placement="right"
             content="Logout"
             offset={-156}
-            delay={500}
+            delay={400}
             closeDelay={0}
             isDisabled={expanded}
           >
