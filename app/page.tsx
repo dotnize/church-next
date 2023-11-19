@@ -1,9 +1,5 @@
-import { Button } from "@nextui-org/button";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Button>NextUI Button test</Button>
-    </main>
-  );
+export default function index() {
+  redirect("/dashboard");
 }
