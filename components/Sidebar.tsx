@@ -92,7 +92,7 @@ export default function Sidebar() {
                   >
                     <div
                       className={
-                        "absolute left-3 right-3 h-14 rounded-md transition-all group-hover:bg-indigo-100" +
+                        "absolute left-3 right-3 h-14 rounded-2xl transition-all group-hover:bg-indigo-100" +
                         (expanded ? " w-54" : " w-14") +
                         (pathname.startsWith(item.href) ? " bg-indigo-500" : "")
                       }
