@@ -111,7 +111,7 @@ function TopContent() {
 
 export default function DeceasedInventory() {
   return (
-    <div className="flex h-full justify-center pt-10">
+    <div className="flex h-full justify-center p-8">
       <Table isStriped topContent={<TopContent />}>
         <TableHeader columns={columns}>
           {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
