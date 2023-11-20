@@ -19,7 +19,7 @@ import {
 interface DeceasedData {
   id: number;
   name: string;
-  resident: string;
+  residence: string;
   age: number;
   datedeath: string;
   dateburial: string;
@@ -31,7 +31,7 @@ const data: DeceasedData[] = [
   {
     id: 0,
     name: "John Doe",
-    resident: "Purok 1",
+    residence: "Purok 1",
     age: 69,
     datedeath: "2021-02-01",
     dateburial: "2021-02-03",
@@ -41,7 +41,7 @@ const data: DeceasedData[] = [
   {
     id: 1,
     name: "Jane Smith",
-    resident: "Purok 2",
+    residence: "Purok 2",
     age: 55,
     datedeath: "2021-03-15",
     dateburial: "2021-03-18",
@@ -51,7 +51,7 @@ const data: DeceasedData[] = [
   {
     id: 2,
     name: "Michael Johnson",
-    resident: "Purok 3",
+    residence: "Purok 3",
     age: 72,
     datedeath: "2021-04-10",
     dateburial: "2021-04-13",
@@ -61,7 +61,7 @@ const data: DeceasedData[] = [
   {
     id: 3,
     name: "Sarah Williams",
-    resident: "Purok 4",
+    residence: "Purok 4",
     age: 61,
     datedeath: "2021-05-20",
     dateburial: "2021-05-23",
@@ -71,7 +71,7 @@ const data: DeceasedData[] = [
   {
     id: 4,
     name: "Robert Brown",
-    resident: "Purok 5",
+    residence: "Purok 5",
     age: 78,
     datedeath: "2021-06-12",
     dateburial: "2021-06-15",
@@ -84,7 +84,7 @@ const data: DeceasedData[] = [
 const columns = [
   { key: "id", label: "Entry Number" },
   { key: "name", label: "Name of Deceased" },
-  { key: "resident", label: "Resident" },
+  { key: "residence", label: "Residence" },
   { key: "age", label: "Age" },
   { key: "datedeath", label: "Date of Death" },
   { key: "dateburial", label: "Date of Burial" },
