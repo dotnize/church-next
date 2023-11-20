@@ -95,7 +95,7 @@ const columns = [
 
 function TopContent() {
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="mb-8 flex items-center justify-between gap-4">
       <div className="flex h-full items-center gap-2">
         <Input className="w-96" placeholder="Search..." />
         <Button size="lg" className="h-14" color="primary">
@@ -111,7 +111,7 @@ function TopContent() {
 
 export default function DeceasedInventory() {
   return (
-    <div className="mt-24 flex h-full justify-center">
+    <div className="flex h-full justify-center pt-10">
       <Table isStriped topContent={<TopContent />}>
         <TableHeader columns={columns}>
           {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
