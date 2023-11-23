@@ -5,16 +5,26 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Radio,
+  RadioGroup,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDown } from "@tabler/icons-react";
 
 export default function MassReservation() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   interface MassData {
     id: number;
     name: string;
@@ -83,9 +93,101 @@ export default function MassReservation() {
     return (
       <div className="flex items-center justify-between">
         <h2 className="text-4xl font-bold">Mass Reservation</h2>
-        <Button className="text-xl" size="lg" color="primary">
+        <Button className="text-xl" size="lg" color="primary" onPress={onOpen}>
           Add Mass Reservation
         </Button>
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 text-2xl">
+                  Add Mass Reservation
+                </ModalHeader>
+                <ModalBody className="flex-row p-8">
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      autoFocus
+                      label="Requester's Name"
+                      placeholder="Enter Requester's Name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <div>
+                      <h2>Type of Mass</h2>
+                      <RadioGroup size="lg" label="Please select one" orientation="horizontal">
+                        <Radio value="buenos-aires">Thanksgiving Mass</Radio>
+                        <Radio value="sydney">Barangay Mass</Radio>
+                        <Radio value="san-francisco">School Mass</Radio>
+                        <Radio value="london">Fiesta Mass</Radio>
+                      </RadioGroup>
+                    </div>
+                    <Input
+                      autoFocus
+                      label="Place of Mass Event"
+                      placeholder="Enter place of mass event"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Schedule Time Start"
+                      placeholder="time start"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                  </div>
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      autoFocus
+                      label="Contact Number"
+                      placeholder="Enter contact number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Mass Presider"
+                      placeholder="Enter Requester's Name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <div className="mt-[46px] flex w-full flex-col gap-8">
+                      <Input
+                        autoFocus
+                        label="Date Requested"
+                        placeholder="Date of requested"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        size="lg"
+                      />
+                      <Input
+                        autoFocus
+                        label="Schedule Time End"
+                        placeholder="Time end"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        size="lg"
+                      />
+                    </div>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button color="primary" onPress={onClose}>
+                    Save
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
       </div>
     );
   }
