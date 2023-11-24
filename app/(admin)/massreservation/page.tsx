@@ -21,7 +21,7 @@ import {
   TableRow,
   useDisclosure,
 } from "@nextui-org/react";
-import { IconCaretDown } from "@tabler/icons-react";
+import { IconCaretDownFilled } from "@tabler/icons-react";
 
 export default function MassReservation() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -208,7 +208,7 @@ export default function MassReservation() {
                   {column.key === "actions" ? (
                     <Dropdown>
                       <DropdownTrigger>
-                        <Button endContent={<IconCaretDown />} variant="bordered">
+                        <Button endContent={<IconCaretDownFilled />} variant="bordered">
                           Actions
                         </Button>
                       </DropdownTrigger>
