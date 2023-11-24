@@ -139,7 +139,7 @@ export default function Calendar() {
         <div className="flex h-full w-64 flex-col items-center gap-8 bg-gray-200 p-4">
           <h2 className="mt-4 text-xl font-semibold">{format(selectedDate, "MMMM d, yyyy")}</h2>
           <div className="rounded-md border-2 border-indigo-400 bg-indigo-100 p-2 text-indigo-900">
-            No events for this day. Take a rest :)
+            No scheduled reservations for this day.
           </div>
         </div>
       </div>
