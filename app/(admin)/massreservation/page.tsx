@@ -11,8 +11,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Radio,
-  RadioGroup,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -22,6 +22,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import { massTypes, priests } from "~/lib/config";
 
 export default function MassReservation() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -113,27 +114,24 @@ export default function MassReservation() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <div>
-                      <h2>Type of Mass</h2>
-                      <RadioGroup size="lg" label="Please select one" orientation="horizontal">
-                        <Radio value="buenos-aires">Thanksgiving Mass</Radio>
-                        <Radio value="sydney">Barangay Mass</Radio>
-                        <Radio value="san-francisco">School Mass</Radio>
-                        <Radio value="london">Fiesta Mass</Radio>
-                      </RadioGroup>
-                    </div>
+                    <Select
+                      autoFocus
+                      label="Type of Mass"
+                      placeholder="Select type"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {massTypes.map((massType, i) => (
+                        <SelectItem value={massType} key={i}>
+                          {massType}
+                        </SelectItem>
+                      ))}
+                    </Select>
                     <Input
                       autoFocus
                       label="Place of Mass Event"
                       placeholder="Enter place of mass event"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    />
-                    <Input
-                      autoFocus
-                      label="Schedule Time Start"
-                      placeholder="time start"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
@@ -148,32 +146,44 @@ export default function MassReservation() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <Input
+                    <Select
                       autoFocus
                       label="Mass Presider"
-                      placeholder="Enter Requester's Name"
+                      placeholder="Select Mass Presider"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest, i) => (
+                        <SelectItem value={priest} key={i}>
+                          {priest}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Input
+                      type="date"
+                      autoFocus
+                      label="Date Requested"
+                      placeholder="Date Requested"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <div className="mt-[46px] flex w-full flex-col gap-8">
-                      <Input
-                        autoFocus
-                        label="Date Requested"
-                        placeholder="Date of requested"
-                        variant="bordered"
-                        labelPlacement="outside"
-                        size="lg"
-                      />
-                      <Input
-                        autoFocus
-                        label="Schedule Time End"
-                        placeholder="Time end"
-                        variant="bordered"
-                        labelPlacement="outside"
-                        size="lg"
-                      />
-                    </div>
+                    <Select
+                      autoFocus
+                      label="Schedule Time"
+                      placeholder="Select time"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest, i) => (
+                        // TODO: proper time ranges
+                        <SelectItem value={priest} key={i}>
+                          {priest}
+                        </SelectItem>
+                      ))}
+                    </Select>
                   </div>
                 </ModalBody>
                 <ModalFooter>
