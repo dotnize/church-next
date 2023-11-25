@@ -1,45 +1,35 @@
 "use client";
 
-import { Button, Card, CardBody } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
+import BaptismCert from "~/components/cert/BaptismCertTable";
+import ConfirmationCert from "~/components/cert/ConfirmationCertTable";
+import DeathCert from "~/components/cert/DeathCertTable";
+import MarriageCert from "~/components/cert/MarriageCertTable";
 
 export default function Certificates() {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-5">
-      <div className="flex gap-5">
-        <Card className="h-64 w-64 transform transition-transform hover:scale-110">
-          <Button className="h-64 w-64 bg-white">
-            <CardBody className="flex items-center justify-center font-bold">
-              <p className="text-2xl">Confirmation</p>
-              <p className="text-2xl">Certificate</p>
-            </CardBody>
-          </Button>
-        </Card>
-        <Card className="h-64 w-64 transform transition-transform hover:scale-110">
-          <Button className="h-64 w-64 bg-white">
-            <CardBody className="flex items-center justify-center font-bold">
-              <p className="text-2xl">Baptism</p>
-              <p className="text-2xl">Certificate</p>
-            </CardBody>
-          </Button>
-        </Card>
-      </div>
-      <div className="flex gap-5">
-        <Card className="h-64 w-64 transform transition-transform hover:scale-110">
-          <Button className="h-64 w-64 bg-white">
-            <CardBody className="flex items-center justify-center font-bold">
-              <p className="text-2xl">Death Certificate</p>
-            </CardBody>
-          </Button>
-        </Card>
-        <Card className="h-64 w-64 transform  transition-transform hover:scale-110">
-          <Button className="h-64 w-64 bg-white">
-            <CardBody className="flex items-center justify-center font-bold">
-              <p className="text-2xl">Marriage</p>
-              <p className="text-2xl">Certificate</p>
-            </CardBody>
-          </Button>
-        </Card>
-      </div>
+    <div className="justifiy-center flex h-full flex-col p-8">
+      <Tabs
+        aria-label="Options"
+        radius="lg"
+        variant="bordered"
+        size="lg"
+        color="primary"
+        className="self-center"
+      >
+        <Tab key="confirmation" title="Confirmation Certificate">
+          <ConfirmationCert />
+        </Tab>
+        <Tab key="baptism" title="Baptism Certificate">
+          <BaptismCert />
+        </Tab>
+        <Tab key="death" title="Death Certificate">
+          <DeathCert />
+        </Tab>
+        <Tab key="marriage" title="Marriage Certificate">
+          <MarriageCert />
+        </Tab>
+      </Tabs>
     </div>
   );
 }
