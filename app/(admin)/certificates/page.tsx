@@ -1,10 +1,10 @@
 "use client";
 
 import { Tab, Tabs } from "@nextui-org/react";
-import BaptismCert from "~/components/cert/BaptismCertTable";
-import ConfirmationCert from "~/components/cert/ConfirmationCertTable";
-import DeathCert from "~/components/cert/DeathCertTable";
-import MarriageCert from "~/components/cert/MarriageCertTable";
+import BaptismCert from "~/components/cert/BaptismTable";
+import ConfirmationCert from "~/components/cert/ConfirmationTable";
+import DeathCert from "~/components/cert/DeathTable";
+import MarriageCert from "~/components/cert/MarriageTable";
 
 export default function Certificates() {
   return (
