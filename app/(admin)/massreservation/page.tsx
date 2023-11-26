@@ -22,7 +22,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-import { massTypes, priests } from "~/lib/config";
+import { massHours, massTypes, priests } from "~/lib/config";
 
 export default function MassReservation() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -177,10 +177,10 @@ export default function MassReservation() {
                       labelPlacement="outside"
                       size="lg"
                     >
-                      {priests.map((priest, i) => (
+                      {massHours.map((mhours, i) => (
                         // TODO: proper time ranges
-                        <SelectItem value={priest} key={i}>
-                          {priest}
+                        <SelectItem value={massHours} key={i}>
+                          {mhours}
                         </SelectItem>
                       ))}
                     </Select>
