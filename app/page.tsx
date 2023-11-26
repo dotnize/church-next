@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 export default function index() {
-  redirect("/dashboard");
+  return <div className="min-h-screen bg-[url('/bg.jpg')] bg-auto">testasdas</div>;
 }
