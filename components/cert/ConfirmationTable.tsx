@@ -166,7 +166,9 @@ export default function ConfirmationCert() {
     fathername: string;
     mothername: string;
     churchname: string;
-    month_date_year: string;
+    month: string;
+    date: number;
+    year: number;
     sponsor1: string;
     sponsor2: string;
     book_number: string;
@@ -181,7 +183,9 @@ export default function ConfirmationCert() {
     { header: "Father's Name", key: "fathername" },
     { header: "Mother's Name", key: "mothername" },
     { header: "Church Name", key: "churchname" },
-    { header: "Month/Date/Year", key: "month_date_year" },
+    { header: "Month", key: "month" },
+    { header: "Date", key: "date" },
+    { header: "Year", key: "year" },
     { header: "Sponsor 1", key: "sponsor1" },
     { header: "Sponsor 2", key: "sponsor2" },
     { header: "Book Number", key: "book_number" },
@@ -198,7 +202,9 @@ export default function ConfirmationCert() {
       fathername: "Michael Doe",
       mothername: "Jane Doe",
       churchname: "St. Mary's Church",
-      month_date_year: "January 1, 2022",
+      month: "January",
+      date: 1,
+      year: 2022,
       sponsor1: "Sponsor 1",
       sponsor2: "Sponsor 2",
       book_number: "123",
@@ -213,7 +219,9 @@ export default function ConfirmationCert() {
       fathername: "David Smith",
       mothername: "Emily Smith",
       churchname: "St. John's Church",
-      month_date_year: "February 1, 2022",
+      month: "February",
+      date: 1,
+      year: 2022,
       sponsor1: "Sponsor 1",
       sponsor2: "Sponsor 2",
       book_number: "789",
