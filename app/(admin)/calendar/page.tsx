@@ -80,7 +80,7 @@ export default function Calendar() {
           </button>
           <div
             className={`flex h-full flex-col items-center justify-center gap-2 text-lg font-semibold transition-all ${
-              !showMonths && "-z-10 select-none opacity-0"
+              !showMonths && "pointer-events-none -z-10 opacity-0"
             }`}
           >
             <div className="flex items-center gap-1 text-2xl">
