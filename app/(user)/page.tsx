@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function index() {
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-300 bg-[url('/bg.jpg')] bg-cover p-32 bg-blend-overlay">
+    <div className="flex flex-col items-center justify-center gap-4">
       <div className="flex items-center gap-2 text-xl font-bold">
         <Image src="/logo.png" alt="Saint Michael Parish Church" width={64} height={64} />
         Saint Michael Parish Church
@@ -48,7 +48,7 @@ export default function index() {
           </Card>
         </div>
       </div>
-      <Link href="/login" className="transition-all hover:underline">
+      <Link href="/login" className="font-semibold transition-all hover:underline">
         Login to dashboard →
       </Link>
     </div>
