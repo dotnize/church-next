@@ -1,3 +1,56 @@
+"use client";
+
+import { Button, Card, CardBody } from "@nextui-org/react";
+import Image from "next/image";
+import Link from "next/link";
+
 export default function index() {
-  return <div className="min-h-screen bg-[url('/bg.jpg')] bg-auto">testasdas</div>;
+  return (
+    <div className="flex h-screen flex-col items-center justify-center gap-4 bg-gray-300 bg-[url('/bg.jpg')] bg-cover p-32 bg-blend-overlay">
+      <div className="flex items-center gap-2 text-xl font-bold">
+        <Image src="/logo.png" alt="Saint Michael Parish Church" width={64} height={64} />
+        Saint Michael Parish Church
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-4">
+          <Card className="h-64 w-64 transform transition-transform hover:scale-110">
+            <Button className="h-64 w-64 bg-white">
+              <CardBody className="flex items-center justify-center font-bold">
+                <p className="text-2xl">Confirmation</p>
+                <p className="text-2xl">Certificate</p>
+              </CardBody>
+            </Button>
+          </Card>
+          <Card className="h-64 w-64 transform transition-transform hover:scale-110">
+            <Button className="h-64 w-64 bg-white">
+              <CardBody className="flex items-center justify-center font-bold">
+                <p className="text-2xl">Baptism</p>
+                <p className="text-2xl">Certificate</p>
+              </CardBody>
+            </Button>
+          </Card>
+        </div>
+        <div className="flex gap-4">
+          <Card className="h-64 w-64 transform transition-transform hover:scale-110">
+            <Button className="h-64 w-64 bg-white">
+              <CardBody className="flex items-center justify-center font-bold">
+                <p className="text-2xl">Death Certificate</p>
+              </CardBody>
+            </Button>
+          </Card>
+          <Card className="h-64 w-64 transform  transition-transform hover:scale-110">
+            <Button className="h-64 w-64 bg-white">
+              <CardBody className="flex items-center justify-center font-bold">
+                <p className="text-2xl">Marriage</p>
+                <p className="text-2xl">Certificate</p>
+              </CardBody>
+            </Button>
+          </Card>
+        </div>
+      </div>
+      <Link href="/login" className="transition-all hover:underline">
+        Login to dashboard →
+      </Link>
+    </div>
+  );
 }
