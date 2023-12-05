@@ -25,35 +25,52 @@ function Top() {
 }
 
 export default function DeathCertTable() {
-  interface MassData {
+  interface DeceasedData {
     id: number;
     name: string;
-    fathername: string;
-    mothername: string;
+    residence: string;
+    age: number;
+    datedeath: string;
+    dateburial: string;
+    placeburial: string;
+    relativeinfo: string;
     actions: string[];
   }
 
   const columns = [
     { header: "Name", key: "name" },
-    { header: "Father's Name", key: "fathername" },
-    { header: "Mother's Name", key: "mothername" },
-    { header: "Actions", key: "actions" },
+    { header: "Residence", key: "residence" },
+    { header: "Age", key: "age" },
+    { header: "Date of Death", key: "datedeath" },
+    { header: "Date of Burial", key: "dateburial" },
+    { header: "Place of Burial", key: "placeburial" },
+    { header: "Relative Information", key: "relativeinfo" },
   ];
-  const data: MassData[] = [
+
+  const data: DeceasedData[] = [
     {
       id: 1,
       name: "John Doe",
-      fathername: "Michael Doe",
-      mothername: "Jane Doe",
-      actions: ["Edit", "Delete"],
+      residence: "New York",
+      age: 45,
+      datedeath: "2022-01-01",
+      dateburial: "2022-01-05",
+      placeburial: "Cemetery",
+      relativeinfo: "Lorem ipsum dolor sit amet",
+      actions: ["View", "Edit", "Delete"],
     },
     {
       id: 2,
       name: "Jane Smith",
-      fathername: "David Smith",
-      mothername: "Emily Smith",
-      actions: ["Edit", "Delete"],
+      residence: "Los Angeles",
+      age: 50,
+      datedeath: "2022-02-01",
+      dateburial: "2022-02-05",
+      placeburial: "Graveyard",
+      relativeinfo: "Consectetur adipiscing elit",
+      actions: ["View", "Edit", "Delete"],
     },
+    // Add more data objects as needed
   ];
 
   return (
