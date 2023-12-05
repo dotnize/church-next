@@ -14,7 +14,7 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useState } from "react";
 
@@ -35,6 +35,7 @@ const navItems: NavItem[] = [
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <nav
@@ -113,7 +114,7 @@ export default function Sidebar() {
               </li>
             ))}
           </ul>
-          {/* TODO: logout */}
+          {/* TODO: logout session */}
           <Tooltip
             placement="right"
             content="Logout"
@@ -122,7 +123,10 @@ export default function Sidebar() {
             closeDelay={0}
             isDisabled={expanded}
           >
-            <a className="flex items-center focus-visible:outline-none">
+            <a
+              onClick={() => router.replace("/")}
+              className="flex cursor-pointer items-center transition-colors hover:text-indigo-600 focus-visible:outline-none"
+            >
               <div className="inline-flex h-16 w-20 items-center justify-center">
                 <IconLogout2 size={24} />
               </div>
