@@ -1,8 +1,13 @@
-// database connection details ...
+export const mysqlConfig = {
+    host: "localhost",
+    port: 3306,
+    database: "saintmichaelchurch",
+    user: "root",
+    password: "",
+};
 
-// minHoursBeforeReservation: 4 based sa notes
 export const minHoursBeforeReservation = 4;
-// mass hours
+
 export const massHours = [
     "4:30 AM - 5:30 AM",
     "6:00 AM - 7:00 AM",
