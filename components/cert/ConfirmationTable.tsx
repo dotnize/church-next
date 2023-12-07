@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Button,
   Dropdown,
@@ -10,6 +12,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -19,9 +23,32 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { getConfirmations } from "~/actions/confirmation";
+import { getPriests } from "~/actions/priests";
 
 function Top() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  // TODO: move to main/default component
+  const [priests, setPriests] = useState<any>([]);
+  const [confirmations, setConfirmations] = useState<any>([]);
+  // for modal
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  async function fetchPriests() {
+    const priestData = await getPriests();
+    setPriests(priestData);
+  }
+
+  async function fetchConfirmations() {
+    const confirmationData = await getConfirmations();
+    setConfirmations(confirmationData);
+  }
+
+  useEffect(() => {
+    fetchPriests();
+    fetchConfirmations();
+  }, []);
 
   return (
     <div className="flex items-center justify-between">
@@ -81,7 +108,7 @@ function Top() {
                     labelPlacement="outside"
                     size="lg"
                   />
-                  {/* <Select
+                  <Select
                     autoFocus
                     label="Parish Priest"
                     placeholder="Select parish priest"
@@ -89,12 +116,12 @@ function Top() {
                     labelPlacement="outside"
                     size="lg"
                   >
-                    {priests.map((priest, i) => (
-                      <SelectItem value={priest} key={i}>
-                        {priest}
+                    {priests.map((priest) => (
+                      <SelectItem value={priest.name} key={priest.name}>
+                        {priest.name}
                       </SelectItem>
                     ))}
-                  </Select> */}
+                  </Select>
                 </div>
                 <div className="flex w-full flex-col gap-8">
                   <Input
