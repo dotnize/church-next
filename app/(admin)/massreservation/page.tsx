@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Button,
   Dropdown,
@@ -22,92 +23,91 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-import { massHours, massTypes, priests } from "~/lib/config";
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import {
+  createMassReservation,
+  deleteMassReservation,
+  getMassReservations,
+  updateMassReservation,
+} from "~/actions/massreservation";
+import { getPriests } from "~/actions/priests";
+import { massHours, massTypes } from "~/lib/config";
 
 export default function MassReservation() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  interface MassData {
-    id: number;
-    name: string;
-    contact: string;
-    typeOfMass: string;
-    massProvider: string;
-    place: string;
-    date: string;
-    scheduleTimeStart: string;
-    scheduleTimeEnd: string;
-    actions: string[];
-  }
+
+  const [priests, setPriests] = useState<any>([]);
+  const [data, setData] = useState<any>([]);
+  // for modal
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const columns = [
-    { header: "Requester's Name", key: "name" },
-    { header: "Contact Number", key: "contact" },
-    { header: "Type of Mass", key: "typeOfMass" },
-    { header: "Mass Provider", key: "massProvider" },
-    { header: "Place of Mass Event", key: "place" },
-    { header: "Date Requested", key: "date" },
-    { header: "Schedule Time Start", key: "scheduleTimeStart" },
-    { header: "Schedule Time End", key: "scheduleTimeEnd" },
+    { header: "Requester's Name", key: "requester_name" },
+    { header: "Contact Number", key: "contact_number" },
+    { header: "Type of Mass", key: "type_of_mass" },
+    { header: "Mass Provider", key: "priest_id" },
+    { header: "Place of Mass Event", key: "place_of_mass_event" },
+    { header: "Date Requested", key: "date_requested" },
+    { header: "Schedule Time Start", key: "schedule_time_start" },
+    { header: "Schedule Time End", key: "schedule_time_end" },
     { header: "Actions", key: "actions" },
   ];
 
-  const data: MassData[] = [
-    {
-      id: 1,
-      name: "John Doe",
-      contact: "1234567890",
-      typeOfMass: "Sunday Mass",
-      massProvider: "Church A",
-      place: "Main Church",
-      date: "2022-10-10",
-      scheduleTimeStart: "09:00 AM",
-      scheduleTimeEnd: "10:00 AM",
-      actions: ["Edit", "Delete"],
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      contact: "9876543210",
-      typeOfMass: "Daily Mass",
-      massProvider: "Church B",
-      place: "Chapel",
-      date: "2022-10-11",
-      scheduleTimeStart: "07:00 AM",
-      scheduleTimeEnd: "07:30 AM",
-      actions: ["Edit", "Delete"],
-    },
-    {
-      id: 3,
-      name: "Mark Johnson",
-      contact: "5555555555",
-      typeOfMass: "Weekday Mass",
-      massProvider: "Church C",
-      place: "Outdoor",
-      date: "2022-10-12",
-      scheduleTimeStart: "06:00 PM",
-      scheduleTimeEnd: "07:00 PM",
-      actions: ["Edit", "Delete"],
-    },
-  ];
+  async function fetchPriests() {
+    const priestData = await getPriests();
+    setPriests(priestData);
+  }
+  async function fetchReservations() {
+    const reservationData = await getMassReservations();
+    setData(reservationData);
+  }
+  useEffect(() => {
+    fetchPriests();
+    fetchReservations();
+  }, []);
 
   function Top() {
     return (
       <div className="flex items-center justify-between">
         <h2 className="text-4xl font-bold">Mass Reservation</h2>
-        <Button className="text-xl" size="lg" color="primary" onPress={onOpen}>
+        <Button
+          className="text-xl"
+          size="lg"
+          color="primary"
+          onPress={() => {
+            setSelectedId(null);
+            onOpen();
+          }}
+        >
           Add Mass Reservation
         </Button>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
           <ModalContent>
             {(onClose) => (
-              <>
+              <form
+                action={async (formData) => {
+                  selectedId === null
+                    ? await createMassReservation(formData)
+                    : await updateMassReservation(formData);
+                  onClose();
+                  window?.location?.reload();
+                }}
+              >
                 <ModalHeader className="flex flex-col gap-1 text-2xl">
-                  Add Mass Reservation
+                  {selectedId === null ? "Add" : "Edit"} Mass Reservation
                 </ModalHeader>
                 <ModalBody className="flex-row p-8">
                   <div className="flex w-full flex-col gap-8">
+                    {selectedId && <input type="hidden" name="id" value={selectedId} />}
                     <Input
                       autoFocus
+                      name="requester_name"
+                      defaultValue={
+                        selectedId
+                          ? data.find((d) => d.id === selectedId)?.requester_name
+                          : undefined
+                      }
                       label="Requester's Name"
                       placeholder="Enter Requester's Name"
                       variant="bordered"
@@ -116,14 +116,20 @@ export default function MassReservation() {
                     />
                     <Select
                       autoFocus
+                      name="type_of_mass"
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [data.find((d) => d.id === selectedId)?.type_of_mass]
+                          : undefined
+                      }
                       label="Type of Mass"
                       placeholder="Select type"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     >
-                      {massTypes.map((massType, i) => (
-                        <SelectItem value={massType} key={i}>
+                      {massTypes.map((massType) => (
+                        <SelectItem value={massType} key={massType}>
                           {massType}
                         </SelectItem>
                       ))}
@@ -131,6 +137,12 @@ export default function MassReservation() {
                     <Input
                       autoFocus
                       label="Place of Mass Event"
+                      defaultValue={
+                        selectedId
+                          ? data.find((d) => d.id === selectedId)?.place_of_mass_event
+                          : undefined
+                      }
+                      name="place_of_mass_event"
                       placeholder="Enter place of mass event"
                       variant="bordered"
                       labelPlacement="outside"
@@ -141,6 +153,12 @@ export default function MassReservation() {
                     <Input
                       autoFocus
                       label="Contact Number"
+                      defaultValue={
+                        selectedId
+                          ? data.find((d) => d.id === selectedId)?.contact_number
+                          : undefined
+                      }
+                      name="contact_number"
                       placeholder="Enter contact number"
                       variant="bordered"
                       labelPlacement="outside"
@@ -149,20 +167,35 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       label="Mass Presider"
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [data.find((d) => d.id === selectedId)?.priest_id.toString()]
+                          : undefined
+                      }
+                      name="priest_id"
                       placeholder="Select Mass Presider"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     >
-                      {priests.map((priest, i) => (
-                        <SelectItem value={priest} key={i}>
-                          {priest}
+                      {priests.map((priest) => (
+                        <SelectItem value={priest.id} key={priest.id.toString()}>
+                          {priest.name}
                         </SelectItem>
                       ))}
                     </Select>
                     <Input
                       type="date"
                       autoFocus
+                      name="date_requested"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              data.find((d) => d.id === selectedId)?.date_requested,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
                       label="Date Requested"
                       placeholder="Date Requested"
                       variant="bordered"
@@ -171,16 +204,36 @@ export default function MassReservation() {
                     />
                     <Select
                       autoFocus
+                      name="time"
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [
+                              `${format(
+                                new Date(
+                                  `2021-01-01 ${data.find((d) => d.id === selectedId)
+                                    ?.schedule_time_start}`
+                                ),
+                                "hh:mm a"
+                              )} - ${format(
+                                new Date(
+                                  `2021-01-01 ${data.find((d) => d.id === selectedId)
+                                    ?.schedule_time_end}`
+                                ),
+                                "hh:mm a"
+                              )}`,
+                            ]
+                          : undefined
+                      }
                       label="Schedule Time"
                       placeholder="Select time"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     >
-                      {massHours.map((mhours, i) => (
+                      {massHours.map((range) => (
                         // TODO: proper time ranges
-                        <SelectItem value={massHours} key={i}>
-                          {mhours}
+                        <SelectItem value={range} key={range}>
+                          {range}
                         </SelectItem>
                       ))}
                     </Select>
@@ -190,11 +243,11 @@ export default function MassReservation() {
                   <Button color="danger" variant="flat" onPress={onClose}>
                     Close
                   </Button>
-                  <Button color="primary" onPress={onClose}>
-                    Save
+                  <Button color="primary" type="submit">
+                    {selectedId === null ? "Create" : "Save"}
                   </Button>
                 </ModalFooter>
-              </>
+              </form>
             )}
           </ModalContent>
         </Modal>
@@ -222,20 +275,30 @@ export default function MassReservation() {
                           Actions
                         </Button>
                       </DropdownTrigger>
-                      <DropdownMenu aria-label="Dynamic Actions">
-                        {row.actions.map((action, index) => (
-                          <DropdownItem
-                            key={index}
-                            color={action === "Delete" ? "danger" : "default"}
-                            className={action === "Delete" ? "text-danger" : ""}
-                          >
-                            {action}
-                          </DropdownItem>
-                        ))}
+                      <DropdownMenu
+                        aria-label="Dynamic Actions"
+                        onAction={async (key) => {
+                          if (key === "edit") {
+                            setSelectedId(row.id);
+                            onOpen();
+                          } else if (key === "delete") {
+                            await deleteMassReservation(row.id);
+                            window?.location?.reload();
+                          }
+                        }}
+                      >
+                        <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="delete" color="danger" className="text-danger">
+                          Delete
+                        </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
+                  ) : column.key === "date_requested" ? (
+                    row[column.key]?.toDateString()
+                  ) : column.key.startsWith("schedule_time") ? (
+                    format(new Date(`2021-01-01 ${row[column.key]}`), "hh:mm a")
                   ) : (
-                    row[column.key as keyof typeof row]
+                    row[column.key]
                   )}
                 </TableCell>
               ))}
