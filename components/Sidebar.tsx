@@ -17,6 +17,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { useState } from "react";
+import { logout } from "~/lib/auth";
 
 interface NavItem {
   title: string;
@@ -123,19 +124,21 @@ export default function Sidebar() {
             closeDelay={0}
             isDisabled={expanded}
           >
-            <a
-              onClick={() => router.replace("/")}
-              className="flex cursor-pointer items-center transition-colors hover:text-indigo-600 focus-visible:outline-none"
-            >
-              <div className="inline-flex h-16 w-20 items-center justify-center">
-                <IconLogout2 size={24} />
-              </div>
-              <span
-                className={"-ml-4 w-40 font-bold transition-all" + (expanded ? "" : " opacity-0")}
+            <form action={logout}>
+              <button
+                type="submit"
+                className="flex cursor-pointer items-center transition-colors hover:text-indigo-600 focus-visible:outline-none"
               >
-                Logout
-              </span>
-            </a>
+                <div className="inline-flex h-16 w-20 items-center justify-center">
+                  <IconLogout2 size={24} />
+                </div>
+                <span
+                  className={"-ml-4 w-40 font-bold transition-all" + (expanded ? "" : " opacity-0")}
+                >
+                  Logout
+                </span>
+              </button>
+            </form>
           </Tooltip>
         </div>
       </div>
