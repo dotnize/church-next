@@ -10,7 +10,6 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -82,7 +81,7 @@ function Top() {
                     labelPlacement="outside"
                     size="lg"
                   />
-                  <Select
+                  {/* <Select
                     autoFocus
                     label="Parish Priest"
                     placeholder="Select parish priest"
@@ -90,12 +89,12 @@ function Top() {
                     labelPlacement="outside"
                     size="lg"
                   >
-                    {/* {priests.map((priest, i) => (
+                    {priests.map((priest, i) => (
                       <SelectItem value={priest} key={i}>
                         {priest}
                       </SelectItem>
-                    ))} */}
-                  </Select>
+                    ))}
+                  </Select> */}
                 </div>
                 <div className="flex w-full flex-col gap-8">
                   <Input
