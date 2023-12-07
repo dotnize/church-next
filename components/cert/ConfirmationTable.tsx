@@ -11,7 +11,6 @@ import {
   ModalFooter,
   ModalHeader,
   Select,
-  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -21,7 +20,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-import { priests } from "~/lib/config";
 
 function Top() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -92,11 +90,11 @@ function Top() {
                     labelPlacement="outside"
                     size="lg"
                   >
-                    {priests.map((priest, i) => (
+                    {/* {priests.map((priest, i) => (
                       <SelectItem value={priest} key={i}>
                         {priest}
                       </SelectItem>
-                    ))}
+                    ))} */}
                   </Select>
                 </div>
                 <div className="flex w-full flex-col gap-8">
