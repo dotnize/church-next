@@ -8,7 +8,7 @@ import MarriageCert from "~/components/cert/MarriageTable";
 
 export default function Certificates() {
   return (
-    <div className="justifiy-center flex h-full flex-col p-8">
+    <div className="flex h-full flex-col p-8">
       <Tabs
         aria-label="Options"
         radius="lg"
