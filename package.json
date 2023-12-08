@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "install": "next build"
+    "postinstall": "next build"
   },
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
