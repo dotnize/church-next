@@ -23,11 +23,17 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { getConfirmations } from "~/actions/confirmation";
+import {
+  createConfirmation,
+  deleteConfirmation,
+  getConfirmations,
+  updateConfirmation,
+} from "~/actions/confirmation";
 import { getPriests } from "~/actions/priests";
 
-function Top() {
+export default function ConfirmationCert() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   // TODO: move to main/default component
   const [priests, setPriests] = useState<any>([]);
@@ -35,180 +41,13 @@ function Top() {
   // for modal
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  async function fetchPriests() {
-    const priestData = await getPriests();
-    setPriests(priestData);
-  }
-
-  async function fetchConfirmations() {
-    const confirmationData = await getConfirmations();
-    setConfirmations(confirmationData);
-  }
-
-  useEffect(() => {
-    fetchPriests();
-    fetchConfirmations();
-  }, []);
-
-  return (
-    <div className="flex items-center justify-between">
-      <h2 className="text-4xl font-bold">Confirmation Certificate</h2>
-      <Button className="text-xl" size="lg" color="primary" onPress={onOpen}>
-        Add Confirmation Certificate
-      </Button>
-
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1 text-2xl">
-                Add Confirmation Certificate
-              </ModalHeader>
-              <ModalBody className="flex-row p-8">
-                <div className="flex w-full flex-col gap-8">
-                  <Input
-                    autoFocus
-                    label="Name"
-                    placeholder="Enter Name"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                  <Input
-                    autoFocus
-                    label="Mother's Name"
-                    placeholder="Enter Mother's Name"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-
-                  <Input
-                    autoFocus
-                    label="Date"
-                    placeholder="Enter date"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    type="date"
-                    size="lg"
-                  />
-                  <Input
-                    autoFocus
-                    label="Sponsor 2"
-                    placeholder="Enter sponsor 2"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                  <Input
-                    autoFocus
-                    label="Page number"
-                    placeholder="Enter page number"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                  <Select
-                    autoFocus
-                    label="Parish Priest"
-                    placeholder="Select parish priest"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  >
-                    {priests.map((priest) => (
-                      <SelectItem value={priest.name} key={priest.name}>
-                        {priest.name}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
-                <div className="flex w-full flex-col gap-8">
-                  <Input
-                    autoFocus
-                    label="Father's Name"
-                    placeholder="Enter Father's Name"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                  <Input
-                    autoFocus
-                    label="Church Name"
-                    placeholder="Enter church name"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                  <Input
-                    autoFocus
-                    label="Sponsor 1"
-                    placeholder="Enter sponsor 1"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                  <Input
-                    autoFocus
-                    label="Book Number"
-                    placeholder="Enter book number"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                  <Input
-                    autoFocus
-                    type="date"
-                    label="Date of Issue"
-                    placeholder="Enter date of issue"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    size="lg"
-                  />
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Save
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </div>
-  );
-}
-
-export default function ConfirmationCert() {
-  interface MassData {
-    id: number;
-    name: string;
-    fathername: string;
-    mothername: string;
-    churchname: string;
-    month: string;
-    date: number;
-    year: number;
-    sponsor1: string;
-    sponsor2: string;
-    book_number: string;
-    page_number: string;
-    date_of_issue: string;
-    parish_priest: string;
-    actions: string[];
-  }
-
   const columns = [
     { header: "Name", key: "name" },
-    { header: "Father's Name", key: "fathername" },
-    { header: "Mother's Name", key: "mothername" },
-    { header: "Church Name", key: "churchname" },
+    { header: "Father's Name", key: "father_name" },
+    { header: "Mother's Name", key: "mother_name" },
+    { header: "Church Name", key: "church_name" },
     { header: "Month", key: "month" },
-    { header: "Date", key: "date" },
+    { header: "Date", key: "day" },
     { header: "Year", key: "year" },
     { header: "Sponsor 1", key: "sponsor1" },
     { header: "Sponsor 2", key: "sponsor2" },
@@ -219,42 +58,276 @@ export default function ConfirmationCert() {
     { header: "Actions", key: "actions" },
   ];
 
-  const data: MassData[] = [
-    {
-      id: 1,
-      name: "John Doe",
-      fathername: "Michael Doe",
-      mothername: "Jane Doe",
-      churchname: "St. Mary's Church",
-      month: "January",
-      date: 1,
-      year: 2022,
-      sponsor1: "Sponsor 1",
-      sponsor2: "Sponsor 2",
-      book_number: "123",
-      page_number: "456",
-      date_of_issue: "January 2, 2022",
-      parish_priest: "Rev. John Smith",
-      actions: ["Edit", "Print", "Delete"],
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      fathername: "David Smith",
-      mothername: "Emily Smith",
-      churchname: "St. John's Church",
-      month: "February",
-      date: 1,
-      year: 2022,
-      sponsor1: "Sponsor 1",
-      sponsor2: "Sponsor 2",
-      book_number: "789",
-      page_number: "012",
-      date_of_issue: "February 2, 2022",
-      parish_priest: "Rev. Mark Johnson",
-      actions: ["Edit", "Print", "Delete"],
-    },
-  ];
+  async function fetchPriests() {
+    const priestData = await getPriests();
+    setPriests(priestData);
+  }
+
+  async function fetchConfirmations() {
+    const confirmationData = await getConfirmations();
+
+    if (Array.isArray(confirmationData)) {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+
+      const updatedData = confirmationData.map((item) => {
+        const date = new Date(item.date);
+
+        return {
+          ...item,
+          day: date.getDate(),
+          month: monthNames[date.getMonth()],
+          year: date.getFullYear(),
+        };
+      });
+
+      setConfirmations(updatedData);
+    }
+  }
+
+  useEffect(() => {
+    fetchPriests();
+    fetchConfirmations();
+  }, []);
+
+  function Top() {
+    return (
+      <div className="flex items-center justify-between">
+        <h2 className="text-4xl font-bold">Confirmation Certificate</h2>
+        <Button
+          className="text-xl"
+          size="lg"
+          color="primary"
+          onPress={() => {
+            setSelectedId(null);
+            onOpen();
+          }}
+        >
+          Add Confirmation Certificate
+        </Button>
+
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
+          <ModalContent>
+            {(onClose) => (
+              <form
+                action={async (formData) => {
+                  selectedId === null
+                    ? await createConfirmation(formData)
+                    : await updateConfirmation(formData);
+                  fetchConfirmations();
+                  onClose();
+                }}
+              >
+                <ModalHeader className="flex flex-col gap-1 text-2xl">
+                  {selectedId === null ? "Add" : "Edit"} Confirmation Certificate
+                </ModalHeader>
+                <ModalBody className="flex-row p-8">
+                  <div className="flex w-full flex-col gap-8">
+                    {selectedId && <input type="hidden" name="id" value={selectedId} />}
+                    <Input
+                      autoFocus
+                      label="Name"
+                      placeholder="Enter Name"
+                      name="name"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.name
+                          : undefined
+                      }
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Mother's Name"
+                      name="mother_name"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.mother_name
+                          : undefined
+                      }
+                      placeholder="Enter Mother's Name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+
+                    <Input
+                      autoFocus
+                      label="Date"
+                      name="date"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              confirmations.find((d) => d.id === selectedId)?.date,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter date"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      type="date"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Sponsor 2"
+                      name="sponsor2"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.sponsor2
+                          : undefined
+                      }
+                      placeholder="Enter sponsor 2"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Page number"
+                      name="page_number"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.page_number
+                          : undefined
+                      }
+                      placeholder="Enter page number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Select
+                      autoFocus
+                      label="Parish Priest"
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [
+                              confirmations
+                                .find((d) => d.id === selectedId)
+                                ?.parish_priest.toString(),
+                            ]
+                          : undefined
+                      }
+                      name="parish_priest"
+                      placeholder="Select parish priest"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest) => (
+                        <SelectItem value={priest.name} key={priest.name}>
+                          {priest.name}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      autoFocus
+                      label="Father's Name"
+                      name="father_name"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.father_name
+                          : undefined
+                      }
+                      placeholder="Enter Father's Name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Church Name"
+                      name="church_name"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.church_name
+                          : undefined
+                      }
+                      placeholder="Enter church name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Sponsor 1"
+                      name="sponsor1"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.sponsor1
+                          : undefined
+                      }
+                      placeholder="Enter sponsor 1"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Book Number"
+                      name="book_number"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.book_number
+                          : undefined
+                      }
+                      placeholder="Enter book number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      type="date"
+                      label="Date of Issue"
+                      name="date_of_issue"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              confirmations.find((d) => d.id === selectedId)?.date_of_issue,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter date of issue"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button color="primary" type="submit">
+                    {selectedId === null ? "Create" : "Save"}
+                  </Button>
+                </ModalFooter>
+              </form>
+            )}
+          </ModalContent>
+        </Modal>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -265,7 +338,7 @@ export default function ConfirmationCert() {
           ))}
         </TableHeader>
         <TableBody emptyContent={"No rows to display."}>
-          {data.map((row, rowIndex) => (
+          {confirmations.map((row, rowIndex) => (
             <TableRow key={rowIndex}>
               {columns.map((column) => (
                 <TableCell key={column.key}>
@@ -276,20 +349,28 @@ export default function ConfirmationCert() {
                           Actions
                         </Button>
                       </DropdownTrigger>
-                      <DropdownMenu aria-label="Dynamic Actions">
-                        {row.actions.map((action, index) => (
-                          <DropdownItem
-                            key={index}
-                            color={action === "Delete" ? "danger" : "default"}
-                            className={action === "Delete" ? "text-danger" : ""}
-                          >
-                            {action}
-                          </DropdownItem>
-                        ))}
+                      <DropdownMenu
+                        aria-label="Dynamic Actions"
+                        onAction={async (key) => {
+                          if (key === "edit") {
+                            setSelectedId(row.id);
+                            onOpen();
+                          } else if (key === "delete") {
+                            await deleteConfirmation(row.id);
+                            window?.location?.reload();
+                          }
+                        }}
+                      >
+                        <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="delete" color="danger" className="text-danger">
+                          Delete
+                        </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
+                  ) : column.key === "date_of_issue" || column.key === "date" ? (
+                    row[column.key]?.toDateString()
                   ) : (
-                    row[column.key as keyof typeof row]
+                    row[column.key]
                   )}
                 </TableCell>
               ))}

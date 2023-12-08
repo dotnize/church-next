@@ -4,47 +4,34 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-
-function Top() {
-  return (
-    <div className="flex items-center justify-between">
-      <h2 className="text-4xl font-bold">Baptism Certificate</h2>
-      <Button className="text-xl" size="lg" color="primary">
-        Add Baptism Certificate
-      </Button>
-    </div>
-  );
-}
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { createBaptism, deleteBaptism, getBaptisms, updateBaptism } from "~/actions/baptism";
+import { getPriests } from "~/actions/priests";
 
 export default function BaptismCertTable() {
-  interface BaptismData {
-    id: number;
-    child_name: string;
-    birth_place: string;
-    month_of_birth: string;
-    day_of_birth: number;
-    fathers_name: string;
-    mothers_name: string;
-    residence: string;
-    day_of_baptism: number;
-    month_of_baptism: string;
-    year_of_baptism: number;
-    parish_priest: string;
-    sponsor1: string;
-    sponsor2: string;
-    book_number: string;
-    page_number: string;
-    date_of_issue: string;
-    actions: string[];
-  }
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const [priests, setPriests] = useState<any>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [data, setData] = useState<any>([]);
 
   const columns = [
     { header: "Child Name", key: "child_name" },
@@ -66,48 +53,294 @@ export default function BaptismCertTable() {
     { header: "Actions", key: "actions" },
   ];
 
-  const data: BaptismData[] = [
-    {
-      id: 1,
-      child_name: "John Doe",
-      birth_place: "City A",
-      month_of_birth: "January",
-      day_of_birth: 1,
-      fathers_name: "Michael Doe",
-      mothers_name: "Jane Doe",
-      residence: "Address A",
-      day_of_baptism: 10,
-      month_of_baptism: "February",
-      year_of_baptism: 2022,
-      parish_priest: "Priest A",
-      sponsor1: "Sponsor 1",
-      sponsor2: "Sponsor 2",
-      book_number: "Book 1",
-      page_number: "Page 1",
-      date_of_issue: "2022-02-15",
-      actions: ["Edit", "Delete"],
-    },
-    {
-      id: 2,
-      child_name: "Jane Smith",
-      birth_place: "City B",
-      month_of_birth: "March",
-      day_of_birth: 15,
-      fathers_name: "David Smith",
-      mothers_name: "Emily Smith",
-      residence: "Address B",
-      day_of_baptism: 20,
-      month_of_baptism: "April",
-      year_of_baptism: 2022,
-      parish_priest: "Priest B",
-      sponsor1: "Sponsor 1",
-      sponsor2: "Sponsor 2",
-      book_number: "Book 2",
-      page_number: "Page 2",
-      date_of_issue: "2022-04-25",
-      actions: ["Edit", "Delete"],
-    },
-  ];
+  async function fetchPriests() {
+    const priestData = await getPriests();
+    setPriests(priestData);
+  }
+
+  async function fetchBaptism() {
+    const baptismData = await getBaptisms();
+
+    if (Array.isArray(baptismData)) {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+
+      const updatedData = baptismData.map((item) => {
+        const dateOfBirth = new Date(item.date_of_birth);
+        const dateOfBaptism = new Date(item.date_of_baptism);
+
+        return {
+          ...item,
+          day_of_birth: dateOfBirth.getDate(),
+          month_of_birth: monthNames[dateOfBirth.getMonth()],
+          day_of_baptism: dateOfBaptism.getDate(),
+          month_of_baptism: monthNames[dateOfBaptism.getMonth()],
+          year_of_baptism: dateOfBaptism.getFullYear(),
+        };
+      });
+
+      setData(updatedData);
+    }
+  }
+
+  useEffect(() => {
+    fetchPriests();
+    fetchBaptism();
+  }, []);
+
+  function Top() {
+    return (
+      <div className="flex items-center justify-between">
+        <h2 className="text-4xl font-bold">Baptism Certificate</h2>
+        <Button
+          className="text-xl"
+          size="lg"
+          color="primary"
+          onPress={() => {
+            setSelectedId(null);
+            onOpen();
+          }}
+        >
+          Add Baptism Certificate
+        </Button>
+
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
+          <ModalContent>
+            {(onClose) => (
+              <form
+                action={async (formData) => {
+                  selectedId === null
+                    ? await createBaptism(formData)
+                    : await updateBaptism(formData);
+                  fetchBaptism();
+                  onClose();
+                }}
+              >
+                <ModalHeader className="flex flex-col gap-1 text-2xl">
+                  {selectedId === null ? "Add" : "Edit"} Baptism Certificate
+                </ModalHeader>
+                <ModalBody className="flex-row p-8">
+                  <div className="flex w-full flex-col gap-8">
+                    {selectedId && <input type="hidden" name="id" value={selectedId} />}
+                    <Input
+                      autoFocus
+                      name="child_name"
+                      defaultValue={
+                        selectedId
+                          ? data.find((d) => d.id === selectedId)?.requester_name
+                          : undefined
+                      }
+                      label="Child Name"
+                      placeholder="Enter Child Name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      name="date_of_birth"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              data.find((d) => d.id === selectedId)?.date_of_birth,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      type="date"
+                      label="Date of Birth"
+                      placeholder="Enter Date of Birth"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+
+                    <Input
+                      autoFocus
+                      label="Residence"
+                      name="residence"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.residence : undefined
+                      }
+                      placeholder="Enter residence"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Sponsor 1"
+                      name="sponsor1"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.sponsor1 : undefined
+                      }
+                      placeholder="Enter sponsor 1"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Date of Issue"
+                      name="date_of_issue"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              data.find((d) => d.id === selectedId)?.date_of_issue,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter date of issue"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      type="date"
+                      size="lg"
+                    />
+                  </div>
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      autoFocus
+                      label="Birth Place"
+                      placeholder="Enter Birth Place"
+                      name="birth_place"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.birth_place : undefined
+                      }
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Father's Name"
+                      name="fathers_name"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.fathers_name : undefined
+                      }
+                      placeholder="Enter Father's Name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      type="date"
+                      name="date_of_baptism"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              data.find((d) => d.id === selectedId)?.date_of_baptism,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      label="Date of Baptism"
+                      placeholder="Enter date of Baptism"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+
+                    <Input
+                      autoFocus
+                      label="Sponsor 2"
+                      name="sponsor2"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.sponsor2 : undefined
+                      }
+                      placeholder="Enter sponsor 2"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                  </div>
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      autoFocus
+                      label="Mother's Name"
+                      name="mothers_name"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.mothers_name : undefined
+                      }
+                      placeholder="Enter Mother's Name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Select
+                      autoFocus
+                      label="Parish Priest"
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [data.find((d) => d.id === selectedId)?.parish_priest.toString()]
+                          : undefined
+                      }
+                      name="parish_priest"
+                      placeholder="Select parish priest"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest) => (
+                        <SelectItem value={priest.name} key={priest.name}>
+                          {priest.name}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Input
+                      autoFocus
+                      name="book_number"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.book_number : undefined
+                      }
+                      label="Book Number"
+                      placeholder="Enter book number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Page number"
+                      name="page_number"
+                      defaultValue={
+                        selectedId ? data.find((d) => d.id === selectedId)?.page_number : undefined
+                      }
+                      placeholder="Enter page number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button color="primary" type="submit">
+                    {selectedId === null ? "Create" : "Save"}
+                  </Button>
+                </ModalFooter>
+              </form>
+            )}
+          </ModalContent>
+        </Modal>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -129,20 +362,28 @@ export default function BaptismCertTable() {
                           Actions
                         </Button>
                       </DropdownTrigger>
-                      <DropdownMenu aria-label="Dynamic Actions">
-                        {row.actions.map((action, index) => (
-                          <DropdownItem
-                            key={index}
-                            color={action === "Delete" ? "danger" : "default"}
-                            className={action === "Delete" ? "text-danger" : ""}
-                          >
-                            {action}
-                          </DropdownItem>
-                        ))}
+                      <DropdownMenu
+                        aria-label="Dynamic Actions"
+                        onAction={async (key) => {
+                          if (key === "edit") {
+                            setSelectedId(row.id);
+                            onOpen();
+                          } else if (key === "delete") {
+                            await deleteBaptism(row.id);
+                            window?.location?.reload();
+                          }
+                        }}
+                      >
+                        <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="delete" color="danger" className="text-danger">
+                          Delete
+                        </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
+                  ) : column.key === "date_of_issue" || column.key === "date" ? (
+                    row[column.key]?.toDateString()
                   ) : (
-                    row[column.key as keyof typeof row]
+                    row[column.key]
                   )}
                 </TableCell>
               ))}
