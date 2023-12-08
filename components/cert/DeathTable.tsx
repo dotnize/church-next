@@ -331,7 +331,7 @@ export default function DeathCertTable() {
                             onOpen();
                           } else if (key === "delete") {
                             await deleteDeceased(row.id);
-                            window?.location?.reload();
+                            fetchDeceased();
                           }
                         }}
                       >

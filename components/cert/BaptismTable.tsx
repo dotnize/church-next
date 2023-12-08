@@ -370,7 +370,7 @@ export default function BaptismCertTable() {
                             onOpen();
                           } else if (key === "delete") {
                             await deleteBaptism(row.id);
-                            window?.location?.reload();
+                            fetchBaptism();
                           }
                         }}
                       >

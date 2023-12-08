@@ -357,7 +357,7 @@ export default function ConfirmationCert() {
                             onOpen();
                           } else if (key === "delete") {
                             await deleteConfirmation(row.id);
-                            window?.location?.reload();
+                            fetchConfirmations();
                           }
                         }}
                       >
