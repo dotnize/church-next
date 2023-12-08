@@ -105,23 +105,46 @@ export default function BaptismCertTable() {
     doc
       .fontSize(24)
       .text(month_of_birth, 958, 776, { width: 128, align: "left", characterSpacing: -1 });
-    doc.fontSize(28).text(fathers_name, 288, 828, { width: 280, align: "center" });
-    doc.fontSize(28).text(mothers_name, 648, 828, { width: 400, align: "center" });
+    doc
+      .fontSize(28)
+      .text(fathers_name, 288, 828, { width: 280, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(mothers_name, 648, 828, { width: 400, align: "center", characterSpacing: -1 });
     doc
       .fontSize(residence.length > 20 ? 24 : 28)
       .text(residence, 346, 882, { width: 430, align: "center", characterSpacing: -1 });
-    doc.fontSize(28).text(day_of_baptism, 368, 926, { width: 158, align: "center" });
+    doc
+      .fontSize(28)
+      .text(day_of_baptism, 368, 926, { width: 158, align: "center", characterSpacing: -1 });
     doc
       .fontSize(26)
       .text(month_of_baptism, 648, 926, { width: 132, align: "center", characterSpacing: -1 });
-    doc.fontSize(28).text(year_of_baptism, 828, 926, { width: 164, align: "center" });
-    doc.fontSize(28).text(parish_priest, 348, 1090, { width: 706, align: "left" });
-    doc.fontSize(28).text(sponsor1, 498, 1142, { width: 564, align: "left" });
-    sponsor2 && doc.fontSize(28).text("& " + sponsor2, 186, 1194, { width: 880, align: "left" });
-    doc.fontSize(28).text(book_number, 324, 1296, { width: 104, align: "center" });
-    doc.fontSize(28).text(page_number, 606, 1296, { width: 140, align: "center" });
-    doc.fontSize(28).text(date_of_issue, 184, 1424, { width: 220, align: "center" });
-    doc.fontSize(20).text(selectedData.parish_priest, 750, 1428, { width: 290, align: "center" });
+    doc
+      .fontSize(28)
+      .text(year_of_baptism, 828, 926, { width: 164, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(parish_priest, 348, 1090, { width: 706, align: "left", characterSpacing: -1 });
+    doc.fontSize(28).text(sponsor1, 498, 1142, { width: 564, align: "left", characterSpacing: -1 });
+    sponsor2 &&
+      doc
+        .fontSize(28)
+        .text("& " + sponsor2, 186, 1194, { width: 880, align: "left", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(book_number, 324, 1296, { width: 104, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(page_number, 606, 1296, { width: 140, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(date_of_issue, 184, 1424, { width: 220, align: "center", characterSpacing: -1 });
+    doc.fontSize(20).text(selectedData.parish_priest, 720, 1428, {
+      width: 330,
+      align: "center",
+      characterSpacing: -1,
+    });
 
     doc.end();
     stream.on("finish", function () {
