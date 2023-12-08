@@ -27,6 +27,7 @@ export async function createDeceased(formData: FormData) {
             parish_priest: formData.get("parish_priest"),
         });
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -53,6 +54,7 @@ export async function updateDeceased(formData: FormData) {
             formData.get("id"),
         ]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -62,6 +64,7 @@ export async function deleteDeceased(id: number) {
         const db = await getConnection();
         await db.query("DELETE FROM deceased_information WHERE id = ?", [id]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }

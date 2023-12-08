@@ -39,6 +39,7 @@ export async function createMarriage(formData: FormData) {
             solemnization_place: formData.get("solemnization_place"),
         });
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -86,6 +87,7 @@ export async function deleteMarriage(id: number) {
         const db = await getConnection();
         await db.query("DELETE FROM marriagecert WHERE id = ?", [id]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }

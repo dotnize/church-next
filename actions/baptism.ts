@@ -27,6 +27,7 @@ export async function createBaptism(formData: FormData) {
             date_of_issue: formData.get("date_of_issue"),
         });
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -53,6 +54,7 @@ export async function updateBaptism(formData: FormData) {
             formData.get("id"),
         ]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -62,6 +64,7 @@ export async function deleteBaptism(id: number) {
         const db = await getConnection();
         await db.query("DELETE FROM baptismcert WHERE id = ?", [id]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }

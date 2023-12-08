@@ -28,6 +28,7 @@ export async function createMassReservation(formData: FormData) {
             schedule_time_end,
         });
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -54,6 +55,7 @@ export async function updateMassReservation(formData: FormData) {
             formData.get("id"),
         ]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -63,6 +65,7 @@ export async function deleteMassReservation(id: number) {
         const db = await getConnection();
         await db.query("DELETE FROM mass_reservations WHERE id = ?", [id]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }

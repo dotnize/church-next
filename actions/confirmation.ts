@@ -25,6 +25,7 @@ export async function createConfirmation(formData: FormData) {
             parish_priest: formData.get("parish_priest"),
         });
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -49,6 +50,7 @@ export async function updateConfirmation(formData: FormData) {
             formData.get("id"),
         ]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }
@@ -58,6 +60,7 @@ export async function deleteConfirmation(id: number) {
         const db = await getConnection();
         await db.query("DELETE FROM confirmationcert WHERE id = ?", [id]);
     } catch (err) {
+        console.log(err);
         return;
     }
 }
