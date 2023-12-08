@@ -21,10 +21,14 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import blobStream from "blob-stream";
 import { format } from "date-fns";
+import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { useEffect, useState } from "react";
+
 import { createBaptism, deleteBaptism, getBaptisms, updateBaptism } from "~/actions/baptism";
 import { getPriests } from "~/actions/priests";
+import { getOrdinal } from "~/lib/utils";
 
 export default function BaptismCertTable() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -60,6 +64,73 @@ export default function BaptismCertTable() {
     fetchPriests();
     fetchBaptism();
   }, []);
+
+  async function printData(selectedData) {
+    const doc = new PDFDocument({ size: "A2" });
+    const stream = doc.pipe(blobStream());
+
+    const res = await fetch("/certificates/baptism.jpg");
+    const image = Buffer.from(await res.arrayBuffer());
+    doc.image(image, 0, 0, { width: 1190, height: 1684 });
+    doc.font("Courier");
+
+    const child_name = selectedData.child_name;
+    const birth_place = selectedData.birth_place;
+    const day_of_birth = getOrdinal(format(selectedData.date_of_birth, "dd"));
+    const month_of_birth = format(selectedData.date_of_birth, "MMMM");
+    const fathers_name = selectedData.fathers_name;
+    const mothers_name = selectedData.mothers_name;
+    const residence = selectedData.residence;
+    const day_of_baptism = getOrdinal(format(selectedData.date_of_baptism, "dd"));
+    const month_of_baptism = format(selectedData.date_of_baptism, "MMMM");
+    const year_of_baptism = format(selectedData.date_of_baptism, "yyyy");
+    const parish_priest = selectedData.parish_priest.split("Rev. Fr. ")[1];
+    const sponsor1 = selectedData.sponsor1;
+    const sponsor2 = selectedData.sponsor2;
+    const book_number = selectedData.book_number;
+    const page_number = selectedData.page_number;
+    const date_of_issue = format(selectedData.date_of_issue, "yyyy-MM-dd");
+
+    // TODO: reduce font sizes for long texts
+
+    doc
+      .fontSize(28)
+      .text(child_name, 588, 714, { width: 460, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(birth_place.length > 20 ? 20 : 28)
+      .text(birth_place, 278, 774, { width: 286, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(day_of_birth, 678, 774, { width: 168, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(24)
+      .text(month_of_birth, 958, 776, { width: 128, align: "left", characterSpacing: -1 });
+    doc.fontSize(28).text(fathers_name, 288, 828, { width: 280, align: "center" });
+    doc.fontSize(28).text(mothers_name, 648, 828, { width: 400, align: "center" });
+    doc
+      .fontSize(residence.length > 20 ? 24 : 28)
+      .text(residence, 346, 882, { width: 430, align: "center", characterSpacing: -1 });
+    doc.fontSize(28).text(day_of_baptism, 368, 926, { width: 158, align: "center" });
+    doc
+      .fontSize(26)
+      .text(month_of_baptism, 648, 926, { width: 132, align: "center", characterSpacing: -1 });
+    doc.fontSize(28).text(year_of_baptism, 828, 926, { width: 164, align: "center" });
+    doc.fontSize(28).text(parish_priest, 348, 1090, { width: 706, align: "left" });
+    doc.fontSize(28).text(sponsor1, 498, 1142, { width: 564, align: "left" });
+    sponsor2 && doc.fontSize(28).text("& " + sponsor2, 186, 1194, { width: 880, align: "left" });
+    doc.fontSize(28).text(book_number, 324, 1296, { width: 104, align: "center" });
+    doc.fontSize(28).text(page_number, 606, 1296, { width: 140, align: "center" });
+    doc.fontSize(28).text(date_of_issue, 184, 1424, { width: 220, align: "center" });
+    doc.fontSize(20).text(selectedData.parish_priest, 750, 1428, { width: 290, align: "center" });
+
+    doc.end();
+    stream.on("finish", function () {
+      //const blob = stream.toBlob("application/pdf");
+      // or get a blob URL for display in the browser
+      const url = stream.toBlobURL("application/pdf");
+      window.open(url);
+    });
+  }
 
   function Top() {
     return (
@@ -332,10 +403,13 @@ export default function BaptismCertTable() {
                           } else if (key === "delete") {
                             await deleteBaptism(row.id);
                             fetchBaptism();
+                          } else if (key === "print") {
+                            printData(row);
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="print">Generate PDF</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
                         </DropdownItem>
