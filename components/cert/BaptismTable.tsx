@@ -36,19 +36,12 @@ export default function BaptismCertTable() {
   const columns = [
     { header: "Child Name", key: "child_name" },
     { header: "Birth Place", key: "birth_place" },
-    { header: "Month of Birth", key: "month_of_birth" },
-    { header: "Day of Birth", key: "day_of_birth" },
+    { header: "Date of Birth", key: "date_of_birth" },
     { header: "Father's Name", key: "fathers_name" },
     { header: "Mother's Name", key: "mothers_name" },
     { header: "Residence", key: "residence" },
-    { header: "Day of Baptism", key: "day_of_baptism" },
-    { header: "Month of Baptism", key: "month_of_baptism" },
-    { header: "Year of Baptism", key: "year_of_baptism" },
+    { header: "Date of Baptism", key: "date_of_baptism" },
     { header: "Parish Priest", key: "parish_priest" },
-    { header: "Sponsor 1", key: "sponsor1" },
-    { header: "Sponsor 2", key: "sponsor2" },
-    { header: "Book Number", key: "book_number" },
-    { header: "Page Number", key: "page_number" },
     { header: "Date of Issue", key: "date_of_issue" },
     { header: "Actions", key: "actions" },
   ];
@@ -60,39 +53,7 @@ export default function BaptismCertTable() {
 
   async function fetchBaptism() {
     const baptismData = await getBaptisms();
-
-    if (Array.isArray(baptismData)) {
-      const monthNames = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-
-      const updatedData = baptismData.map((item) => {
-        const dateOfBirth = new Date(item.date_of_birth);
-        const dateOfBaptism = new Date(item.date_of_baptism);
-
-        return {
-          ...item,
-          day_of_birth: dateOfBirth.getDate(),
-          month_of_birth: monthNames[dateOfBirth.getMonth()],
-          day_of_baptism: dateOfBaptism.getDate(),
-          month_of_baptism: monthNames[dateOfBaptism.getMonth()],
-          year_of_baptism: dateOfBaptism.getFullYear(),
-        };
-      });
-
-      setData(updatedData);
-    }
+    setData(baptismData);
   }
 
   useEffect(() => {
@@ -380,8 +341,8 @@ export default function BaptismCertTable() {
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
-                  ) : column.key === "date_of_issue" || column.key === "date" ? (
-                    row[column.key]?.toDateString()
+                  ) : column.key.startsWith("date") ? (
+                    format(row[column.key], "yyyy-MM-dd")
                   ) : (
                     row[column.key]
                   )}

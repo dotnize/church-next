@@ -51,9 +51,6 @@ export default function ConfirmationCert() {
     { header: "Year", key: "year" },
     { header: "Sponsor 1", key: "sponsor1" },
     { header: "Sponsor 2", key: "sponsor2" },
-    { header: "Book Number", key: "book_number" },
-    { header: "Page Number", key: "page_number" },
-    { header: "Date of Issue", key: "date_of_issue" },
     { header: "Parish Priest", key: "parish_priest" },
     { header: "Actions", key: "actions" },
   ];
