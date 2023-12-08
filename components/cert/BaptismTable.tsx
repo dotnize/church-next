@@ -170,9 +170,7 @@ export default function BaptismCertTable() {
                       autoFocus
                       name="child_name"
                       defaultValue={
-                        selectedId
-                          ? data.find((d) => d.id === selectedId)?.requester_name
-                          : undefined
+                        selectedId ? data.find((d) => d.id === selectedId)?.child_name : undefined
                       }
                       label="Child Name"
                       placeholder="Enter Child Name"
