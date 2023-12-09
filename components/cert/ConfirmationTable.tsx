@@ -196,7 +196,8 @@ export default function ConfirmationCert() {
                 }}
               >
                 <ModalHeader className="flex flex-col gap-1 text-2xl">
-                  {isViewMode ? "View" : selectedId === null ? "Add" : "Edit"} Baptism Certificate
+                  {isViewMode ? "View" : selectedId === null ? "Add" : "Edit"} Confirmation
+                  Certificate
                 </ModalHeader>
                 <ModalBody className="flex-row p-8">
                   <div className="flex w-full flex-col gap-8">
