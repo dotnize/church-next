@@ -46,6 +46,7 @@ export default function DeathCertTable() {
     { header: "Date of Burial", key: "dateOfBurial" },
     { header: "Place of Burial", key: "placeOfBurial" },
     { header: "Relative Information", key: "relativeInfo" },
+    { header: "Status", key: "status" },
     { header: "Actions", key: "actions" },
   ];
   async function fetchPriests() {
@@ -181,6 +182,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Age"
+                      type="number"
+                      errorMessage="Please enter a number"
                       isRequired={addMode}
                       readOnly={isViewMode}
                       name="age"
@@ -250,6 +253,32 @@ export default function DeathCertTable() {
                           {priest.name}
                         </SelectItem>
                       ))}
+                    </Select>
+                    <Select
+                      autoFocus
+                      label="Status"
+                      disabled={isViewMode}
+                      isRequired={addMode}
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [deceased.find((d) => d.id === selectedId)?.status.toString()]
+                          : undefined
+                      }
+                      name="status"
+                      placeholder="Select status"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Invalid
+                      </SelectItem>
+                      <SelectItem key="Released" value="Released">
+                        Released
+                      </SelectItem>
                     </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
@@ -321,6 +350,22 @@ export default function DeathCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    <Input
+                      autoFocus
+                      label="Requester Name"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
+                      name="requester_name"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.requester_name
+                          : undefined
+                      }
+                      placeholder="Enter requester name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -328,6 +373,8 @@ export default function DeathCertTable() {
                       isRequired={addMode}
                       readOnly={isViewMode}
                       label="Volume Number"
+                      type="number"
+                      errorMessage="Please enter a number"
                       name="volume"
                       defaultValue={
                         selectedId ? deceased.find((d) => d.id === selectedId)?.volume : undefined
@@ -340,6 +387,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Page Number"
+                      type="number"
+                      errorMessage="Please enter a number"
                       isRequired={addMode}
                       readOnly={isViewMode}
                       name="pageNumber"
@@ -356,6 +405,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Entry Number"
+                      type="number"
+                      errorMessage="Please enter a number"
                       isRequired={addMode}
                       readOnly={isViewMode}
                       name="entryNumber"
@@ -385,6 +436,22 @@ export default function DeathCertTable() {
                           : undefined
                       }
                       placeholder="Enter date of issue"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Submitted Requirements"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
+                      name="submitted_requirements"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.submitted_requirements
+                          : undefined
+                      }
+                      placeholder="Enter submitted requirements"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"

@@ -48,6 +48,7 @@ export default function BaptismCertTable() {
     { header: "Date of Baptism", key: "date_of_baptism" },
     { header: "Parish Priest", key: "parish_priest" },
     { header: "Date of Issue", key: "date_of_issue" },
+    { header: "Status", key: "status" },
     { header: "Actions", key: "actions" },
   ];
 
@@ -275,6 +276,32 @@ export default function BaptismCertTable() {
                       type="date"
                       size="lg"
                     />
+                    <Select
+                      autoFocus
+                      label="Status"
+                      disabled={isViewMode}
+                      isRequired={addMode}
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [data.find((d) => d.id === selectedId)?.status.toString()]
+                          : undefined
+                      }
+                      name="status"
+                      placeholder="Select status"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Invalid
+                      </SelectItem>
+                      <SelectItem key="Released" value="Released">
+                        Released
+                      </SelectItem>
+                    </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -340,6 +367,22 @@ export default function BaptismCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    <Input
+                      autoFocus
+                      label="Requester Name"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
+                      name="requester_name"
+                      defaultValue={
+                        selectedId
+                          ? data.find((d) => d.id === selectedId)?.requester_name
+                          : undefined
+                      }
+                      placeholder="Enter requester name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -381,6 +424,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       name="book_number"
+                      type="number"
+                      errorMessage="Please enter a number"
                       isRequired={addMode}
                       readOnly={isViewMode}
                       defaultValue={
@@ -395,6 +440,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       label="Page number"
+                      type="number"
+                      errorMessage="Please enter a number"
                       isRequired={addMode}
                       readOnly={isViewMode}
                       name="page_number"
@@ -402,6 +449,22 @@ export default function BaptismCertTable() {
                         selectedId ? data.find((d) => d.id === selectedId)?.page_number : undefined
                       }
                       placeholder="Enter page number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Submitted Requirements"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
+                      name="submitted_requirements"
+                      defaultValue={
+                        selectedId
+                          ? data.find((d) => d.id === selectedId)?.submitted_requirements
+                          : undefined
+                      }
+                      placeholder="Enter submitted requirements"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
