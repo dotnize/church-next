@@ -15,81 +15,18 @@ import {
   TableRow,
   getKeyValue,
 } from "@nextui-org/react";
-
-interface DeceasedData {
-  id: number;
-  name: string;
-  residence: string;
-  age: number;
-  datedeath: string;
-  dateburial: string;
-  placeburial: string;
-  relativeinfo: string;
-}
-
-const data: DeceasedData[] = [
-  {
-    id: 0,
-    name: "John Doe",
-    residence: "Purok 1",
-    age: 69,
-    datedeath: "2021-02-01",
-    dateburial: "2021-02-03",
-    placeburial: "Purok 1",
-    relativeinfo: "Jane Doe",
-  },
-  {
-    id: 1,
-    name: "Jane Smith",
-    residence: "Purok 2",
-    age: 55,
-    datedeath: "2021-03-15",
-    dateburial: "2021-03-18",
-    placeburial: "Purok 2",
-    relativeinfo: "John Smith",
-  },
-  {
-    id: 2,
-    name: "Michael Johnson",
-    residence: "Purok 3",
-    age: 72,
-    datedeath: "2021-04-10",
-    dateburial: "2021-04-13",
-    placeburial: "Purok 3",
-    relativeinfo: "Emily Johnson",
-  },
-  {
-    id: 3,
-    name: "Sarah Williams",
-    residence: "Purok 4",
-    age: 61,
-    datedeath: "2021-05-20",
-    dateburial: "2021-05-23",
-    placeburial: "Purok 4",
-    relativeinfo: "David Williams",
-  },
-  {
-    id: 4,
-    name: "Robert Brown",
-    residence: "Purok 5",
-    age: 78,
-    datedeath: "2021-06-12",
-    dateburial: "2021-06-15",
-    placeburial: "Purok 5",
-    relativeinfo: "Olivia Brown",
-  },
-  // 5 more rows
-];
+import { useEffect, useState } from "react";
+import { getDeceased } from "~/actions/deceased";
 
 const columns = [
-  { key: "id", label: "Entry Number" },
-  { key: "name", label: "Name of Deceased" },
+  { key: "entryNumber", label: "Entry Number" },
+  { key: "deceasedName", label: "Name of Deceased" },
   { key: "residence", label: "Residence" },
   { key: "age", label: "Age" },
-  { key: "datedeath", label: "Date of Death" },
-  { key: "dateburial", label: "Date of Burial" },
-  { key: "placeburial", label: "Place of Burial" },
-  { key: "relativeinfo", label: "Relative Information" },
+  { key: "dateOfDeath", label: "Date of Death" },
+  { key: "dateOfBurial", label: "Date of Burial" },
+  { key: "placeOfBurial", label: "Place of Burial" },
+  { key: "relativeInfo", label: "Relative Information" },
   { key: "actions", label: "Actions" },
 ];
 
@@ -110,15 +47,27 @@ function TopContent() {
 }
 
 export default function DeceasedInventory() {
+  const [deceased, setDeceased] = useState<any>([]);
+
+  async function fetchDeceased() {
+    const deceasedData = await getDeceased();
+
+    setDeceased(deceasedData);
+  }
+
+  useEffect(() => {
+    fetchDeceased();
+  }, []);
+
   return (
     <div className="flex h-full justify-center p-8">
       <Table isStriped topContent={<TopContent />}>
         <TableHeader columns={columns}>
           {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
         </TableHeader>
-        <TableBody items={data}>
+        <TableBody items={deceased}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={deceased.id}>
               {(columnKey) => (
                 <TableCell width="min-content">
                   {columnKey === "actions" ? (
@@ -134,6 +83,8 @@ export default function DeceasedInventory() {
                         </DropdownMenu>
                       </Dropdown>
                     </div>
+                  ) : columnKey === "dateOfDeath" || columnKey === "dateOfBurial" ? (
+                    item[columnKey]?.toDateString()
                   ) : (
                     getKeyValue(item, columnKey)
                   )}
