@@ -32,7 +32,8 @@ import { getOrdinal } from "~/lib/utils";
 
 export default function BaptismCertTable() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const [isViewMode, setIsViewMode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const [priests, setPriests] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [data, setData] = useState<any>([]);
@@ -165,6 +166,8 @@ export default function BaptismCertTable() {
           color="primary"
           onPress={() => {
             setSelectedId(null);
+            setAddMode(true);
+            setIsViewMode(false);
             onOpen();
           }}
         >
@@ -184,14 +187,16 @@ export default function BaptismCertTable() {
                 }}
               >
                 <ModalHeader className="flex flex-col gap-1 text-2xl">
-                  {selectedId === null ? "Add" : "Edit"} Baptism Certificate
+                  {isViewMode ? "View" : selectedId === null ? "Add" : "Edit"} Baptism Certificate
                 </ModalHeader>
                 <ModalBody className="flex-row p-8">
                   <div className="flex w-full flex-col gap-8">
                     {selectedId && <input type="hidden" name="id" value={selectedId} />}
                     <Input
                       autoFocus
+                      isRequired={addMode}
                       name="child_name"
+                      readOnly={isViewMode}
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.child_name : undefined
                       }
@@ -204,6 +209,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       name="date_of_birth"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       defaultValue={
                         selectedId
                           ? format(
@@ -224,6 +231,8 @@ export default function BaptismCertTable() {
                       autoFocus
                       label="Residence"
                       name="residence"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.residence : undefined
                       }
@@ -235,6 +244,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       label="Sponsor 1"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="sponsor1"
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.sponsor1 : undefined
@@ -247,6 +258,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       label="Date of Issue"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="date_of_issue"
                       defaultValue={
                         selectedId
@@ -267,6 +280,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       label="Birth Place"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       placeholder="Enter Birth Place"
                       name="birth_place"
                       defaultValue={
@@ -279,6 +294,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       label="Father's Name"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="fathers_name"
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.fathers_name : undefined
@@ -291,6 +308,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       type="date"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="date_of_baptism"
                       defaultValue={
                         selectedId
@@ -310,6 +329,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       label="Sponsor 2"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="sponsor2"
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.sponsor2 : undefined
@@ -323,7 +344,9 @@ export default function BaptismCertTable() {
                   <div className="flex w-full flex-col gap-8">
                     <Input
                       autoFocus
+                      isRequired={addMode}
                       label="Mother's Name"
+                      readOnly={isViewMode}
                       name="mothers_name"
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.mothers_name : undefined
@@ -336,6 +359,8 @@ export default function BaptismCertTable() {
                     <Select
                       autoFocus
                       label="Parish Priest"
+                      isRequired={addMode}
+                      disabled={isViewMode}
                       defaultSelectedKeys={
                         selectedId
                           ? [data.find((d) => d.id === selectedId)?.parish_priest.toString()]
@@ -356,6 +381,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       name="book_number"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.book_number : undefined
                       }
@@ -368,6 +395,8 @@ export default function BaptismCertTable() {
                     <Input
                       autoFocus
                       label="Page number"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="page_number"
                       defaultValue={
                         selectedId ? data.find((d) => d.id === selectedId)?.page_number : undefined
@@ -420,16 +449,23 @@ export default function BaptismCertTable() {
                         onAction={async (key) => {
                           if (key === "edit") {
                             setSelectedId(row.id);
+                            setAddMode(false);
+                            setIsViewMode(false);
                             onOpen();
                           } else if (key === "delete") {
                             await deleteBaptism(row.id);
                             fetchBaptism();
                           } else if (key === "print") {
                             printData(row);
+                          } else if (key === "view") {
+                            setSelectedId(row.id);
+                            setIsViewMode(true);
+                            onOpen();
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="view">View</DropdownItem>
                         <DropdownItem key="print">Generate PDF</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
