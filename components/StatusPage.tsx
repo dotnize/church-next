@@ -16,7 +16,7 @@ export default function Status({ type, id }: { type: "c" | "m" | "b" | "d"; id: 
   const [cert, setCert] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [copiedLink, setCopiedLink] = useState(false);
-  const currentUrl = window.location.origin + pathname;
+  const [currentUrl, setCurrentUrl] = useState("");
 
   async function fetchCert() {
     setLoading(true);
@@ -35,6 +35,7 @@ export default function Status({ type, id }: { type: "c" | "m" | "b" | "d"; id: 
   }
 
   useEffect(() => {
+    setCurrentUrl(window.location.origin + pathname);
     fetchCert();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -79,7 +80,7 @@ export default function Status({ type, id }: { type: "c" | "m" | "b" | "d"; id: 
               <Tooltip placement="bottom" isOpen={copiedLink} content="Link copied to clipboard.">
                 <input
                   type="text"
-                  value={window.location.origin + pathname}
+                  value={currentUrl}
                   readOnly
                   onClick={copyLink}
                   className="rounded-md bg-white p-2 shadow"
