@@ -67,28 +67,26 @@ export default function Status({ type, id }: { type: "c" | "m" | "b" | "d"; id: 
               <span
                 className={`${cert.status !== "Pending" && "font-bold"} ${
                   cert.status === "Released" && "text-emerald-600"
-                } ${cert.status === "Invalid" && "text-red-500"}`}
+                } ${cert.status === "Invalid" && "text-red-600"}`}
               >
                 {cert.status}
               </span>
             </div>
             <div>Requested by: {cert.requester_name.split(" ")[0]}</div>
           </div>
-          {cert.status !== "Released" && (
-            <div className="flex flex-col gap-1">
-              <span className="text-sm">Save the link below to check the status anytime:</span>
-              <Tooltip placement="bottom" isOpen={copiedLink} content="Link copied to clipboard.">
-                <input
-                  type="text"
-                  value={currentUrl}
-                  readOnly
-                  onClick={copyLink}
-                  className="rounded-md bg-white p-2 shadow"
-                  onFocus={(e) => e.target.select()}
-                />
-              </Tooltip>
-            </div>
-          )}
+          <div className="flex flex-col gap-1">
+            <span className="text-sm">Save the link below to check the status anytime:</span>
+            <Tooltip placement="bottom" isOpen={copiedLink} content="Link copied to clipboard.">
+              <input
+                type="text"
+                value={currentUrl}
+                readOnly
+                onClick={copyLink}
+                className="rounded-md bg-white p-2 shadow"
+                onFocus={(e) => e.target.select()}
+              />
+            </Tooltip>
+          </div>
         </>
       )}
     </div>
