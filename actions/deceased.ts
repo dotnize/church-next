@@ -28,7 +28,7 @@ export async function createDeceased(formData: FormData) {
             parish_priest: formData.get("parish_priest"),
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
-            status: formData.get("status") || "pending",
+            status: formData.get("status") || "Pending",
         });
         return (insertResult[0] as ResultSetHeader).insertId;
     } catch (err) {

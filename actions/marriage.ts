@@ -43,7 +43,7 @@ export async function createMarriage(formData: FormData) {
             solemnization_place: formData.get("solemnization_place"),
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
-            status: formData.get("status") || "pending",
+            status: formData.get("status") || "Pending",
         });
         return (insertResult[0] as ResultSetHeader).insertId;
     } catch (err) {
