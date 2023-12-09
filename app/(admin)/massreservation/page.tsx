@@ -46,7 +46,7 @@ export default function MassReservation() {
     { header: "Requester's Name", key: "requester_name" },
     { header: "Contact Number", key: "contact_number" },
     { header: "Type of Mass", key: "type_of_mass" },
-    { header: "Mass Provider", key: "priest_id" },
+    { header: "Mass Presider", key: "priest_id" },
     { header: "Place of Mass Event", key: "place_of_mass_event" },
     { header: "Date Requested", key: "date_requested" },
     { header: "Schedule Time Start", key: "schedule_time_start" },
@@ -297,6 +297,8 @@ export default function MassReservation() {
                     row[column.key]?.toDateString()
                   ) : column.key.startsWith("schedule_time") ? (
                     format(new Date(`2021-01-01 ${row[column.key]}`), "hh:mm a")
+                  ) : column.key === "priest_id" ? (
+                    priests.find((p) => p.id === row[column.key])?.name
                   ) : (
                     row[column.key]
                   )}
