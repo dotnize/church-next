@@ -58,6 +58,7 @@ export default function ConfirmationCert() {
     { header: "Sponsor 1", key: "sponsor1" },
     { header: "Sponsor 2", key: "sponsor2" },
     { header: "Parish Priest", key: "parish_priest" },
+    { header: "Status", key: "status" },
     { header: "Actions", key: "actions" },
   ];
 
@@ -274,6 +275,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Page number"
+                      type="number"
+                      errorMessage="Please enter a number"
                       isRequired={addMode}
                       readOnly={isViewMode}
                       name="page_number"
@@ -313,6 +316,22 @@ export default function ConfirmationCert() {
                         </SelectItem>
                       ))}
                     </Select>
+                    <Input
+                      autoFocus
+                      label="Submitted Requirements"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
+                      name="submitted_requirements"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.submitted_requirements
+                          : undefined
+                      }
+                      placeholder="Enter submitted requirements"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -366,6 +385,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Book Number"
+                      type="number"
+                      errorMessage="Please enter a number"
                       isRequired={addMode}
                       readOnly={isViewMode}
                       name="book_number"
@@ -399,6 +420,48 @@ export default function ConfirmationCert() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    <Input
+                      autoFocus
+                      label="Requester Name"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
+                      name="requester_name"
+                      defaultValue={
+                        selectedId
+                          ? confirmations.find((d) => d.id === selectedId)?.requester_name
+                          : undefined
+                      }
+                      placeholder="Enter requester name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Select
+                      autoFocus
+                      label="Status"
+                      disabled={isViewMode}
+                      isRequired={addMode}
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [confirmations.find((d) => d.id === selectedId)?.status.toString()]
+                          : undefined
+                      }
+                      name="status"
+                      placeholder="Select status"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Invalid
+                      </SelectItem>
+                      <SelectItem key="Released" value="Released">
+                        Released
+                      </SelectItem>
+                    </Select>
                   </div>
                 </ModalBody>
                 <ModalFooter>
