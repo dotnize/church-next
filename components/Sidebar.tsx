@@ -10,6 +10,7 @@ import {
   IconLogout2,
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
+  IconUsers,
 } from "@tabler/icons-react";
 
 import Image from "next/image";
@@ -31,6 +32,7 @@ const navItems: NavItem[] = [
   { title: "Mass Reservation", icon: <IconBrowserCheck size={24} />, href: "/massreservation" },
   { title: "Certificates", icon: <IconCertificate size={24} />, href: "/certificates" },
   { title: "Deceased Inventory", icon: <IconFolder size={24} />, href: "/deceasedinventory" },
+  { title: "Priests", icon: <IconUsers size={24} />, href: "/priests" },
 ];
 
 export default function Sidebar() {
