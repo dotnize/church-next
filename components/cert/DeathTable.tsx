@@ -35,6 +35,8 @@ export default function DeathCertTable() {
   const [priests, setPriests] = useState<any>([]);
   const [deceased, setDeceased] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [isViewMode, setIsViewMode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
 
   const columns = [
     { header: "Name of Deceased", key: "deceasedName" },
@@ -129,7 +131,17 @@ export default function DeathCertTable() {
     return (
       <div className="flex items-center justify-between">
         <h2 className="text-4xl font-bold">Death Certificate</h2>
-        <Button className="text-xl" size="lg" color="primary" onPress={onOpen}>
+        <Button
+          className="text-xl"
+          size="lg"
+          color="primary"
+          onPress={() => {
+            setSelectedId(null);
+            setAddMode(true);
+            setIsViewMode(false);
+            onOpen();
+          }}
+        >
           Add Death Certificate
         </Button>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
@@ -145,7 +157,7 @@ export default function DeathCertTable() {
                 }}
               >
                 <ModalHeader className="flex flex-col gap-1 text-2xl">
-                  {selectedId === null ? "Add" : "Edit"} Death Certificate
+                  {isViewMode ? "View" : selectedId === null ? "Add" : "Edit"} Baptism Certificate
                 </ModalHeader>
                 <ModalBody className="flex-row p-8">
                   <div className="flex w-full flex-col gap-8">
@@ -153,6 +165,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Name of Deceased"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="deceasedName"
                       defaultValue={
                         selectedId
@@ -167,6 +181,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Age"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="age"
                       defaultValue={
                         selectedId ? deceased.find((d) => d.id === selectedId)?.age : undefined
@@ -180,6 +196,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Date of Burial"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="dateOfBurial"
                       defaultValue={
                         selectedId
@@ -198,6 +216,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Relative Information"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="relativeInfo"
                       defaultValue={
                         selectedId
@@ -212,6 +232,8 @@ export default function DeathCertTable() {
                     <Select
                       autoFocus
                       label="Parish Priest"
+                      isRequired={addMode}
+                      disabled={isViewMode}
                       defaultSelectedKeys={
                         selectedId
                           ? [deceased.find((d) => d.id === selectedId)?.parish_priest.toString()]
@@ -234,6 +256,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Residence"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="residence"
                       defaultValue={
                         selectedId
@@ -248,6 +272,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       type="date"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       label="Date of Death"
                       name="dateOfDeath"
                       defaultValue={
@@ -266,6 +292,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Place of Burial"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="placeOfBurial"
                       defaultValue={
                         selectedId
@@ -279,6 +307,8 @@ export default function DeathCertTable() {
                     />
                     <Input
                       autoFocus
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       label="Burial Information"
                       name="burialInfo"
                       defaultValue={
@@ -295,6 +325,8 @@ export default function DeathCertTable() {
                   <div className="flex w-full flex-col gap-8">
                     <Input
                       autoFocus
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       label="Volume Number"
                       name="volume"
                       defaultValue={
@@ -308,6 +340,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Page Number"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="pageNumber"
                       defaultValue={
                         selectedId
@@ -322,6 +356,8 @@ export default function DeathCertTable() {
                     <Input
                       autoFocus
                       label="Entry Number"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="entryNumber"
                       defaultValue={
                         selectedId
@@ -337,6 +373,8 @@ export default function DeathCertTable() {
                       autoFocus
                       type="date"
                       label="Date of Issue"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="date_of_issue"
                       defaultValue={
                         selectedId
@@ -394,16 +432,23 @@ export default function DeathCertTable() {
                         onAction={async (key) => {
                           if (key === "edit") {
                             setSelectedId(row.id);
+                            setAddMode(false);
+                            setIsViewMode(false);
                             onOpen();
                           } else if (key === "delete") {
                             await deleteDeceased(row.id);
                             fetchDeceased();
                           } else if (key === "print") {
                             printData(row);
+                          } else if (key === "view") {
+                            setSelectedId(row.id);
+                            setIsViewMode(true);
+                            onOpen();
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="view">View</DropdownItem>
                         <DropdownItem key="print">Generate Certificate</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete

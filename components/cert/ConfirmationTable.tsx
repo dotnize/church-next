@@ -44,6 +44,8 @@ export default function ConfirmationCert() {
   const [confirmations, setConfirmations] = useState<any>([]);
   // for modal
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [isViewMode, setIsViewMode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
 
   const columns = [
     { header: "Name", key: "name" },
@@ -174,6 +176,8 @@ export default function ConfirmationCert() {
           color="primary"
           onPress={() => {
             setSelectedId(null);
+            setAddMode(true);
+            setIsViewMode(false);
             onOpen();
           }}
         >
@@ -193,13 +197,15 @@ export default function ConfirmationCert() {
                 }}
               >
                 <ModalHeader className="flex flex-col gap-1 text-2xl">
-                  {selectedId === null ? "Add" : "Edit"} Confirmation Certificate
+                  {isViewMode ? "View" : selectedId === null ? "Add" : "Edit"} Baptism Certificate
                 </ModalHeader>
                 <ModalBody className="flex-row p-8">
                   <div className="flex w-full flex-col gap-8">
                     {selectedId && <input type="hidden" name="id" value={selectedId} />}
                     <Input
                       autoFocus
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       label="Name"
                       placeholder="Enter Name"
                       name="name"
@@ -215,6 +221,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Mother's Name"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="mother_name"
                       defaultValue={
                         selectedId
@@ -230,6 +238,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Date"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="date"
                       defaultValue={
                         selectedId
@@ -249,6 +259,8 @@ export default function ConfirmationCert() {
                       autoFocus
                       label="Sponsor 2"
                       name="sponsor2"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       defaultValue={
                         selectedId
                           ? confirmations.find((d) => d.id === selectedId)?.sponsor2
@@ -262,6 +274,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Page number"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="page_number"
                       defaultValue={
                         selectedId
@@ -276,6 +290,8 @@ export default function ConfirmationCert() {
                     <Select
                       autoFocus
                       label="Parish Priest"
+                      isRequired={addMode}
+                      disabled={isViewMode}
                       defaultSelectedKeys={
                         selectedId
                           ? [
@@ -302,6 +318,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Father's Name"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="father_name"
                       defaultValue={
                         selectedId
@@ -316,6 +334,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Church Name"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="church_name"
                       defaultValue={
                         selectedId
@@ -330,6 +350,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Sponsor 1"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="sponsor1"
                       defaultValue={
                         selectedId
@@ -344,6 +366,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Book Number"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="book_number"
                       defaultValue={
                         selectedId
@@ -359,6 +383,8 @@ export default function ConfirmationCert() {
                       autoFocus
                       type="date"
                       label="Date of Issue"
+                      isRequired={addMode}
+                      readOnly={isViewMode}
                       name="date_of_issue"
                       defaultValue={
                         selectedId
@@ -416,16 +442,23 @@ export default function ConfirmationCert() {
                         onAction={async (key) => {
                           if (key === "edit") {
                             setSelectedId(row.id);
+                            setAddMode(false);
+                            setIsViewMode(false);
                             onOpen();
                           } else if (key === "delete") {
                             await deleteConfirmation(row.id);
                             fetchConfirmations();
                           } else if (key === "print") {
                             printData(row);
+                          } else if (key === "view") {
+                            setSelectedId(row.id);
+                            setIsViewMode(true);
+                            onOpen();
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="view">View</DropdownItem>
                         <DropdownItem key="print">Generate Certificate</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
