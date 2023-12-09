@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/react";
 import { IconChevronLeft, IconChevronRight, IconMenu2 } from "@tabler/icons-react";
 import {
   add,
@@ -15,7 +24,9 @@ import {
   startOfToday,
   startOfWeek,
 } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getMassReservations } from "~/actions/massreservation";
+import { getPriests } from "~/actions/priests";
 
 export default function Calendar() {
   const today = startOfToday();
@@ -63,6 +74,26 @@ export default function Calendar() {
     const prevYearMonth = add(firstDayOfMonth, { years: 1 });
     setCurrMonth(format(prevYearMonth, "MMM-yyyy"));
   };
+
+  const [reservations, setReservations] = useState<any>([]);
+  const [priests, setPriests] = useState<any>([]);
+
+  const [previewedReservationId, setPreviewedReservationId] = useState<any>(null);
+  const previewedReservation = reservations.find((r) => r.id === previewedReservationId);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  async function fetchReservations() {
+    const res = await getMassReservations();
+    setReservations(res);
+  }
+  async function fetchPriests() {
+    const res = await getPriests();
+    setPriests(res);
+  }
+  useEffect(() => {
+    fetchReservations();
+    fetchPriests();
+  }, []);
 
   return (
     <div className="flex justify-center p-8">
@@ -123,24 +154,93 @@ export default function Calendar() {
                 <div key={idx} className={colStartClasses[getDay(day)]}>
                   <p
                     onClick={() => setSelectedDate(day)}
-                    className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full font-semibold ${
+                    className={`relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full font-semibold ${
                       isSameMonth(day, firstDayOfMonth) ? "text-gray-950" : "text-gray-300"
                     } ${compareAsc(day, selectedDate) !== 0 && "hover:bg-gray-200"} ${
                       compareAsc(day, selectedDate) === 0 && "bg-indigo-500 !text-gray-50"
                     }`}
                   >
                     {format(day, "d")}
+                    {reservations.find((r) => compareAsc(r.date_requested, day) === 0) && (
+                      <div className="absolute bottom-0 h-1.5 w-1.5 rounded-full bg-red-400"></div>
+                    )}
                   </p>
                 </div>
               );
             })}
           </div>
         </div>
-        <div className="flex h-full w-64 flex-col items-center gap-8 bg-gray-200 p-4">
+        <div className="flex h-full w-80 flex-col items-center gap-8 bg-gray-200 p-4">
           <h2 className="mt-4 text-xl font-semibold">{format(selectedDate, "MMMM d, yyyy")}</h2>
-          <div className="rounded-md border-2 border-indigo-400 bg-indigo-100 p-2 text-indigo-900">
-            No scheduled reservations for this day.
+          {!reservations.find((r) => compareAsc(r.date_requested, selectedDate) === 0) && (
+            <div className="rounded-md border-2 border-indigo-400 bg-indigo-100 p-2 text-indigo-900">
+              No scheduled reservations for this day.
+            </div>
+          )}
+          <div className="flex flex-col gap-8">
+            {reservations
+              .filter((r) => compareAsc(r.date_requested, selectedDate) === 0)
+              .map((r, i) => (
+                <div className="group flex items-center gap-2" key={i}>
+                  <div className="h-3 w-3 rounded-full bg-red-400"></div>
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="font-bold">{r.type_of_mass}</div>
+                      <button
+                        onClick={() => {
+                          setPreviewedReservationId(r.id);
+                          onOpen();
+                        }}
+                        className="rounded-md bg-sky-100 px-4 py-1 text-xs transition-colors group-hover:bg-sky-50"
+                      >
+                        View
+                      </button>
+                    </div>
+                    <div className="text-sm">
+                      {format(new Date(`2021-01-01 ${r.schedule_time_start}`), "hh:mm a")} -{" "}
+                      {priests.find((p) => p.id === r.priest_id)?.name}
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
+          <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">Reservation details</ModalHeader>
+                  <ModalBody>
+                    <p>
+                      <span className="font-bold">Type of Mass: </span>
+                      {previewedReservation?.type_of_mass}
+                    </p>
+                    <p>
+                      <span className="font-bold">Location: </span>
+                      {previewedReservation?.place_of_mass_event}
+                    </p>
+                    <p>
+                      <span className="font-bold">Date Requested: </span>
+                      {format(previewedReservation?.date_requested, "yyyy-MM-dd")}
+                    </p>
+                    <p>
+                      <span className="font-bold">Schedule Time Start: </span>
+                      {format(
+                        new Date(`2021-01-01 ${previewedReservation?.schedule_time_start}`),
+                        "hh:mm a"
+                      )}
+                    </p>
+                    <p>
+                      <span className="font-bold">Mass Presider: </span>
+                      {priests.find((p) => p.id === previewedReservation.priest_id)?.name}
+                    </p>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button onPress={onClose}>Close</Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
         </div>
       </div>
     </div>
