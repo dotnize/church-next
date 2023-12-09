@@ -91,7 +91,7 @@ export default function MassReservation() {
                     ? await createMassReservation(formData)
                     : await updateMassReservation(formData);
                   onClose();
-                  window?.location?.reload();
+                  fetchReservations();
                 }}
               >
                 <ModalHeader className="flex flex-col gap-1 text-2xl">
@@ -283,7 +283,7 @@ export default function MassReservation() {
                             onOpen();
                           } else if (key === "delete") {
                             await deleteMassReservation(row.id);
-                            window?.location?.reload();
+                            fetchReservations();
                           }
                         }}
                       >
