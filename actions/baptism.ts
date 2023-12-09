@@ -9,6 +9,12 @@ export async function getBaptisms() {
     return rows;
 }
 
+export async function getBaptismById(id: number) {
+    const db = await getConnection();
+    const [rows] = await db.query("SELECT * FROM baptismcert WHERE id = ?", [id]);
+    return rows;
+}
+
 export async function createBaptism(formData: FormData) {
     try {
         const db = await getConnection();

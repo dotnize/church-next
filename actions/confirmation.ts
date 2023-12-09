@@ -9,6 +9,12 @@ export async function getConfirmations() {
     return rows;
 }
 
+export async function getConfirmationById(id: number) {
+    const db = await getConnection();
+    const [rows] = await db.query("SELECT * FROM confirmationcert WHERE id = ?", [id]);
+    return rows;
+}
+
 export async function createConfirmation(formData: FormData) {
     try {
         const db = await getConnection();

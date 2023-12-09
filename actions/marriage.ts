@@ -9,6 +9,12 @@ export async function getMarriages() {
     return rows;
 }
 
+export async function getMarriageById(id: number) {
+    const db = await getConnection();
+    const [rows] = await db.query("SELECT * FROM marriagecert WHERE id = ?", [id]);
+    return rows;
+}
+
 export async function createMarriage(formData: FormData) {
     try {
         const db = await getConnection();

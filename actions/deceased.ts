@@ -9,6 +9,12 @@ export async function getDeceased() {
     return rows;
 }
 
+export async function getDeceasedById(id: number) {
+    const db = await getConnection();
+    const [rows] = await db.query("SELECT * FROM deceased_information WHERE id = ?", [id]);
+    return rows;
+}
+
 export async function createDeceased(formData: FormData) {
     try {
         const db = await getConnection();
