@@ -21,10 +21,14 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import blobStream from "blob-stream";
 import { format } from "date-fns";
+import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { useEffect, useState } from "react";
+
 import { createMarriage, deleteMarriage, getMarriages, updateMarriage } from "~/actions/marriage";
 import { getPriests } from "~/actions/priests";
+import { getOrdinal } from "~/lib/utils";
 
 export default function MarriageCertTable() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -62,6 +66,149 @@ export default function MarriageCertTable() {
     fetchPriests();
     fetchMarriage();
   }, []);
+
+  async function printData(selectedData: any) {
+    const doc = new PDFDocument({ size: "A2" });
+    const stream = doc.pipe(blobStream());
+
+    const res = await fetch("/certificates/marriage.jpg");
+    const image = Buffer.from(await res.arrayBuffer());
+    doc.image(image, 0, 0, { width: 1190, height: 1684 });
+    doc.font("Courier");
+
+    const husband_name = selectedData.husband_name;
+    const husband_legal_status = selectedData.husband_legal_status;
+    const husband_actual_address = selectedData.husband_actual_address;
+    const husband_age = selectedData.husband_age;
+    const husband_place_of_birth = selectedData.husband_place_of_birth;
+    const husband_mother = selectedData.husband_mother;
+    const husband_father = selectedData.husband_father;
+    const husband_date_of_baptism = format(selectedData.husband_date_of_baptism, "yyyy-MM-dd");
+    const husband_place_of_baptism = selectedData.husband_place_of_baptism;
+    const husband_witness = selectedData.husband_witness;
+
+    const wife_name = selectedData.wife_name;
+    const wife_legal_status = selectedData.wife_legal_status;
+    const wife_actual_address = selectedData.wife_actual_address;
+    const wife_age = selectedData.wife_age;
+    const wife_place_of_birth = selectedData.wife_place_of_birth;
+    const wife_mother = selectedData.wife_mother;
+    const wife_father = selectedData.wife_father;
+    const wife_date_of_baptism = format(selectedData.wife_date_of_baptism, "yyyy-MM-dd");
+    const wife_place_of_baptism = selectedData.wife_place_of_baptism;
+    const wife_witness = selectedData.wife_witness;
+
+    const date_of_marriage = format(selectedData.date_of_marriage, "MMMM dd, yyyy");
+    const position = selectedData.position;
+    const book_number = selectedData.book_number;
+    const page_number = selectedData.page_number;
+    const entry_number = selectedData.entry_number;
+    const day_of_sol = getOrdinal(format(selectedData.solemnization_date, "dd"));
+    const month_of_sol = format(selectedData.solemnization_date, "MMMM");
+    const year_of_sol = format(selectedData.solemnization_date, "yyyy");
+    const solemnization_place = selectedData.solemnization_place;
+    const parish_priest = selectedData.parish_priest;
+
+    // TODO: reduce font sizes for long texts
+
+    doc
+      .fontSize(18)
+      .text(husband_name, 464, 530, { width: 330, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(18)
+      .text(husband_legal_status, 464, 564, { width: 330, align: "center", characterSpacing: -1 });
+    doc.fontSize(18).text(husband_actual_address, 464, 598, {
+      width: 330,
+      align: "center",
+      characterSpacing: -1,
+    });
+
+    doc.fontSize(18).text(husband_age, 464, 632, { width: 330, align: "center" });
+    doc.fontSize(18).text(husband_place_of_birth, 464, 668, {
+      width: 330,
+      align: "center",
+      characterSpacing: -1,
+    });
+    doc.fontSize(18).text(husband_date_of_baptism, 464, 704, { width: 330, align: "center" });
+    doc.fontSize(18).text(husband_place_of_baptism, 464, 740, {
+      width: 330,
+      align: "center",
+      characterSpacing: -1,
+    });
+    doc
+      .fontSize(18)
+      .text(husband_father, 464, 772, { width: 330, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(18)
+      .text(husband_mother, 464, 808, { width: 330, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(18)
+      .text(husband_witness, 464, 842, { width: 330, align: "center", characterSpacing: -1 });
+
+    doc
+      .fontSize(18)
+      .text(wife_name, 802, 530, { width: 282, align: "center", characterSpacing: -1 });
+    doc.fontSize(18).text(wife_legal_status, 802, 564, {
+      width: 282,
+      align: "center",
+      characterSpacing: -1,
+    });
+    doc.fontSize(18).text(wife_actual_address, 802, 598, {
+      width: 282,
+      align: "center",
+      characterSpacing: -1,
+    });
+
+    doc.fontSize(18).text(wife_age, 802, 632, { width: 282, align: "center" });
+    doc.fontSize(18).text(wife_place_of_birth, 802, 668, {
+      width: 282,
+      align: "center",
+      characterSpacing: -1,
+    });
+    doc.fontSize(18).text(wife_date_of_baptism, 802, 704, { width: 282, align: "center" });
+    doc.fontSize(18).text(wife_place_of_baptism, 802, 740, {
+      width: 282,
+      align: "center",
+      characterSpacing: -1,
+    });
+    doc
+      .fontSize(18)
+      .text(wife_father, 802, 772, { width: 282, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(18)
+      .text(wife_mother, 802, 808, { width: 282, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(18)
+      .text(wife_witness, 802, 842, { width: 282, align: "center", characterSpacing: -1 });
+
+    doc.fontSize(20).text(date_of_marriage, 350, 878, { width: 500, align: "left" });
+    doc
+      .fontSize(18)
+      .text(position, 250, 978, { width: 128, align: "center", characterSpacing: -1 });
+    doc.fontSize(22).text(book_number, 670, 1166, { width: 126, align: "center" });
+    doc.fontSize(22).text(page_number, 872, 1166, { width: 74, align: "center" });
+    doc.fontSize(22).text(entry_number, 1004, 1166, { width: 74, align: "center" });
+    doc
+      .fontSize(22)
+      .text("this " + day_of_sol, 210, 1276, { width: 204, align: "center", characterSpacing: -1 });
+    doc.fontSize(22).text(month_of_sol, 506, 1276, { width: 164, align: "center" });
+    doc.fontSize(22).text(year_of_sol, 702, 1276, { width: 140, align: "center" });
+    doc
+      .fontSize(18)
+      .text(solemnization_place, 858, 1278, { width: 230, align: "left", characterSpacing: -1 });
+
+    doc
+      .fontSize(24)
+      .text(parish_priest, 660, 1454, { width: 444, align: "center", characterSpacing: -1 });
+
+    doc.end();
+    stream.on("finish", function () {
+      //const blob = stream.toBlob("application/pdf");
+      // or get a blob URL for display in the browser
+      const url = stream.toBlobURL("application/pdf");
+      window.open(url);
+    });
+  }
 
   function Top() {
     return (
@@ -557,10 +704,13 @@ export default function MarriageCertTable() {
                           } else if (key === "delete") {
                             await deleteMarriage(row.id);
                             fetchMarriage();
+                          } else if (key === "print") {
+                            printData(row);
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="print">Generate Certificate</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
                         </DropdownItem>
