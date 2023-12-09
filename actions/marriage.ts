@@ -40,6 +40,9 @@ export async function createMarriage(formData: FormData) {
             parish_priest: formData.get("parish_priest"),
             solemnization_date: formData.get("solemnization_date"),
             solemnization_place: formData.get("solemnization_place"),
+            requester_name: formData.get("requester_name"),
+            submitted_requirements: formData.get("submitted_requirements"),
+            status: formData.get("status") || "pending",
         });
     } catch (err) {
         console.log(err);
@@ -80,6 +83,9 @@ export async function updateMarriage(formData: FormData) {
                 parish_priest: formData.get("parish_priest"),
                 solemnization_date: formData.get("solemnization_date"),
                 solemnization_place: formData.get("solemnization_place"),
+                requester_name: formData.get("requester_name"),
+                submitted_requirements: formData.get("submitted_requirements"),
+                status: formData.get("status") || "pending",
             },
             formData.get("id"),
         ]);

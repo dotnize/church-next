@@ -25,6 +25,9 @@ export async function createBaptism(formData: FormData) {
             book_number: formData.get("book_number"),
             page_number: formData.get("page_number"),
             date_of_issue: formData.get("date_of_issue"),
+            requester_name: formData.get("requester_name"),
+            submitted_requirements: formData.get("submitted_requirements"),
+            status: formData.get("status") || "pending",
         });
     } catch (err) {
         console.log(err);
@@ -50,6 +53,9 @@ export async function updateBaptism(formData: FormData) {
                 book_number: formData.get("book_number"),
                 page_number: formData.get("page_number"),
                 date_of_issue: formData.get("date_of_issue"),
+                requester_name: formData.get("requester_name"),
+                submitted_requirements: formData.get("submitted_requirements"),
+                status: formData.get("status") || "pending",
             },
             formData.get("id"),
         ]);

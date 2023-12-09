@@ -25,6 +25,9 @@ export async function createDeceased(formData: FormData) {
             relativeInfo: formData.get("relativeInfo"),
             date_of_issue: formData.get("date_of_issue"),
             parish_priest: formData.get("parish_priest"),
+            requester_name: formData.get("requester_name"),
+            submitted_requirements: formData.get("submitted_requirements"),
+            status: formData.get("status") || "pending",
         });
     } catch (err) {
         console.log(err);
@@ -50,6 +53,9 @@ export async function updateDeceased(formData: FormData) {
                 relativeInfo: formData.get("relativeInfo"),
                 date_of_issue: formData.get("date_of_issue"),
                 parish_priest: formData.get("parish_priest"),
+                requester_name: formData.get("requester_name"),
+                submitted_requirements: formData.get("submitted_requirements"),
+                status: formData.get("status") || "pending",
             },
             formData.get("id"),
         ]);
