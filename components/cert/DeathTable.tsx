@@ -21,8 +21,11 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import blobStream from "blob-stream";
 import { format } from "date-fns";
+import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { useEffect, useState } from "react";
+
 import { createDeceased, deleteDeceased, getDeceased, updateDeceased } from "~/actions/deceased";
 import { getPriests } from "~/actions/priests";
 
@@ -58,6 +61,69 @@ export default function DeathCertTable() {
     fetchPriests();
     fetchDeceased();
   }, []);
+
+  async function printData(selectedData: any) {
+    const doc = new PDFDocument({ size: "A1", layout: "landscape" });
+    const stream = doc.pipe(blobStream());
+
+    const res = await fetch("/certificates/death.jpg");
+    const image = Buffer.from(await res.arrayBuffer());
+    doc.image(image, 0, 0, { width: 2384, height: 1684 });
+    doc.font("Courier");
+
+    const volume = selectedData.volume;
+    const pageNumber = selectedData.pageNumber;
+    const entryNumber = selectedData.entryNumber;
+    const deceasedName = selectedData.deceasedName;
+    const residence = selectedData.residence;
+    const age = selectedData.age;
+    const dateOfDeath = format(selectedData.dateOfDeath, "MMMM dd, yyyy");
+    const placeOfBurial = selectedData.placeOfBurial;
+    const dateOfBurial = format(selectedData.dateOfBurial, "yyyy/MM/dd");
+    const relativeInfo = selectedData.relativeInfo;
+    const dateOfIssue = format(selectedData.date_of_issue, "yyyy-MM-dd");
+    const priest = selectedData.parish_priest;
+
+    // TODO: reduce font sizes for long texts
+
+    doc.fontSize(40).text(volume, 604, 962, { width: 400, align: "center" });
+    doc.fontSize(40).text(pageNumber, 1204, 962, { width: 352, align: "center" });
+    doc.fontSize(40).text(entryNumber, 1742, 962, { width: 268, align: "center" });
+
+    doc
+      .fontSize(40)
+      .text(deceasedName, 680, 1030, { width: 1340, align: "left", characterSpacing: -1 });
+    doc
+      .fontSize(40)
+      .text(residence, 540, 1100, { width: 1500, align: "left", characterSpacing: -1 });
+
+    doc.fontSize(40).text(age, 410, 1170, { width: 586, align: "center" });
+    doc.fontSize(40).text(dateOfDeath, 1290, 1170, { width: 730, align: "center" });
+
+    doc.fontSize(40).text(placeOfBurial + ", " + dateOfBurial, 770, 1238, {
+      width: 1260,
+      align: "left",
+      characterSpacing: -1,
+    });
+    doc.fontSize(40).text(relativeInfo, 776, 1308, {
+      width: 1250,
+      align: "left",
+      characterSpacing: -1,
+    });
+
+    doc.fontSize(40).text(dateOfIssue, 420, 1446, { width: 404, align: "center" });
+    doc
+      .fontSize(32)
+      .text(priest, 1420, 1446, { width: 560, align: "center", characterSpacing: -1 });
+
+    doc.end();
+    stream.on("finish", function () {
+      //const blob = stream.toBlob("application/pdf");
+      // or get a blob URL for display in the browser
+      const url = stream.toBlobURL("application/pdf");
+      window.open(url);
+    });
+  }
 
   function Top() {
     return (
@@ -332,10 +398,13 @@ export default function DeathCertTable() {
                           } else if (key === "delete") {
                             await deleteDeceased(row.id);
                             fetchDeceased();
+                          } else if (key === "print") {
+                            printData(row);
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="print">Generate Certificate</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
                         </DropdownItem>
