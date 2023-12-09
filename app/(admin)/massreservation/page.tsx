@@ -23,8 +23,9 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-import { format } from "date-fns";
+import { differenceInHours, format } from "date-fns";
 import { useEffect, useState } from "react";
+
 import {
   createMassReservation,
   deleteMassReservation,
@@ -32,7 +33,7 @@ import {
   updateMassReservation,
 } from "~/actions/massreservation";
 import { getPriests } from "~/actions/priests";
-import { massHours, massTypes } from "~/lib/config";
+import { massHours, massTypes, minHoursBeforeReservation } from "~/lib/config";
 
 export default function MassReservation() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -67,6 +68,24 @@ export default function MassReservation() {
     fetchReservations();
   }, []);
 
+  function validateForm(formData: FormData) {
+    const dateRequested = formData.get("date_requested").toString();
+    const timeStart = formData.get("time")?.toString().split(" - ")[0];
+
+    const selectedDate = new Date(dateRequested + " " + timeStart);
+    const today = new Date();
+
+    const diff = differenceInHours(selectedDate, today);
+    console.log("diff", diff);
+
+    if (differenceInHours(selectedDate, today) < minHoursBeforeReservation) {
+      alert(`Reservation must be at least ${minHoursBeforeReservation} hours from now.`);
+      return false;
+    }
+
+    return true;
+  }
+
   function Top() {
     return (
       <div className="flex items-center justify-between">
@@ -87,6 +106,7 @@ export default function MassReservation() {
             {(onClose) => (
               <form
                 action={async (formData) => {
+                  if (!validateForm(formData)) return;
                   selectedId === null
                     ? await createMassReservation(formData)
                     : await updateMassReservation(formData);
