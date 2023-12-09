@@ -29,7 +29,6 @@ export default function Priests() {
   const [priests, setPriests] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isViewMode, setIsViewMode] = useState<boolean>(false);
-  const [addMode, setAddMode] = useState<boolean>(false);
 
   const columns = [
     { header: "ID", key: "id" },
@@ -55,7 +54,6 @@ export default function Priests() {
           color="primary"
           onPress={() => {
             setSelectedId(null);
-            setAddMode(true);
             setIsViewMode(false);
             onOpen();
           }}
@@ -81,7 +79,7 @@ export default function Priests() {
                     <Input
                       autoFocus
                       label="Parish Priest Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       placeholder="Enter name of parish priest"
                       name="name"
@@ -134,7 +132,6 @@ export default function Priests() {
                         onAction={async (key) => {
                           if (key === "edit") {
                             setSelectedId(row.id);
-                            setAddMode(false);
                             setIsViewMode(false);
                             onOpen();
                           } else if (key === "delete") {

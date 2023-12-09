@@ -223,7 +223,6 @@ export default function MarriageCertTable() {
           color="primary"
           onPress={() => {
             setSelectedId(null);
-            setAddMode(true);
             setIsViewMode(false);
             onOpen();
           }}
@@ -252,7 +251,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Husband Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       placeholder="Enter husband name"
                       name="husband_name"
@@ -269,7 +268,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Husband Actual Address"
                       name="husband_actual_address"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -284,10 +283,9 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Husband Age"
-                      type="number"
-                      errorMessage="Please enter a number"
+                      pattern="[0-9]+"
                       name="husband_age"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -303,7 +301,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Husband Place of Birth"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="husband_place_of_birth"
                       defaultValue={
@@ -320,7 +318,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Husband Witness"
                       name="husband_witness"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -335,7 +333,7 @@ export default function MarriageCertTable() {
                     <Select
                       autoFocus
                       label="Parish Priest"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       disabled={isViewMode}
                       defaultSelectedKeys={
                         selectedId
@@ -358,7 +356,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Status"
                       disabled={isViewMode}
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       defaultSelectedKeys={
                         selectedId
                           ? [marriage.find((d) => d.id === selectedId)?.status.toString()]
@@ -385,7 +383,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Husband's Mother Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="husband_mother"
                       defaultValue={
@@ -401,7 +399,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Husband's Father Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="husband_father"
                       defaultValue={
@@ -418,7 +416,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Husband Date of Baptism"
                       name="husband_date_of_baptism"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -437,7 +435,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Husband Place of Baptism"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="husband_place_of_baptism"
                       defaultValue={
@@ -454,7 +452,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Husband Legal Status"
                       name="husband_legal_status"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -469,7 +467,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Solemnization Date"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="solemnization_date"
                       defaultValue={
@@ -492,7 +490,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Wife Name"
                       placeholder="Enter wife name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="wife_name"
                       defaultValue={
@@ -507,7 +505,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Wife Actual Address"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="wife_actual_address"
                       defaultValue={
@@ -523,10 +521,9 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Wife Age"
-                      type="number"
-                      errorMessage="Please enter a number"
+                      pattern="[0-9]+"
                       name="wife_age"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId ? marriage.find((d) => d.id === selectedId)?.wife_age : undefined
@@ -541,7 +538,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Wife Place of Birth"
                       name="wife_place_of_birth"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -557,7 +554,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Wife Witness"
                       name="wife_witness"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -572,7 +569,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Solemnization Place"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="solemnization_place"
                       defaultValue={
@@ -590,7 +587,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Wife's Mother Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="wife_mother"
                       defaultValue={
@@ -607,7 +604,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Wife's Father Name"
                       name="wife_father"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -623,7 +620,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Wife Date of Baptism"
                       name="wife_date_of_baptism"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -643,7 +640,7 @@ export default function MarriageCertTable() {
                       autoFocus
                       label="Wife Place of Baptism"
                       name="wife_place_of_baptism"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -658,7 +655,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Wife Legal Status"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="wife_legal_status"
                       defaultValue={
@@ -674,7 +671,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Requester Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="requester_name"
                       defaultValue={
@@ -692,7 +689,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Date of Marriage"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="date_of_marriage"
                       defaultValue={
@@ -712,7 +709,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Position"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="position"
                       defaultValue={
@@ -727,10 +724,9 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Book Number"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
-                      type="number"
-                      errorMessage="Please enter a number"
+                      pattern="[0-9]+"
                       name="book_number"
                       defaultValue={
                         selectedId
@@ -745,9 +741,8 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Page Number"
-                      type="number"
-                      errorMessage="Please enter a number"
-                      isRequired={addMode}
+                      pattern="[0-9]+"
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="page_number"
                       defaultValue={
@@ -763,9 +758,8 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Entry Number"
-                      type="number"
-                      errorMessage="Please enter a number"
-                      isRequired={addMode}
+                      pattern="[0-9]+"
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="entry_number"
                       defaultValue={
@@ -781,7 +775,7 @@ export default function MarriageCertTable() {
                     <Input
                       autoFocus
                       label="Submitted Requirements"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="submitted_requirements"
                       defaultValue={
@@ -837,6 +831,7 @@ export default function MarriageCertTable() {
                         onAction={async (key) => {
                           if (key === "edit") {
                             setSelectedId(row.id);
+                            setIsViewMode(false);
                             onOpen();
                           } else if (key === "delete") {
                             await deleteMarriage(row.id);

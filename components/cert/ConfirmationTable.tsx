@@ -45,7 +45,6 @@ export default function ConfirmationCert() {
   // for modal
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isViewMode, setIsViewMode] = useState(false);
-  const [addMode, setAddMode] = useState(false);
 
   const columns = [
     { header: "Name", key: "name" },
@@ -177,7 +176,6 @@ export default function ConfirmationCert() {
           color="primary"
           onPress={() => {
             setSelectedId(null);
-            setAddMode(true);
             setIsViewMode(false);
             onOpen();
           }}
@@ -205,7 +203,7 @@ export default function ConfirmationCert() {
                     {selectedId && <input type="hidden" name="id" value={selectedId} />}
                     <Input
                       autoFocus
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       label="Name"
                       placeholder="Enter Name"
@@ -222,7 +220,7 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Mother's Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="mother_name"
                       defaultValue={
@@ -239,7 +237,7 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Date"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="date"
                       defaultValue={
@@ -260,7 +258,7 @@ export default function ConfirmationCert() {
                       autoFocus
                       label="Sponsor 2"
                       name="sponsor2"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       defaultValue={
                         selectedId
@@ -275,9 +273,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Page number"
-                      type="number"
-                      errorMessage="Please enter a number"
-                      isRequired={addMode}
+                      pattern="[0-9]+"
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="page_number"
                       defaultValue={
@@ -293,7 +290,7 @@ export default function ConfirmationCert() {
                     <Select
                       autoFocus
                       label="Parish Priest"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       disabled={isViewMode}
                       defaultSelectedKeys={
                         selectedId
@@ -319,7 +316,7 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Submitted Requirements"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="submitted_requirements"
                       defaultValue={
@@ -337,7 +334,7 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Father's Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="father_name"
                       defaultValue={
@@ -353,7 +350,7 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Church Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="church_name"
                       defaultValue={
@@ -369,7 +366,7 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Sponsor 1"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="sponsor1"
                       defaultValue={
@@ -385,9 +382,8 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Book Number"
-                      type="number"
-                      errorMessage="Please enter a number"
-                      isRequired={addMode}
+                      pattern="[0-9]+"
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="book_number"
                       defaultValue={
@@ -404,7 +400,7 @@ export default function ConfirmationCert() {
                       autoFocus
                       type="date"
                       label="Date of Issue"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="date_of_issue"
                       defaultValue={
@@ -423,7 +419,7 @@ export default function ConfirmationCert() {
                     <Input
                       autoFocus
                       label="Requester Name"
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       readOnly={isViewMode}
                       name="requester_name"
                       defaultValue={
@@ -440,7 +436,7 @@ export default function ConfirmationCert() {
                       autoFocus
                       label="Status"
                       disabled={isViewMode}
-                      isRequired={addMode}
+                      isRequired={!isViewMode}
                       defaultSelectedKeys={
                         selectedId
                           ? [confirmations.find((d) => d.id === selectedId)?.status.toString()]
@@ -505,7 +501,6 @@ export default function ConfirmationCert() {
                         onAction={async (key) => {
                           if (key === "edit") {
                             setSelectedId(row.id);
-                            setAddMode(false);
                             setIsViewMode(false);
                             onOpen();
                           } else if (key === "delete") {
