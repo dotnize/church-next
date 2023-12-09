@@ -1,5 +1,6 @@
 "use server";
 
+import type { ResultSetHeader } from "mysql2/promise";
 import { getConnection } from "~/lib/db";
 
 export async function getDeceased() {
@@ -11,7 +12,7 @@ export async function getDeceased() {
 export async function createDeceased(formData: FormData) {
     try {
         const db = await getConnection();
-        await db.query("INSERT INTO deceased_information SET ?", {
+        const insertResult = await db.query("INSERT INTO deceased_information SET ?", {
             volume: formData.get("volume"),
             pageNumber: formData.get("pageNumber"),
             entryNumber: formData.get("entryNumber"),
@@ -23,12 +24,13 @@ export async function createDeceased(formData: FormData) {
             dateOfBurial: formData.get("dateOfBurial"),
             placeOfBurial: formData.get("placeOfBurial"),
             relativeInfo: formData.get("relativeInfo"),
-            date_of_issue: formData.get("date_of_issue"),
+            date_of_issue: formData.get("date_of_issue") || null,
             parish_priest: formData.get("parish_priest"),
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "pending",
         });
+        return (insertResult[0] as ResultSetHeader).insertId;
     } catch (err) {
         console.log(err);
         return;

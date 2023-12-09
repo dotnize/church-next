@@ -1,5 +1,6 @@
 "use server";
 
+import type { ResultSetHeader } from "mysql2/promise";
 import { getConnection } from "~/lib/db";
 
 export async function getConfirmations() {
@@ -11,7 +12,7 @@ export async function getConfirmations() {
 export async function createConfirmation(formData: FormData) {
     try {
         const db = await getConnection();
-        await db.query("INSERT INTO confirmationcert SET ?", {
+        const insertResult = await db.query("INSERT INTO confirmationcert SET ?", {
             name: formData.get("name"),
             father_name: formData.get("father_name"),
             mother_name: formData.get("mother_name"),
@@ -19,14 +20,15 @@ export async function createConfirmation(formData: FormData) {
             date: formData.get("date"),
             sponsor1: formData.get("sponsor1"),
             sponsor2: formData.get("sponsor2"),
-            book_number: formData.get("book_number"),
-            page_number: formData.get("page_number"),
-            date_of_issue: formData.get("date_of_issue"),
+            book_number: formData.get("book_number") || null,
+            page_number: formData.get("page_number") || null,
+            date_of_issue: formData.get("date_of_issue") || null,
             parish_priest: formData.get("parish_priest"),
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "pending",
         });
+        return (insertResult[0] as ResultSetHeader).insertId;
     } catch (err) {
         console.log(err);
         return;

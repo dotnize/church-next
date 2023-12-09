@@ -1,5 +1,6 @@
 "use server";
 
+import type { ResultSetHeader } from "mysql2/promise";
 import { getConnection } from "~/lib/db";
 
 export async function getMarriages() {
@@ -11,7 +12,7 @@ export async function getMarriages() {
 export async function createMarriage(formData: FormData) {
     try {
         const db = await getConnection();
-        await db.query("INSERT INTO marriagecert SET ?", {
+        const insertResult = await db.query("INSERT INTO marriagecert SET ?", {
             husband_legal_status: formData.get("husband_legal_status"),
             husband_name: formData.get("husband_name"),
             husband_actual_address: formData.get("husband_actual_address"),
@@ -33,10 +34,10 @@ export async function createMarriage(formData: FormData) {
             wife_mother: formData.get("wife_mother"),
             wife_witness: formData.get("wife_witness"),
             date_of_marriage: formData.get("date_of_marriage"),
-            position: formData.get("position"),
-            book_number: formData.get("book_number"),
-            page_number: formData.get("page_number"),
-            entry_number: formData.get("entry_number"),
+            position: formData.get("position") || null,
+            book_number: formData.get("book_number") || null,
+            page_number: formData.get("page_number") || null,
+            entry_number: formData.get("entry_number") || null,
             parish_priest: formData.get("parish_priest"),
             solemnization_date: formData.get("solemnization_date"),
             solemnization_place: formData.get("solemnization_place"),
@@ -44,6 +45,7 @@ export async function createMarriage(formData: FormData) {
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "pending",
         });
+        return (insertResult[0] as ResultSetHeader).insertId;
     } catch (err) {
         console.log(err);
         return;
