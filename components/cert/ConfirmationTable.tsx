@@ -23,8 +23,11 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import blobStream from "blob-stream";
 import { format } from "date-fns";
+import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { useEffect, useState } from "react";
+
 import {
   createConfirmation,
   deleteConfirmation,
@@ -32,6 +35,7 @@ import {
   updateConfirmation,
 } from "~/actions/confirmation";
 import { getPriests } from "~/actions/priests";
+import { getOrdinal } from "~/lib/utils";
 
 export default function ConfirmationCert() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -98,6 +102,67 @@ export default function ConfirmationCert() {
     fetchPriests();
     fetchConfirmations();
   }, []);
+
+  async function printData(selectedData: any) {
+    const doc = new PDFDocument({ size: "A2", layout: "landscape" });
+    const stream = doc.pipe(blobStream());
+
+    const res = await fetch("/certificates/confirmation.jpg");
+    const image = Buffer.from(await res.arrayBuffer());
+    doc.image(image, 0, 0, { width: 1684, height: 1190 });
+    doc.font("Courier");
+
+    const name = selectedData.name;
+    const father_name = selectedData.father_name;
+    const mother_name = selectedData.mother_name;
+    const day = getOrdinal(format(selectedData.date, "dd"));
+    const month = format(selectedData.date, "MMMM");
+    const year = format(selectedData.date, "yyyy");
+    const sponsor1 = selectedData.sponsor1;
+    const sponsor2 = selectedData.sponsor2;
+    const book_number = selectedData.book_number;
+    const page_number = selectedData.page_number;
+    const date_of_issue = format(selectedData.date_of_issue, "yyyy-MM-dd");
+    const parish_priest = selectedData.parish_priest;
+
+    // TODO: reduce font sizes for long texts
+
+    doc.fontSize(30).text(name, 590, 578, { width: 910, align: "left", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(father_name, 400, 636, { width: 460, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(mother_name, 948, 636, { width: 560, align: "center", characterSpacing: -1 });
+    doc.fontSize(26).text(day, 1178, 690, { width: 64, align: "center", characterSpacing: -1 });
+    doc.fontSize(26).text(month, 1346, 690, { width: 164, align: "center", characterSpacing: -1 });
+    doc.fontSize(30).text(year, 166, 746, { width: 134, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(26)
+      .text(parish_priest, 358, 746, { width: 440, align: "left", characterSpacing: -1 });
+
+    doc
+      .fontSize(28)
+      .text(sponsor1, 532, 804, { width: 428, align: "center", characterSpacing: -1 });
+    doc
+      .fontSize(28)
+      .text(sponsor2, 1042, 804, { width: 470, align: "center", characterSpacing: -1 });
+
+    doc.fontSize(28).text(book_number, 906, 860, { width: 76, align: "center" });
+    doc.fontSize(28).text(page_number, 1132, 860, { width: 76, align: "center" });
+    doc.fontSize(30).text(date_of_issue, 218, 984, { width: 374, align: "center" });
+    doc
+      .fontSize(26)
+      .text(parish_priest, 986, 984, { width: 464, align: "center", characterSpacing: -1 });
+
+    doc.end();
+    stream.on("finish", function () {
+      //const blob = stream.toBlob("application/pdf");
+      // or get a blob URL for display in the browser
+      const url = stream.toBlobURL("application/pdf");
+      window.open(url);
+    });
+  }
 
   function Top() {
     return (
@@ -355,10 +420,13 @@ export default function ConfirmationCert() {
                           } else if (key === "delete") {
                             await deleteConfirmation(row.id);
                             fetchConfirmations();
+                          } else if (key === "print") {
+                            printData(row);
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
+                        <DropdownItem key="print">Generate Certificate</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
                         </DropdownItem>
