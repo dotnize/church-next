@@ -148,18 +148,38 @@ export default function MarriageCertTable() {
                     />
                     <Input
                       autoFocus
-                      label="Page Number"
-                      name="page_number"
+                      label="Husband Witness"
+                      name="husband_witness"
                       defaultValue={
                         selectedId
-                          ? marriage.find((d) => d.id === selectedId)?.page_number
+                          ? marriage.find((d) => d.id === selectedId)?.husband_witness
                           : undefined
                       }
-                      placeholder="Enter page number"
+                      placeholder="Enter witness"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     />
+                    <Select
+                      autoFocus
+                      label="Parish Priest"
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [marriage.find((d) => d.id === selectedId)?.parish_priest.toString()]
+                          : undefined
+                      }
+                      name="parish_priest"
+                      placeholder="Select parish priest"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest) => (
+                        <SelectItem value={priest.name} key={priest.name}>
+                          {priest.name}
+                        </SelectItem>
+                      ))}
+                    </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -222,26 +242,38 @@ export default function MarriageCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <Select
+                    <Input
                       autoFocus
-                      label="Parish Priest"
-                      defaultSelectedKeys={
+                      label="Husband Legal Status"
+                      name="husband_legal_status"
+                      defaultValue={
                         selectedId
-                          ? [marriage.find((d) => d.id === selectedId)?.parish_priest.toString()]
+                          ? marriage.find((d) => d.id === selectedId)?.husband_legal_status
                           : undefined
                       }
-                      name="parish_priest"
-                      placeholder="Select parish priest"
+                      placeholder="Enter legal status"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
-                    >
-                      {priests.map((priest) => (
-                        <SelectItem value={priest.name} key={priest.name}>
-                          {priest.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
+                    />
+                    <Input
+                      autoFocus
+                      label="Solemnization Date"
+                      name="solemnization_date"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              marriage.find((d) => d.id === selectedId)?.solemnization_date,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter solemnization date"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      type="date"
+                      size="lg"
+                    />
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -301,20 +333,30 @@ export default function MarriageCertTable() {
                     />
                     <Input
                       autoFocus
-                      label="Solemnization Date"
-                      name="solemnization_date"
+                      label="Wife Witness"
+                      name="wife_witness"
                       defaultValue={
                         selectedId
-                          ? format(
-                              marriage.find((d) => d.id === selectedId)?.solemnization_date,
-                              "yyyy-MM-dd"
-                            )
+                          ? marriage.find((d) => d.id === selectedId)?.wife_witness
                           : undefined
                       }
-                      placeholder="Enter solemnization date"
+                      placeholder="Enter witness"
                       variant="bordered"
                       labelPlacement="outside"
-                      type="date"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Solemnization Place"
+                      name="solemnization_place"
+                      defaultValue={
+                        selectedId
+                          ? marriage.find((d) => d.id === selectedId)?.solemnization_place
+                          : undefined
+                      }
+                      placeholder="Enter solemnization place"
+                      variant="bordered"
+                      labelPlacement="outside"
                       size="lg"
                     />
                   </div>
@@ -381,32 +423,20 @@ export default function MarriageCertTable() {
                     />
                     <Input
                       autoFocus
-                      label="Solemnization Place"
-                      name="solemnization_place"
+                      label="Wife Legal Status"
+                      name="wife_legal_status"
                       defaultValue={
                         selectedId
-                          ? marriage.find((d) => d.id === selectedId)?.solemnization_place
+                          ? marriage.find((d) => d.id === selectedId)?.wife_legal_status
                           : undefined
                       }
-                      placeholder="Enter solemnization place"
+                      placeholder="Enter legal status"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     />
                   </div>
                   <div className="flex w-full flex-col gap-8">
-                    <Input
-                      autoFocus
-                      label="Witness"
-                      name="witness"
-                      defaultValue={
-                        selectedId ? marriage.find((d) => d.id === selectedId)?.witness : undefined
-                      }
-                      placeholder="Enter witness"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    />
                     <Input
                       autoFocus
                       label="Date of Marriage"
@@ -454,14 +484,28 @@ export default function MarriageCertTable() {
                     />
                     <Input
                       autoFocus
-                      label="Legal Status"
-                      name="legal_status"
+                      label="Page Number"
+                      name="page_number"
                       defaultValue={
                         selectedId
-                          ? marriage.find((d) => d.id === selectedId)?.legal_status
+                          ? marriage.find((d) => d.id === selectedId)?.page_number
                           : undefined
                       }
-                      placeholder="Enter legal status"
+                      placeholder="Enter page number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Entry Number"
+                      name="entry_number"
+                      defaultValue={
+                        selectedId
+                          ? marriage.find((d) => d.id === selectedId)?.entry_number
+                          : undefined
+                      }
+                      placeholder="Enter entry number"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
