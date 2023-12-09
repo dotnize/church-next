@@ -123,6 +123,7 @@ export default function MassReservation() {
                     <Input
                       autoFocus
                       name="requester_name"
+                      isRequired
                       defaultValue={
                         selectedId
                           ? data.find((d) => d.id === selectedId)?.requester_name
@@ -137,6 +138,7 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       name="type_of_mass"
+                      isRequired
                       defaultSelectedKeys={
                         selectedId
                           ? [data.find((d) => d.id === selectedId)?.type_of_mass]
@@ -157,6 +159,7 @@ export default function MassReservation() {
                     <Input
                       autoFocus
                       label="Place of Mass Event"
+                      isRequired
                       defaultValue={
                         selectedId
                           ? data.find((d) => d.id === selectedId)?.place_of_mass_event
@@ -173,6 +176,7 @@ export default function MassReservation() {
                     <Input
                       autoFocus
                       label="Contact Number"
+                      isRequired
                       defaultValue={
                         selectedId
                           ? data.find((d) => d.id === selectedId)?.contact_number
@@ -187,6 +191,7 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       label="Mass Presider"
+                      isRequired
                       defaultSelectedKeys={
                         selectedId
                           ? [data.find((d) => d.id === selectedId)?.priest_id.toString()]
@@ -208,6 +213,7 @@ export default function MassReservation() {
                       type="date"
                       autoFocus
                       name="date_requested"
+                      isRequired
                       defaultValue={
                         selectedId
                           ? format(
@@ -225,6 +231,7 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       name="time"
+                      isRequired
                       defaultSelectedKeys={
                         selectedId
                           ? [
