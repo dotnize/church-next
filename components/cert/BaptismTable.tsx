@@ -65,7 +65,7 @@ export default function BaptismCertTable() {
     fetchBaptism();
   }, []);
 
-  async function printData(selectedData) {
+  async function printData(selectedData: any) {
     const doc = new PDFDocument({ size: "A2" });
     const stream = doc.pipe(blobStream());
 
@@ -430,7 +430,7 @@ export default function BaptismCertTable() {
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
-                        <DropdownItem key="print">Generate PDF</DropdownItem>
+                        <DropdownItem key="print">Generate Certificate</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
                         </DropdownItem>
