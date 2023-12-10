@@ -247,7 +247,6 @@ export default function MassReservation() {
                       type="date"
                       autoFocus
                       name="date_requested"
-                      isRequired
                       value={selectedDate}
                       isReadOnly
                       className="pointer-events-none"
@@ -261,7 +260,6 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       label="Mass Presider"
-                      isRequired
                       selectedKeys={selectedPriest}
                       className="pointer-events-none"
                       name="priest_id"
@@ -311,7 +309,6 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       name="time"
-                      isRequired
                       selectedKeys={selectedTime}
                       className="pointer-events-none"
                       label="Schedule Time"
