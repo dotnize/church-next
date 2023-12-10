@@ -30,11 +30,11 @@ const columns = [
   { key: "actions", label: "Actions" },
 ];
 
-function TopContent() {
+function TopContent({ search }: { search: (searchTerm: string) => void }) {
   return (
     <div className="mb-8 flex items-center justify-between gap-4">
       <div className="flex h-full items-center gap-2">
-        <Input className="w-96" placeholder="Search..." />
+        <Input className="w-96" placeholder="Search..." onChange={(e) => search(e.target.value)} />
         <Button size="lg" className="h-14" color="primary">
           Search
         </Button>
@@ -48,6 +48,7 @@ function TopContent() {
 
 export default function DeceasedInventory() {
   const [deceased, setDeceased] = useState<any>([]);
+  const [searchvalue, setSearchValue] = useState<string>("");
 
   async function fetchDeceased() {
     const deceasedData = await getDeceased();
@@ -59,13 +60,17 @@ export default function DeceasedInventory() {
     fetchDeceased();
   }, []);
 
+  const filteredDeceased = deceased.filter((item: any) =>
+    item.deceasedName.toLowerCase().includes(searchvalue.toLowerCase())
+  );
+
   return (
     <div className="flex h-full justify-center p-8">
-      <Table isStriped topContent={<TopContent />}>
+      <Table isStriped topContent={<TopContent search={setSearchValue} />}>
         <TableHeader columns={columns}>
           {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
         </TableHeader>
-        <TableBody items={deceased}>
+        <TableBody items={filteredDeceased}>
           {(item) => (
             <TableRow key={deceased.id}>
               {(columnKey) => (
