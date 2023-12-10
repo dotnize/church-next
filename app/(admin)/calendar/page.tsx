@@ -164,7 +164,7 @@ export default function Calendar() {
                     {format(day, "d")}
                     {reservations.find((r) => isSameDay(r.date_requested, day)) && (
                       <div
-                        className={`absolute bottom-0 h-1.5 w-1.5 rounded-full bg-red-400 ${
+                        className={`absolute bottom-0 h-1.5 w-1.5 rounded-full ${
                           compareAsc(day, new Date()) === 1 ? "bg-red-500" : "bg-emerald-500"
                         }`}
                       />
@@ -188,7 +188,7 @@ export default function Calendar() {
               .map((r, i) => (
                 <div className="group flex items-center gap-2" key={i}>
                   <div
-                    className={`h-3 w-3 rounded-full bg-red-400 ${
+                    className={`h-3 w-3 rounded-full ${
                       compareAsc(selectedDate, new Date()) === 1 ? "bg-red-500" : "bg-emerald-500"
                     }`}
                   ></div>
