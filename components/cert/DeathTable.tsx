@@ -422,7 +422,7 @@ export default function DeathCertTable() {
                       readOnly={isViewMode}
                       name="date_of_issue"
                       defaultValue={
-                        selectedId
+                        selectedId && deceased.find((d) => d.id === selectedId)?.date_of_issue
                           ? format(
                               deceased.find((d) => d.id === selectedId)?.date_of_issue,
                               "yyyy-MM-dd"

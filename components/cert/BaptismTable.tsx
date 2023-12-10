@@ -261,7 +261,7 @@ export default function BaptismCertTable() {
                       readOnly={isViewMode}
                       name="date_of_issue"
                       defaultValue={
-                        selectedId
+                        selectedId && data.find((d) => d.id === selectedId)?.date_of_issue
                           ? format(
                               data.find((d) => d.id === selectedId)?.date_of_issue,
                               "yyyy-MM-dd"

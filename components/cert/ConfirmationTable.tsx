@@ -405,7 +405,7 @@ export default function ConfirmationCert() {
                       readOnly={isViewMode}
                       name="date_of_issue"
                       defaultValue={
-                        selectedId
+                        selectedId && confirmations.find((d) => d.id === selectedId)?.date_of_issue
                           ? format(
                               confirmations.find((d) => d.id === selectedId)?.date_of_issue,
                               "yyyy-MM-dd"
