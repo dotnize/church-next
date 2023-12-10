@@ -42,7 +42,7 @@ export default function Sidebar() {
   return (
     <nav
       className={
-        "relative min-h-screen bg-gray-50 pb-16 pt-2 text-gray-700 transition-all" +
+        "relative min-h-screen overflow-y-hidden bg-gray-50 pb-16 pt-2 text-gray-700 transition-all" +
         (expanded ? " w-60" : " w-20")
       }
     >
@@ -133,7 +133,10 @@ export default function Sidebar() {
                   <IconLogout2 size={24} />
                 </div>
                 <span
-                  className={"-ml-4 w-40 font-bold transition-all" + (expanded ? "" : " opacity-0")}
+                  className={
+                    "-ml-4 w-40 text-start font-bold transition-all" +
+                    (expanded ? "" : " opacity-0")
+                  }
                 >
                   Logout
                 </span>
