@@ -1,4 +1,8 @@
-1. If this is your first time installing:
+NOTE: Make sure you have Node.js v20.x.x installed, v20 not v21
+https://nodejs.org/en
+
+
+1. If this is your first time setup:
     Type the command:   npm install
 
 
