@@ -12,6 +12,7 @@ import {
 import { IconChevronLeft, IconChevronRight, IconMenu2 } from "@tabler/icons-react";
 import {
   add,
+  compareAsc,
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
@@ -162,7 +163,11 @@ export default function Calendar() {
                   >
                     {format(day, "d")}
                     {reservations.find((r) => isSameDay(r.date_requested, day)) && (
-                      <div className="absolute bottom-0 h-1.5 w-1.5 rounded-full bg-red-400"></div>
+                      <div
+                        className={`absolute bottom-0 h-1.5 w-1.5 rounded-full bg-red-400 ${
+                          compareAsc(day, new Date()) === 1 ? "bg-red-500" : "bg-emerald-500"
+                        }`}
+                      />
                     )}
                   </p>
                 </div>
@@ -182,7 +187,11 @@ export default function Calendar() {
               .filter((r) => isSameDay(r.date_requested, selectedDate))
               .map((r, i) => (
                 <div className="group flex items-center gap-2" key={i}>
-                  <div className="h-3 w-3 rounded-full bg-red-400"></div>
+                  <div
+                    className={`h-3 w-3 rounded-full bg-red-400 ${
+                      compareAsc(selectedDate, new Date()) === 1 ? "bg-red-500" : "bg-emerald-500"
+                    }`}
+                  ></div>
                   <div>
                     <div className="flex items-center justify-between">
                       <div className="font-bold">{r.type_of_mass}</div>
