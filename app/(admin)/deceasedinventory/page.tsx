@@ -70,16 +70,13 @@ export default function DeceasedInventory() {
         <div className="flex h-full items-center gap-2">
           <Input
             className="w-96"
-            placeholder="Search..."
+            placeholder="Search by name..."
             value={searchValue}
             onChange={(e) => {
               setSearchValue(e.target.value);
             }}
             autoFocus
           />
-          <Button size="lg" className="h-14" color="primary">
-            Search
-          </Button>
         </div>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
           <ModalContent>
@@ -368,11 +365,8 @@ export default function DeceasedInventory() {
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button variant="flat" onPress={onClose}>
                     Close
-                  </Button>
-                  <Button color="primary" type="submit">
-                    {selectedId === null ? "Create" : "Save"}
                   </Button>
                 </ModalFooter>
               </>
@@ -390,7 +384,7 @@ export default function DeceasedInventory() {
           {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
         </TableHeader>
         <TableBody items={filteredDeceased}>
-          {(item) => (
+          {(item: any) => (
             <TableRow key={deceased.id}>
               {(columnKey) => (
                 <TableCell width="min-content">
