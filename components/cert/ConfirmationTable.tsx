@@ -106,6 +106,23 @@ export default function ConfirmationCert() {
   }, []);
 
   async function printData(selectedData: any) {
+    if (
+      !selectedData ||
+      !selectedData.name ||
+      !selectedData.father_name ||
+      !selectedData.mother_name ||
+      !selectedData.date ||
+      !selectedData.sponsor1 ||
+      !selectedData.sponsor2 ||
+      !selectedData.book_number ||
+      !selectedData.page_number ||
+      !selectedData.date_of_issue ||
+      !selectedData.parish_priest
+    ) {
+      alert("Cannot generate certificate. Please complete the required fields.");
+      return;
+    }
+
     const doc = new PDFDocument({ size: "A2", layout: "landscape" });
     const stream = doc.pipe(blobStream());
 

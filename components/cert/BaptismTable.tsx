@@ -66,6 +66,26 @@ export default function BaptismCertTable() {
   }, []);
 
   async function printData(selectedData: any) {
+    if (
+      !selectedData ||
+      !selectedData.child_name ||
+      !selectedData.birth_place ||
+      !selectedData.date_of_birth ||
+      !selectedData.fathers_name ||
+      !selectedData.mothers_name ||
+      !selectedData.residence ||
+      !selectedData.date_of_baptism ||
+      !selectedData.parish_priest ||
+      !selectedData.sponsor1 ||
+      !selectedData.sponsor2 ||
+      !selectedData.book_number ||
+      !selectedData.page_number ||
+      !selectedData.date_of_issue
+    ) {
+      alert("Cannot generate certificate. Please complete the required fields.");
+      return;
+    }
+
     const doc = new PDFDocument({ size: "A2" });
     const stream = doc.pipe(blobStream());
 

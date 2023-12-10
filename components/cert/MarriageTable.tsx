@@ -66,6 +66,41 @@ export default function MarriageCertTable() {
   }, []);
 
   async function printData(selectedData: any) {
+    if (
+      !selectedData ||
+      !selectedData.husband_name ||
+      !selectedData.husband_legal_status ||
+      !selectedData.husband_actual_address ||
+      !selectedData.husband_age ||
+      !selectedData.husband_place_of_birth ||
+      !selectedData.husband_mother ||
+      !selectedData.husband_father ||
+      !selectedData.husband_date_of_baptism ||
+      !selectedData.husband_place_of_baptism ||
+      !selectedData.husband_witness ||
+      !selectedData.wife_name ||
+      !selectedData.wife_legal_status ||
+      !selectedData.wife_actual_address ||
+      !selectedData.wife_age ||
+      !selectedData.wife_place_of_birth ||
+      !selectedData.wife_mother ||
+      !selectedData.wife_father ||
+      !selectedData.wife_date_of_baptism ||
+      !selectedData.wife_place_of_baptism ||
+      !selectedData.wife_witness ||
+      !selectedData.date_of_marriage ||
+      !selectedData.position ||
+      !selectedData.book_number ||
+      !selectedData.page_number ||
+      !selectedData.entry_number ||
+      !selectedData.solemnization_date ||
+      !selectedData.solemnization_place ||
+      !selectedData.parish_priest
+    ) {
+      alert("Cannot generate certificate. Please complete the required fields.");
+      return;
+    }
+
     const doc = new PDFDocument({ size: "A2" });
     const stream = doc.pipe(blobStream());
 

@@ -65,6 +65,24 @@ export default function DeathCertTable() {
   }, []);
 
   async function printData(selectedData: any) {
+    if (
+      !selectedData ||
+      !selectedData.volume ||
+      !selectedData.pageNumber ||
+      !selectedData.entryNumber ||
+      !selectedData.deceasedName ||
+      !selectedData.residence ||
+      !selectedData.age ||
+      !selectedData.dateOfDeath ||
+      !selectedData.placeOfBurial ||
+      !selectedData.dateOfBurial ||
+      !selectedData.relativeInfo ||
+      !selectedData.date_of_issue ||
+      !selectedData.parish_priest
+    ) {
+      alert("Cannot generate certificate. Please complete the required fields.");
+      return;
+    }
     const doc = new PDFDocument({ size: "A1", layout: "landscape" });
     const stream = doc.pipe(blobStream());
 
