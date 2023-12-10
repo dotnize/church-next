@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { getDeceased } from "~/actions/deceased";
 
 const columns = [
-  { key: "entryNumber", label: "Entry Number" },
+  { key: "id", label: "ID" },
   { key: "deceasedName", label: "Name of Deceased" },
   { key: "residence", label: "Residence" },
   { key: "age", label: "Age" },

@@ -15,7 +15,7 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { useState } from "react";
 import { logout } from "~/lib/auth";
@@ -38,7 +38,6 @@ const navItems: NavItem[] = [
 export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   return (
     <nav
@@ -117,7 +116,6 @@ export default function Sidebar() {
               </li>
             ))}
           </ul>
-          {/* TODO: logout session */}
           <Tooltip
             placement="right"
             content="Logout"
