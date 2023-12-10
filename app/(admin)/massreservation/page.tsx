@@ -139,8 +139,11 @@ export default function MassReservation() {
 
     const requestedDate = new Date(selectedDate + " " + selectedTimeStart);
     const today = new Date();
-    if (differenceInHours(requestedDate, today) < minHoursBeforeReservation) {
-      alert(`Reservation must be at least ${minHoursBeforeReservation} hours from now.`);
+    const minHrs =
+      (process.env.NEXT_PUBLIC_MIN_HOURS_RESERVATION as unknown as number) ||
+      minHoursBeforeReservation;
+    if (differenceInHours(requestedDate, today) < minHrs) {
+      alert(`Reservation must be at least ${minHrs} hours from now.`);
       return false;
     }
 
