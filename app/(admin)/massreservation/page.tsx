@@ -94,6 +94,28 @@ export default function MassReservation() {
     new Set(selectedId ? [data.find((d) => d.id === selectedId)?.priest_id.toString()] : undefined)
   );
 
+  useEffect(() => {
+    if (selectedId === null) {
+      setSelectedDate(undefined);
+      setSelectedTime(undefined);
+      setSelectedPriest(undefined);
+      return;
+    }
+    setSelectedTime(
+      new Set([
+        `${format(
+          new Date(`2021-01-01 ${data.find((d) => d.id === selectedId)?.schedule_time_start}`),
+          "hh:mm a"
+        )} - ${format(
+          new Date(`2021-01-01 ${data.find((d) => d.id === selectedId)?.schedule_time_end}`),
+          "hh:mm a"
+        )}`,
+      ])
+    );
+    setSelectedDate(format(data.find((d) => d.id === selectedId)?.date_requested, "yyyy-MM-dd"));
+    setSelectedPriest(new Set([data.find((d) => d.id === selectedId)?.priest_id.toString()]));
+  }, [selectedId, data]);
+
   function validateSchedule() {
     if (
       !selectedPriest ||
@@ -123,7 +145,7 @@ export default function MassReservation() {
     }
 
     const priestHasConflict = priestReservationsThisDay.some(
-      (r) => selectedTimeStart === r.schedule_time_start
+      (r) => selectedTimeStart === r.schedule_time_start && r.id !== selectedId
     );
 
     if (priestHasConflict) {
@@ -154,7 +176,7 @@ export default function MassReservation() {
       );
 
       const priestHasConflict = priestReservationsThisDay.some(
-        (r) => selectedTimeStart === r.schedule_time_start
+        (r) => selectedTimeStart === r.schedule_time_start && r.id !== selectedId
       );
 
       if (priestHasConflict && selectedPriest && Array.from(selectedPriest).length) {
