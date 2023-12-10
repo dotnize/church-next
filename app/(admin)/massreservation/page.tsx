@@ -21,9 +21,10 @@ import {
   TableHeader,
   TableRow,
   useDisclosure,
+  type Selection,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
-import { differenceInHours, format } from "date-fns";
+import { differenceInHours, format, isSameDay } from "date-fns";
 import { useEffect, useState } from "react";
 
 import {
@@ -37,6 +38,7 @@ import { massHours, massTypes, minHoursBeforeReservation } from "~/lib/config";
 
 export default function MassReservation() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const schedDisclosure = useDisclosure();
 
   const [priests, setPriests] = useState<any>([]);
   const [data, setData] = useState<any>([]);
@@ -68,22 +70,105 @@ export default function MassReservation() {
     fetchReservations();
   }, []);
 
-  function validateForm(formData: FormData) {
-    const dateRequested = formData.get("date_requested").toString();
-    const timeStart = formData.get("time")?.toString().split(" - ")[0];
+  const [selectedTime, setSelectedTime] = useState<Selection>(
+    new Set(
+      selectedId
+        ? [
+            `${format(
+              new Date(`2021-01-01 ${data.find((d) => d.id === selectedId)?.schedule_time_start}`),
+              "hh:mm a"
+            )} - ${format(
+              new Date(`2021-01-01 ${data.find((d) => d.id === selectedId)?.schedule_time_end}`),
+              "hh:mm a"
+            )}`,
+          ]
+        : undefined
+    )
+  );
+  const [selectedDate, setSelectedDate] = useState<string>(
+    selectedId
+      ? format(data.find((d) => d.id === selectedId)?.date_requested, "yyyy-MM-dd")
+      : undefined
+  );
+  const [selectedPriest, setSelectedPriest] = useState<Selection>(
+    new Set(selectedId ? [data.find((d) => d.id === selectedId)?.priest_id.toString()] : undefined)
+  );
 
-    const selectedDate = new Date(dateRequested + " " + timeStart);
+  function validateSchedule() {
+    if (
+      !selectedPriest ||
+      !selectedDate ||
+      !selectedTime ||
+      !Array.from(selectedPriest).length ||
+      !Array.from(selectedTime).length
+    )
+      return false;
+
+    const priestId = parseInt(Array.from(selectedPriest)[0] as string);
+    const priestReservationsThisDay = data.filter(
+      (d) =>
+        isSameDay(new Date(d.date_requested), new Date(selectedDate)) && d.priest_id === priestId
+    );
+
+    const selectedTimeStart = format(
+      new Date(`2021-01-01 ${(Array.from(selectedTime)[0] as string).split(" - ")[0]}`),
+      "HH:mm:ss"
+    );
+
+    const requestedDate = new Date(selectedDate + " " + selectedTimeStart);
     const today = new Date();
-
-    const diff = differenceInHours(selectedDate, today);
-    console.log("diff", diff);
-
-    if (differenceInHours(selectedDate, today) < minHoursBeforeReservation) {
+    if (differenceInHours(requestedDate, today) < minHoursBeforeReservation) {
       alert(`Reservation must be at least ${minHoursBeforeReservation} hours from now.`);
       return false;
     }
 
-    return true;
+    const priestHasConflict = priestReservationsThisDay.some(
+      (r) => selectedTimeStart === r.schedule_time_start
+    );
+
+    if (priestHasConflict) {
+      alert("Selected mass presider is not available during the selected time.");
+    }
+
+    return !priestHasConflict;
+  }
+
+  const [filteredPriests, setFilteredPriests] = useState<any>(priests);
+  useEffect(() => {
+    setFilteredPriests(() => filterPriests());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedDate, selectedTime]);
+
+  function filterPriests() {
+    if (!selectedDate || !selectedTime || !Array.from(selectedTime).length) {
+      return priests;
+    }
+    return priests.map((p) => {
+      const priestReservationsThisDay = data.filter(
+        (d) => isSameDay(new Date(d.date_requested), new Date(selectedDate)) && d.priest_id === p.id
+      );
+
+      const selectedTimeStart = format(
+        new Date(`2021-01-01 ${(Array.from(selectedTime)[0] as string).split(" - ")[0]}`),
+        "HH:mm:ss"
+      );
+
+      const priestHasConflict = priestReservationsThisDay.some(
+        (r) => selectedTimeStart === r.schedule_time_start
+      );
+
+      if (priestHasConflict && selectedPriest && Array.from(selectedPriest).length) {
+        const priestId = parseInt(Array.from(selectedPriest)[0] as string);
+        if (p.id === priestId) {
+          setSelectedPriest(undefined);
+        }
+      }
+
+      return {
+        ...p,
+        notAvailable: priestHasConflict,
+      };
+    });
   }
 
   function Top() {
@@ -96,7 +181,7 @@ export default function MassReservation() {
           color="primary"
           onPress={() => {
             setSelectedId(null);
-            onOpen();
+            schedDisclosure.onOpen();
           }}
         >
           Add Mass Reservation
@@ -106,12 +191,14 @@ export default function MassReservation() {
             {(onClose) => (
               <form
                 action={async (formData) => {
-                  if (!validateForm(formData)) return;
                   selectedId === null
                     ? await createMassReservation(formData)
                     : await updateMassReservation(formData);
                   onClose();
                   fetchReservations();
+                  setSelectedDate(undefined);
+                  setSelectedTime(undefined);
+                  setSelectedPriest(undefined);
                 }}
               >
                 <ModalHeader className="flex flex-col gap-1 text-2xl">
@@ -157,20 +244,38 @@ export default function MassReservation() {
                       ))}
                     </Select>
                     <Input
+                      type="date"
                       autoFocus
-                      label="Place of Mass Event"
+                      name="date_requested"
                       isRequired
-                      defaultValue={
-                        selectedId
-                          ? data.find((d) => d.id === selectedId)?.place_of_mass_event
-                          : undefined
-                      }
-                      name="place_of_mass_event"
-                      placeholder="Enter place of mass event"
+                      value={selectedDate}
+                      isReadOnly
+                      className="pointer-events-none"
+                      label="Date Requested"
+                      placeholder="Date Requested"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     />
+
+                    <Select
+                      autoFocus
+                      label="Mass Presider"
+                      isRequired
+                      selectedKeys={selectedPriest}
+                      className="pointer-events-none"
+                      name="priest_id"
+                      placeholder="Select Mass Presider"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {filteredPriests.map((priest) => (
+                        <SelectItem value={priest.id} key={priest.id.toString()}>
+                          {`${priest.name}${priest.notAvailable ? " (Not Available)" : ""}`}
+                        </SelectItem>
+                      ))}
+                    </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -188,42 +293,17 @@ export default function MassReservation() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <Select
-                      autoFocus
-                      label="Mass Presider"
-                      isRequired
-                      defaultSelectedKeys={
-                        selectedId
-                          ? [data.find((d) => d.id === selectedId)?.priest_id.toString()]
-                          : undefined
-                      }
-                      name="priest_id"
-                      placeholder="Select Mass Presider"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    >
-                      {priests.map((priest) => (
-                        <SelectItem value={priest.id} key={priest.id.toString()}>
-                          {priest.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
                     <Input
-                      type="date"
                       autoFocus
-                      name="date_requested"
+                      label="Place of Mass Event"
                       isRequired
                       defaultValue={
                         selectedId
-                          ? format(
-                              data.find((d) => d.id === selectedId)?.date_requested,
-                              "yyyy-MM-dd"
-                            )
+                          ? data.find((d) => d.id === selectedId)?.place_of_mass_event
                           : undefined
                       }
-                      label="Date Requested"
-                      placeholder="Date Requested"
+                      name="place_of_mass_event"
+                      placeholder="Enter place of mass event"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
@@ -232,25 +312,8 @@ export default function MassReservation() {
                       autoFocus
                       name="time"
                       isRequired
-                      defaultSelectedKeys={
-                        selectedId
-                          ? [
-                              `${format(
-                                new Date(
-                                  `2021-01-01 ${data.find((d) => d.id === selectedId)
-                                    ?.schedule_time_start}`
-                                ),
-                                "hh:mm a"
-                              )} - ${format(
-                                new Date(
-                                  `2021-01-01 ${data.find((d) => d.id === selectedId)
-                                    ?.schedule_time_end}`
-                                ),
-                                "hh:mm a"
-                              )}`,
-                            ]
-                          : undefined
-                      }
+                      selectedKeys={selectedTime}
+                      className="pointer-events-none"
                       label="Schedule Time"
                       placeholder="Select time"
                       variant="bordered"
@@ -258,7 +321,6 @@ export default function MassReservation() {
                       size="lg"
                     >
                       {massHours.map((range) => (
-                        // TODO: proper time ranges
                         <SelectItem value={range} key={range}>
                           {range}
                         </SelectItem>
@@ -275,6 +337,93 @@ export default function MassReservation() {
                   </Button>
                 </ModalFooter>
               </form>
+            )}
+          </ModalContent>
+        </Modal>
+        <Modal
+          isOpen={schedDisclosure.isOpen}
+          onOpenChange={schedDisclosure.onOpenChange}
+          placement="top-center"
+          size="5xl"
+          backdrop="transparent"
+          motionProps={{ variants: {} }}
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 text-2xl">Select schedule</ModalHeader>
+                <ModalBody className="flex-row p-8">
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      type="date"
+                      autoFocus
+                      name="date_requested"
+                      isRequired
+                      onValueChange={setSelectedDate}
+                      value={selectedDate}
+                      label="Date Requested"
+                      placeholder="Date Requested"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                  </div>
+                  <div className="flex w-full flex-col gap-8">
+                    <Select
+                      autoFocus
+                      name="time"
+                      isRequired
+                      onSelectionChange={setSelectedTime}
+                      selectedKeys={selectedTime}
+                      label="Schedule Time"
+                      placeholder="Select time"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {massHours.map((range) => (
+                        <SelectItem value={range} key={range}>
+                          {range}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Select
+                      autoFocus
+                      label="Mass Presider"
+                      isRequired
+                      onSelectionChange={setSelectedPriest}
+                      selectedKeys={selectedPriest}
+                      disabledKeys={filteredPriests.map((p) => p.notAvailable && p.id.toString())}
+                      name="priest_id"
+                      placeholder="Select Mass Presider"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {filteredPriests.map((priest) => (
+                        <SelectItem value={priest.id} key={priest.id.toString()}>
+                          {`${priest.name}${priest.notAvailable ? " (Not Available)" : ""}`}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button variant="flat" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      if (!validateSchedule()) return;
+                      onClose();
+                      onOpen();
+                    }}
+                  >
+                    Next
+                  </Button>
+                </ModalFooter>
+              </>
             )}
           </ModalContent>
         </Modal>
@@ -307,7 +456,7 @@ export default function MassReservation() {
                         onAction={async (key) => {
                           if (key === "edit") {
                             setSelectedId(row.id);
-                            onOpen();
+                            schedDisclosure.onOpen();
                           } else if (key === "delete") {
                             await deleteMassReservation(row.id);
                             fetchReservations();
