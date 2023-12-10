@@ -33,12 +33,11 @@ const columns = [
 function TopContent({ search }: { search: (searchTerm: string) => void }) {
   return (
     <div className="mb-8 flex items-center justify-between gap-4">
-      <div className="flex h-full items-center gap-2">
-        <Input className="w-96" placeholder="Search..." onChange={(e) => search(e.target.value)} />
-        <Button size="lg" className="h-14" color="primary">
-          Search
-        </Button>
-      </div>
+      <Input
+        className="w-96"
+        placeholder="Search by name..."
+        onChange={(e) => search(e.target.value)}
+      />
       <Button size="lg" className="h-14" color="primary">
         Add Entry
       </Button>
