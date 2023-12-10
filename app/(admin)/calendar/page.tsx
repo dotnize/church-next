@@ -12,12 +12,12 @@ import {
 import { IconChevronLeft, IconChevronRight, IconMenu2 } from "@tabler/icons-react";
 import {
   add,
-  compareAsc,
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
   format,
   getDay,
+  isSameDay,
   isSameMonth,
   parse,
   setMonth,
@@ -156,12 +156,12 @@ export default function Calendar() {
                     onClick={() => setSelectedDate(day)}
                     className={`relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full font-semibold ${
                       isSameMonth(day, firstDayOfMonth) ? "text-gray-950" : "text-gray-300"
-                    } ${compareAsc(day, selectedDate) !== 0 && "hover:bg-gray-200"} ${
-                      compareAsc(day, selectedDate) === 0 && "bg-indigo-500 !text-gray-50"
+                    } ${!isSameDay(day, selectedDate) && "hover:bg-gray-200"} ${
+                      isSameDay(day, selectedDate) && "bg-indigo-500 !text-gray-50"
                     }`}
                   >
                     {format(day, "d")}
-                    {reservations.find((r) => compareAsc(r.date_requested, day) === 0) && (
+                    {reservations.find((r) => isSameDay(r.date_requested, day)) && (
                       <div className="absolute bottom-0 h-1.5 w-1.5 rounded-full bg-red-400"></div>
                     )}
                   </p>
@@ -172,14 +172,14 @@ export default function Calendar() {
         </div>
         <div className="flex h-full w-80 flex-col items-center gap-8 bg-gray-200 p-4">
           <h2 className="mt-4 text-xl font-semibold">{format(selectedDate, "MMMM d, yyyy")}</h2>
-          {!reservations.find((r) => compareAsc(r.date_requested, selectedDate) === 0) && (
+          {!reservations.find((r) => isSameDay(r.date_requested, selectedDate)) && (
             <div className="rounded-md border-2 border-indigo-400 bg-indigo-100 p-2 text-indigo-900">
               No scheduled reservations for this day.
             </div>
           )}
           <div className="flex flex-col gap-8">
             {reservations
-              .filter((r) => compareAsc(r.date_requested, selectedDate) === 0)
+              .filter((r) => isSameDay(r.date_requested, selectedDate))
               .map((r, i) => (
                 <div className="group flex items-center gap-2" key={i}>
                   <div className="h-3 w-3 rounded-full bg-red-400"></div>
