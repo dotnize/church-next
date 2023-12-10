@@ -46,7 +46,6 @@ export default function BaptismCertTable() {
     { header: "Residence", key: "residence" },
     { header: "Date of Baptism", key: "date_of_baptism" },
     { header: "Parish Priest", key: "parish_priest" },
-    { header: "Date of Issue", key: "date_of_issue" },
     { header: "Status", key: "status" },
     { header: "Actions", key: "actions" },
   ];
