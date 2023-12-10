@@ -94,6 +94,28 @@ export default function MassReservation() {
     new Set(selectedId ? [data.find((d) => d.id === selectedId)?.priest_id.toString()] : undefined)
   );
 
+  useEffect(() => {
+    if (selectedId === null) {
+      setSelectedDate(undefined);
+      setSelectedTime(undefined);
+      setSelectedPriest(undefined);
+      return;
+    }
+    setSelectedTime(
+      new Set([
+        `${format(
+          new Date(`2021-01-01 ${data.find((d) => d.id === selectedId)?.schedule_time_start}`),
+          "hh:mm a"
+        )} - ${format(
+          new Date(`2021-01-01 ${data.find((d) => d.id === selectedId)?.schedule_time_end}`),
+          "hh:mm a"
+        )}`,
+      ])
+    );
+    setSelectedDate(format(data.find((d) => d.id === selectedId)?.date_requested, "yyyy-MM-dd"));
+    setSelectedPriest(new Set([data.find((d) => d.id === selectedId)?.priest_id.toString()]));
+  }, [selectedId, data]);
+
   function validateSchedule() {
     if (
       !selectedPriest ||
@@ -117,13 +139,16 @@ export default function MassReservation() {
 
     const requestedDate = new Date(selectedDate + " " + selectedTimeStart);
     const today = new Date();
-    if (differenceInHours(requestedDate, today) < minHoursBeforeReservation) {
-      alert(`Reservation must be at least ${minHoursBeforeReservation} hours from now.`);
+    const minHrs =
+      (process.env.NEXT_PUBLIC_MIN_HOURS_RESERVATION as unknown as number) ||
+      minHoursBeforeReservation;
+    if (differenceInHours(requestedDate, today) < minHrs) {
+      alert(`Reservation must be at least ${minHrs} hours from now.`);
       return false;
     }
 
     const priestHasConflict = priestReservationsThisDay.some(
-      (r) => selectedTimeStart === r.schedule_time_start
+      (r) => selectedTimeStart === r.schedule_time_start && r.id !== selectedId
     );
 
     if (priestHasConflict) {
@@ -154,7 +179,7 @@ export default function MassReservation() {
       );
 
       const priestHasConflict = priestReservationsThisDay.some(
-        (r) => selectedTimeStart === r.schedule_time_start
+        (r) => selectedTimeStart === r.schedule_time_start && r.id !== selectedId
       );
 
       if (priestHasConflict && selectedPriest && Array.from(selectedPriest).length) {
@@ -247,7 +272,6 @@ export default function MassReservation() {
                       type="date"
                       autoFocus
                       name="date_requested"
-                      isRequired
                       value={selectedDate}
                       isReadOnly
                       className="pointer-events-none"
@@ -261,7 +285,6 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       label="Mass Presider"
-                      isRequired
                       selectedKeys={selectedPriest}
                       className="pointer-events-none"
                       name="priest_id"
@@ -311,7 +334,6 @@ export default function MassReservation() {
                     <Select
                       autoFocus
                       name="time"
-                      isRequired
                       selectedKeys={selectedTime}
                       className="pointer-events-none"
                       label="Schedule Time"
