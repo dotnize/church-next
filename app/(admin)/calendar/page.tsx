@@ -97,7 +97,7 @@ export default function Calendar() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-4 p-8">
+    <div className="flex h-full flex-col items-center gap-4 p-8">
       <div className="text-3xl font-bold">Calendar</div>
       <div className="flex space-x-4 overflow-hidden rounded-lg border-2 border-black bg-white">
         <div
