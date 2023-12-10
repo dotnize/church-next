@@ -50,6 +50,7 @@ export async function createMarriage(formData: FormData) {
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "Pending",
+            date_of_issue: formData.get("date_of_issue") || null,
         });
         return (insertResult[0] as ResultSetHeader).insertId;
     } catch (err) {
@@ -94,6 +95,7 @@ export async function updateMarriage(formData: FormData) {
                 requester_name: formData.get("requester_name"),
                 submitted_requirements: formData.get("submitted_requirements"),
                 status: formData.get("status") || "pending",
+                date_of_issue: formData.get("date_of_issue"),
             },
             formData.get("id"),
         ]);

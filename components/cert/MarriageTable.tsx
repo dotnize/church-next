@@ -37,17 +37,12 @@ export default function MarriageCertTable() {
   const [marriage, setMarriage] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isViewMode, setIsViewMode] = useState(false);
-  const [addMode, setAddMode] = useState(false);
 
   const columns = [
     { header: "Husband Name", key: "husband_name" },
     { header: "Husband Place of Birth", key: "husband_place_of_birth" },
-    { header: "Husband Date of Baptism", key: "husband_date_of_baptism" },
-    { header: "Husband Place of Baptism", key: "husband_place_of_baptism" },
     { header: "Wife Name", key: "wife_name" },
     { header: "Wife Place of Birth", key: "wife_place_of_birth" },
-    { header: "Wife Date of Baptism", key: "wife_date_of_baptism" },
-    { header: "Wife Place of Baptism", key: "wife_place_of_baptism" },
     { header: "Date of Marriage", key: "date_of_marriage" },
     { header: "Priest", key: "parish_priest" },
     { header: "Solemnization Date", key: "solemnization_date" },
@@ -479,6 +474,26 @@ export default function MarriageCertTable() {
                           : undefined
                       }
                       placeholder="Enter solemnization date"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      type="date"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Date of issue"
+                      isRequired={!isViewMode}
+                      readOnly={isViewMode}
+                      name="date_of_issue"
+                      defaultValue={
+                        selectedId && marriage.find((d) => d.id === selectedId)?.date_of_issue
+                          ? format(
+                              marriage.find((d) => d.id === selectedId)?.date_of_issue,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter date issued"
                       variant="bordered"
                       labelPlacement="outside"
                       type="date"
