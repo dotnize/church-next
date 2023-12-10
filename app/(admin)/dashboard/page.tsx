@@ -135,7 +135,8 @@ export default function Dashboard() {
         <div className="flex flex-col gap-8">
           <div className="text-4xl font-bold">Dashboard</div>
           <div className="flex gap-6">
-            <div className="rounded-2xl bg-white p-10 shadow-md">
+            <div className="flex flex-col items-center gap-4 rounded-2xl bg-white p-10 shadow-md">
+              <div className="text-xl">Released certificates for the past 2 weeks</div>
               <LineChart width={800} height={400} data={data}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tickFormatter={dateFormatter} />
