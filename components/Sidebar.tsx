@@ -42,7 +42,7 @@ export default function Sidebar() {
   return (
     <nav
       className={
-        "relative min-h-screen overflow-y-hidden bg-gray-50 pb-16 pt-2 text-gray-700 transition-all" +
+        "relative min-h-screen overflow-y-clip bg-gray-50 pb-16 pt-2 text-gray-700 transition-all" +
         (expanded ? " w-60" : " w-20")
       }
     >
