@@ -2,11 +2,14 @@
 
 import {
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -14,9 +17,12 @@ import {
   TableHeader,
   TableRow,
   getKeyValue,
+  useDisclosure,
 } from "@nextui-org/react";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { getDeceased } from "~/actions/deceased";
+import { getPriests } from "~/actions/priests";
 
 const columns = [
   { key: "id", label: "ID" },
@@ -30,25 +36,18 @@ const columns = [
   { key: "actions", label: "Actions" },
 ];
 
-function TopContent({ search }: { search: (searchTerm: string) => void }) {
-  return (
-    <div className="mb-8 flex items-center justify-between gap-4">
-      <div className="flex h-full items-center gap-2">
-        <Input className="w-96" placeholder="Search..." onChange={(e) => search(e.target.value)} />
-        <Button size="lg" className="h-14" color="primary">
-          Search
-        </Button>
-      </div>
-      <Button size="lg" className="h-14" color="primary">
-        Add Entry
-      </Button>
-    </div>
-  );
-}
-
 export default function DeceasedInventory() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const [deceased, setDeceased] = useState<any>([]);
-  const [searchvalue, setSearchValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [priests, setPriests] = useState<any>([]);
+
+  async function fetchPriests() {
+    const priestData = await getPriests();
+    setPriests(priestData);
+  }
 
   async function fetchDeceased() {
     const deceasedData = await getDeceased();
@@ -58,15 +57,335 @@ export default function DeceasedInventory() {
 
   useEffect(() => {
     fetchDeceased();
+    fetchPriests();
   }, []);
 
   const filteredDeceased = deceased.filter((item: any) =>
-    item.deceasedName.toLowerCase().includes(searchvalue.toLowerCase())
+    item.deceasedName.toLowerCase().includes(searchValue.toLowerCase())
   );
+
+  function TopContent() {
+    return (
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <div className="flex h-full items-center gap-2">
+          <Input
+            className="w-96"
+            placeholder="Search..."
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
+            autoFocus
+          />
+          <Button size="lg" className="h-14" color="primary">
+            Search
+          </Button>
+        </div>
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center" size="5xl">
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 text-2xl">
+                  View Death Certificate
+                </ModalHeader>
+                <ModalBody className="flex-row p-8">
+                  <div className="flex w-full flex-col gap-8">
+                    {selectedId && <input type="hidden" name="id" value={selectedId} />}
+                    <Input
+                      autoFocus
+                      label="Name of Deceased"
+                      readOnly
+                      name="deceasedName"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.deceasedName
+                          : undefined
+                      }
+                      placeholder="Enter name of deceased"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Age"
+                      pattern="[0-9]+"
+                      readOnly
+                      name="age"
+                      defaultValue={
+                        selectedId ? deceased.find((d) => d.id === selectedId)?.age : undefined
+                      }
+                      placeholder="Enter age"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+
+                    <Input
+                      autoFocus
+                      label="Date of Burial"
+                      readOnly
+                      name="dateOfBurial"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              deceased.find((d) => d.id === selectedId)?.dateOfBurial,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter date of burial"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      type="date"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Relative Information"
+                      readOnly
+                      name="relativeInfo"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.relativeInfo
+                          : undefined
+                      }
+                      placeholder="Enter relative information"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Select
+                      autoFocus
+                      label="Parish Priest"
+                      isRequired
+                      disabled
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [deceased.find((d) => d.id === selectedId)?.parish_priest.toString()]
+                          : undefined
+                      }
+                      name="parish_priest"
+                      placeholder="Select parish priest"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest) => (
+                        <SelectItem value={priest.name} key={priest.name}>
+                          {priest.name}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Select
+                      autoFocus
+                      label="Status"
+                      disabled
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [deceased.find((d) => d.id === selectedId)?.status.toString()]
+                          : undefined
+                      }
+                      name="status"
+                      placeholder="Select status"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Invalid
+                      </SelectItem>
+                      <SelectItem key="Released" value="Released">
+                        Released
+                      </SelectItem>
+                    </Select>
+                  </div>
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      autoFocus
+                      label="Residence"
+                      readOnly
+                      name="residence"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.residence
+                          : undefined
+                      }
+                      placeholder="Enter residence"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      type="date"
+                      readOnly
+                      label="Date of Death"
+                      name="dateOfDeath"
+                      defaultValue={
+                        selectedId
+                          ? format(
+                              deceased.find((d) => d.id === selectedId)?.dateOfDeath,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter date of death"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Place of Burial"
+                      readOnly
+                      name="placeOfBurial"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.placeOfBurial
+                          : undefined
+                      }
+                      placeholder="Enter place of burial"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      readOnly
+                      label="Burial Information"
+                      name="burialInfo"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.burialInfo
+                          : undefined
+                      }
+                      placeholder="Enter burial information"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Requester Name"
+                      readOnly
+                      name="requester_name"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.requester_name
+                          : undefined
+                      }
+                      placeholder="Enter requester name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                  </div>
+                  <div className="flex w-full flex-col gap-8">
+                    <Input
+                      autoFocus
+                      readOnly
+                      label="Volume Number"
+                      pattern="[0-9]+"
+                      name="volume"
+                      defaultValue={
+                        selectedId ? deceased.find((d) => d.id === selectedId)?.volume : undefined
+                      }
+                      placeholder="Enter volume number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Page Number"
+                      pattern="[0-9]+"
+                      readOnly
+                      name="pageNumber"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.pageNumber
+                          : undefined
+                      }
+                      placeholder="Enter page number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Entry Number"
+                      pattern="[0-9]+"
+                      readOnly
+                      name="entryNumber"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.entryNumber
+                          : undefined
+                      }
+                      placeholder="Enter entry number"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      type="date"
+                      label="Date of Issue"
+                      readOnly
+                      name="date_of_issue"
+                      defaultValue={
+                        selectedId && deceased.find((d) => d.id === selectedId)?.date_of_issue
+                          ? format(
+                              deceased.find((d) => d.id === selectedId)?.date_of_issue,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
+                      placeholder="Enter date of issue"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Submitted Requirements"
+                      readOnly
+                      name="submitted_requirements"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.submitted_requirements
+                          : undefined
+                      }
+                      placeholder="Enter submitted requirements"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Close
+                  </Button>
+                  <Button color="primary" type="submit">
+                    {selectedId === null ? "Create" : "Save"}
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full justify-center p-8">
-      <Table isStriped topContent={<TopContent search={setSearchValue} />}>
+      <Table isStriped topContent={<TopContent />}>
         <TableHeader columns={columns}>
           {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
         </TableHeader>
@@ -77,16 +396,14 @@ export default function DeceasedInventory() {
                 <TableCell width="min-content">
                   {columnKey === "actions" ? (
                     <div className="relative flex items-center justify-end gap-2">
-                      <Dropdown>
-                        <DropdownTrigger>
-                          <Button>Actions</Button>
-                        </DropdownTrigger>
-                        <DropdownMenu>
-                          <DropdownItem>View</DropdownItem>
-                          <DropdownItem>Edit</DropdownItem>
-                          <DropdownItem>Delete</DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>
+                      <Button
+                        onClick={() => {
+                          setSelectedId(item.id);
+                          onOpen();
+                        }}
+                      >
+                        View
+                      </Button>
                     </div>
                   ) : columnKey === "dateOfDeath" || columnKey === "dateOfBurial" ? (
                     item[columnKey]?.toDateString()
