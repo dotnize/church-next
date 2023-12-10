@@ -11,3 +11,7 @@ https://nodejs.org/en
 
 
 3. Modify the ".env" file accordingly to your MySQL connection details
+
+
+
+Built with Next.js, MySQL, TypeScript, Tailwind CSS, NextUI
