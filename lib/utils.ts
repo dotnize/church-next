@@ -8,5 +8,5 @@ export function getOrdinal(n: number | string) {
 }
 
 export function dateFormatter(date) {
-    return format(new Date(date), "MMMM do, yyyy");
+    return format(new Date(date), "MMMM do");
 }
