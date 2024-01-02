@@ -4,16 +4,10 @@ import { redirect } from "next/navigation";
 import StatusPage from "~/components/StatusPage";
 
 export default function Status({ params }: { params: { slug: string[] } }) {
-  const [typeParam, idParam] = params.slug;
-  if (
-    !typeParam ||
-    !idParam ||
-    !["c", "m", "b", "d"].includes(typeParam) ||
-    isNaN(parseInt(idParam))
-  ) {
+  const [typeParam, id] = params.slug;
+  if (!typeParam || !id || !["c", "m", "b", "d"].includes(typeParam)) {
     redirect("/");
   }
-  const id = parseInt(idParam);
   const type = typeParam as "c" | "m" | "b" | "d";
 
   return (

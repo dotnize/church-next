@@ -1,6 +1,6 @@
 "use server";
 
-import type { ResultSetHeader } from "mysql2/promise";
+import { nanoid } from "nanoid";
 import { getConnection } from "~/lib/db";
 
 export async function getMarriages() {
@@ -9,14 +9,15 @@ export async function getMarriages() {
     return rows;
 }
 
-export async function getMarriageById(id: number) {
+export async function getMarriageById(id: string) {
     const db = await getConnection();
-    const [rows] = await db.query("SELECT * FROM marriagecert WHERE id = ?", [id]);
+    const [rows] = await db.query("SELECT * FROM marriagecert WHERE transactionId = ?", [id]);
     return rows;
 }
 
 export async function createMarriage(formData: FormData) {
     try {
+        const transactionId = nanoid(8);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO marriagecert SET ?", {
             husband_legal_status: formData.get("husband_legal_status"),
@@ -52,8 +53,10 @@ export async function createMarriage(formData: FormData) {
             status: formData.get("status") || "Pending",
             date_of_issue: formData.get("date_of_issue") || null,
             date_requested: new Date(),
+            transactionId,
+            receiptNo: formData.get("receiptNo") || null,
         });
-        return (insertResult[0] as ResultSetHeader).insertId;
+        return transactionId;
     } catch (err) {
         console.log(err);
         return;
@@ -94,9 +97,9 @@ export async function updateMarriage(formData: FormData) {
                 solemnization_date: formData.get("solemnization_date"),
                 solemnization_place: formData.get("solemnization_place"),
                 requester_name: formData.get("requester_name"),
-                submitted_requirements: formData.get("submitted_requirements"),
                 status: formData.get("status") || "pending",
                 date_of_issue: formData.get("date_of_issue"),
+                receiptNo: formData.get("receiptNo") || null,
             },
             formData.get("id"),
         ]);

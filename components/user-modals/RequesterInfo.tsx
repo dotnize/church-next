@@ -154,7 +154,7 @@ export default function RequesterInfo({
                   config={{ mode: "auto" }}
                   endpoint="imageUploader"
                 />
-                <div className="flex h-24 flex-wrap gap-2">
+                <div className="flex h-24 flex-wrap gap-2 overflow-y-scroll">
                   {uploadedFileUrls.map((file, i) => (
                     <div className="relative" key={i}>
                       <div className="absolute flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-20 opacity-0 transition hover:opacity-100">

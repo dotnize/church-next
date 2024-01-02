@@ -95,9 +95,15 @@ export default function MarriageCertTable() {
       !selectedData.entry_number ||
       !selectedData.solemnization_date ||
       !selectedData.solemnization_place ||
-      !selectedData.parish_priest
+      !selectedData.parish_priest ||
+      !selectedData.receiptNo
     ) {
       alert("Cannot generate certificate. Please complete the required fields.");
+      return;
+    }
+
+    if (selectedData.receiptNo !== prompt("Please enter the receipt number for verification")) {
+      alert("Invalid receipt number.");
       return;
     }
 
@@ -382,38 +388,21 @@ export default function MarriageCertTable() {
                         </SelectItem>
                       ))}
                     </Select>
-                    <Select
+                    <Input
                       autoFocus
-                      label="Status"
-                      disabled={isViewMode}
-                      isRequired={!isViewMode}
-                      defaultSelectedKeys={
+                      label="Receipt No."
+                      readOnly={isViewMode}
+                      name="receiptNo"
+                      defaultValue={
                         selectedId
-                          ? [marriage.find((d) => d.id === selectedId)?.status.toString()]
+                          ? marriage.find((d) => d.id === selectedId)?.receiptNo
                           : undefined
                       }
-                      name="status"
-                      placeholder="Select status"
+                      placeholder="Enter receipt number"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
-                    >
-                      <SelectItem key="Pending" value="Pending">
-                        Pending
-                      </SelectItem>
-                      <SelectItem key="Invalid" value="Invalid">
-                        Invalid
-                      </SelectItem>
-                      <SelectItem key="For releasing" value="For releasing">
-                        For releasing
-                      </SelectItem>
-                      <SelectItem key="Releasing" value="Releasing">
-                        Releasing
-                      </SelectItem>
-                      <SelectItem key="Released" value="Released">
-                        Released
-                      </SelectItem>
-                    </Select>
+                    />
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -638,6 +627,28 @@ export default function MarriageCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    {selectedId && (
+                      <Input
+                        autoFocus
+                        label="Date Requested"
+                        isRequired={!isViewMode}
+                        readOnly={isViewMode}
+                        name="date_requested"
+                        defaultValue={
+                          selectedId && marriage.find((d) => d.id === selectedId)?.date_requested
+                            ? format(
+                                marriage.find((d) => d.id === selectedId)?.date_requested,
+                                "yyyy-MM-dd"
+                              )
+                            : undefined
+                        }
+                        placeholder="Enter date requested"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        type="date"
+                        size="lg"
+                      />
+                    )}
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -740,6 +751,24 @@ export default function MarriageCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    {selectedId && (
+                      <Input
+                        autoFocus
+                        label="Transaction ID"
+                        readOnly
+                        required
+                        name="transactionId"
+                        defaultValue={
+                          selectedId
+                            ? marriage.find((d) => d.id === selectedId)?.transactionId
+                            : undefined
+                        }
+                        placeholder="Transaction ID"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        size="lg"
+                      />
+                    )}
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -828,22 +857,69 @@ export default function MarriageCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <Input
+
+                    <Select
                       autoFocus
-                      label="Submitted Requirements"
+                      label="Status"
+                      disabled={isViewMode}
                       isRequired={!isViewMode}
-                      readOnly={isViewMode}
-                      name="submitted_requirements"
-                      defaultValue={
+                      defaultSelectedKeys={
                         selectedId
-                          ? marriage.find((d) => d.id === selectedId)?.submitted_requirements
+                          ? [marriage.find((d) => d.id === selectedId)?.status.toString()]
                           : undefined
                       }
-                      placeholder="Enter submitted requirements"
+                      name="status"
+                      placeholder="Select status"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
-                    />
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Invalid
+                      </SelectItem>
+                      <SelectItem key="For releasing" value="For releasing">
+                        For releasing
+                      </SelectItem>
+                      <SelectItem key="Releasing" value="Releasing">
+                        Releasing
+                      </SelectItem>
+                      <SelectItem key="Released" value="Released">
+                        Released
+                      </SelectItem>
+                    </Select>
+
+                    {selectedId &&
+                      marriage.find((d) => d.id === selectedId)?.submitted_requirements && (
+                        <div className="flex flex-col gap-2">
+                          <div>Uploaded requirements:</div>
+                          <div className="flex h-24 flex-wrap gap-2 overflow-y-scroll">
+                            {JSON.parse(
+                              marriage.find((d) => d.id === selectedId)?.submitted_requirements
+                            ).map((file, i) => (
+                              <div className="relative" key={i}>
+                                <div className="absolute flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-20 opacity-0 transition hover:opacity-100">
+                                  <a
+                                    href={file}
+                                    target="_blank"
+                                    className="rounded-md bg-white px-2 py-1 text-xs"
+                                  >
+                                    View
+                                  </a>
+                                </div>
+                                <img
+                                  alt="uploaded file"
+                                  src={file}
+                                  width="72"
+                                  className="object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                   </div>
                 </ModalBody>
                 <ModalFooter>

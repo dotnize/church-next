@@ -117,9 +117,15 @@ export default function ConfirmationCert() {
       !selectedData.book_number ||
       !selectedData.page_number ||
       !selectedData.date_of_issue ||
-      !selectedData.parish_priest
+      !selectedData.parish_priest ||
+      !selectedData.receiptNo
     ) {
       alert("Cannot generate certificate. Please complete the required fields.");
+      return;
+    }
+
+    if (selectedData.receiptNo !== prompt("Please enter the receipt number for verification")) {
+      alert("Invalid receipt number.");
       return;
     }
 
@@ -331,22 +337,62 @@ export default function ConfirmationCert() {
                         </SelectItem>
                       ))}
                     </Select>
+                    {selectedId && (
+                      <Input
+                        autoFocus
+                        label="Date Requested"
+                        isRequired={!isViewMode}
+                        readOnly={isViewMode}
+                        name="date_requested"
+                        defaultValue={
+                          selectedId &&
+                          confirmations.find((d) => d.id === selectedId)?.date_requested
+                            ? format(
+                                confirmations.find((d) => d.id === selectedId)?.date_requested,
+                                "yyyy-MM-dd"
+                              )
+                            : undefined
+                        }
+                        placeholder="Enter date requested"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        type="date"
+                        size="lg"
+                      />
+                    )}
                     <Input
                       autoFocus
-                      label="Submitted Requirements"
-                      isRequired={!isViewMode}
+                      label="Receipt No."
                       readOnly={isViewMode}
-                      name="submitted_requirements"
+                      name="receiptNo"
                       defaultValue={
                         selectedId
-                          ? confirmations.find((d) => d.id === selectedId)?.submitted_requirements
+                          ? confirmations.find((d) => d.id === selectedId)?.receiptNo
                           : undefined
                       }
-                      placeholder="Enter submitted requirements"
+                      placeholder="Enter receipt number"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     />
+                    {selectedId && (
+                      <Input
+                        autoFocus
+                        label="Transaction ID"
+                        readOnly
+                        required
+                        name="transactionId"
+                        defaultValue={
+                          selectedId
+                            ? confirmations.find((d) => d.id === selectedId)?.transactionId
+                            : undefined
+                        }
+                        placeholder="Transaction ID"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        size="lg"
+                      />
+                    )}
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -482,6 +528,36 @@ export default function ConfirmationCert() {
                         Released
                       </SelectItem>
                     </Select>
+
+                    {selectedId &&
+                      confirmations.find((d) => d.id === selectedId)?.submitted_requirements && (
+                        <div className="flex flex-col gap-2">
+                          <div>Uploaded requirements:</div>
+                          <div className="flex h-24 flex-wrap gap-2 overflow-y-scroll">
+                            {JSON.parse(
+                              confirmations.find((d) => d.id === selectedId)?.submitted_requirements
+                            ).map((file, i) => (
+                              <div className="relative" key={i}>
+                                <div className="absolute flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-20 opacity-0 transition hover:opacity-100">
+                                  <a
+                                    href={file}
+                                    target="_blank"
+                                    className="rounded-md bg-white px-2 py-1 text-xs"
+                                  >
+                                    View
+                                  </a>
+                                </div>
+                                <img
+                                  alt="uploaded file"
+                                  src={file}
+                                  width="72"
+                                  className="object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                   </div>
                 </ModalBody>
                 <ModalFooter>

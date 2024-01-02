@@ -1,6 +1,6 @@
 "use server";
 
-import type { ResultSetHeader } from "mysql2/promise";
+import { nanoid } from "nanoid";
 import { getConnection } from "~/lib/db";
 
 export async function getConfirmations() {
@@ -9,14 +9,15 @@ export async function getConfirmations() {
     return rows;
 }
 
-export async function getConfirmationById(id: number) {
+export async function getConfirmationById(id: string) {
     const db = await getConnection();
-    const [rows] = await db.query("SELECT * FROM confirmationcert WHERE id = ?", [id]);
+    const [rows] = await db.query("SELECT * FROM confirmationcert WHERE transactionId = ?", [id]);
     return rows;
 }
 
 export async function createConfirmation(formData: FormData) {
     try {
+        const transactionId = nanoid(8);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO confirmationcert SET ?", {
             name: formData.get("name"),
@@ -34,8 +35,10 @@ export async function createConfirmation(formData: FormData) {
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "Pending",
             date_requested: new Date(),
+            transactionId,
+            receiptNo: formData.get("receiptNo") || null,
         });
-        return (insertResult[0] as ResultSetHeader).insertId;
+        return transactionId;
     } catch (err) {
         console.log(err);
         return;
@@ -59,8 +62,8 @@ export async function updateConfirmation(formData: FormData) {
                 date_of_issue: formData.get("date_of_issue"),
                 parish_priest: formData.get("parish_priest"),
                 requester_name: formData.get("requester_name"),
-                submitted_requirements: formData.get("submitted_requirements"),
                 status: formData.get("status") || "pending",
+                receiptNo: formData.get("receiptNo") || null,
             },
             formData.get("id"),
         ]);

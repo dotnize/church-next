@@ -8,7 +8,7 @@ import { getConfirmationById } from "~/actions/confirmation";
 import { getDeceasedById } from "~/actions/deceased";
 import { getMarriageById } from "~/actions/marriage";
 
-export default function Status({ type, id }: { type: "c" | "m" | "b" | "d"; id: number }) {
+export default function Status({ type, id }: { type: "c" | "m" | "b" | "d"; id: string }) {
   const pathname = usePathname();
   const certType =
     type === "c" ? "Confirmation" : type === "m" ? "Marriage" : type === "b" ? "Baptism" : "Death";

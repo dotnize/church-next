@@ -1,6 +1,6 @@
 "use server";
 
-import type { ResultSetHeader } from "mysql2/promise";
+import { nanoid } from "nanoid";
 import { getConnection } from "~/lib/db";
 
 export async function getDeceased() {
@@ -9,14 +9,17 @@ export async function getDeceased() {
     return rows;
 }
 
-export async function getDeceasedById(id: number) {
+export async function getDeceasedById(id: string) {
     const db = await getConnection();
-    const [rows] = await db.query("SELECT * FROM deceased_information WHERE id = ?", [id]);
+    const [rows] = await db.query("SELECT * FROM deceased_information WHERE transactionId = ?", [
+        id,
+    ]);
     return rows;
 }
 
 export async function createDeceased(formData: FormData) {
     try {
+        const transactionId = nanoid(8);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO deceased_information SET ?", {
             volume: formData.get("volume"),
@@ -38,8 +41,10 @@ export async function createDeceased(formData: FormData) {
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "Pending",
+            transactionId,
+            receiptNo: formData.get("receiptNo") || null,
         });
-        return (insertResult[0] as ResultSetHeader).insertId;
+        return transactionId;
     } catch (err) {
         console.log(err);
         return;
@@ -68,9 +73,9 @@ export async function updateDeceased(formData: FormData) {
                 date_of_issue: formData.get("date_of_issue"),
                 parish_priest: formData.get("parish_priest"),
                 requester_name: formData.get("requester_name"),
-                submitted_requirements: formData.get("submitted_requirements"),
                 status: formData.get("status") || "pending",
                 date_requested: new Date(),
+                receiptNo: formData.get("receiptNo") || null,
             },
             formData.get("id"),
         ]);

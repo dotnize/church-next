@@ -81,11 +81,18 @@ export default function DeathCertTable() {
       !selectedData.dateOfBurial ||
       !selectedData.relativeInfo ||
       !selectedData.date_of_issue ||
-      !selectedData.parish_priest
+      !selectedData.parish_priest ||
+      !selectedData.receiptNo
     ) {
       alert("Cannot generate certificate. Please complete the required fields.");
       return;
     }
+
+    if (selectedData.receiptNo !== prompt("Please enter the receipt number for verification")) {
+      alert("Invalid receipt number.");
+      return;
+    }
+
     const doc = new PDFDocument({ size: "A1", layout: "landscape" });
     const stream = doc.pipe(blobStream());
 
@@ -437,6 +444,24 @@ export default function DeathCertTable() {
                         Released
                       </SelectItem>
                     </Select>
+                    {selectedId && (
+                      <Input
+                        autoFocus
+                        label="Transaction ID"
+                        readOnly
+                        required
+                        name="transactionId"
+                        defaultValue={
+                          selectedId
+                            ? deceased.find((d) => d.id === selectedId)?.transactionId
+                            : undefined
+                        }
+                        placeholder="Transaction ID"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        size="lg"
+                      />
+                    )}
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -508,22 +533,72 @@ export default function DeathCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    {selectedId && (
+                      <Input
+                        autoFocus
+                        label="Date Requested"
+                        isRequired={!isViewMode}
+                        readOnly={isViewMode}
+                        name="date_requested"
+                        defaultValue={
+                          selectedId && deceased.find((d) => d.id === selectedId)?.date_requested
+                            ? format(
+                                deceased.find((d) => d.id === selectedId)?.date_requested,
+                                "yyyy-MM-dd"
+                              )
+                            : undefined
+                        }
+                        placeholder="Enter date requested"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        type="date"
+                        size="lg"
+                      />
+                    )}
                     <Input
                       autoFocus
-                      label="Submitted Requirements"
-                      isRequired={!isViewMode}
+                      label="Receipt No."
                       readOnly={isViewMode}
-                      name="submitted_requirements"
+                      name="receiptNo"
                       defaultValue={
                         selectedId
-                          ? deceased.find((d) => d.id === selectedId)?.submitted_requirements
+                          ? deceased.find((d) => d.id === selectedId)?.receiptNo
                           : undefined
                       }
-                      placeholder="Enter submitted requirements"
+                      placeholder="Enter receipt number"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
                     />
+                    {selectedId &&
+                      deceased.find((d) => d.id === selectedId)?.submitted_requirements && (
+                        <div className="flex flex-col gap-2">
+                          <div>Uploaded requirements:</div>
+                          <div className="flex h-24 flex-wrap gap-2 overflow-y-scroll">
+                            {JSON.parse(
+                              deceased.find((d) => d.id === selectedId)?.submitted_requirements
+                            ).map((file, i) => (
+                              <div className="relative" key={i}>
+                                <div className="absolute flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-20 opacity-0 transition hover:opacity-100">
+                                  <a
+                                    href={file}
+                                    target="_blank"
+                                    className="rounded-md bg-white px-2 py-1 text-xs"
+                                  >
+                                    View
+                                  </a>
+                                </div>
+                                <img
+                                  alt="uploaded file"
+                                  src={file}
+                                  width="72"
+                                  className="object-cover"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                   </div>
                 </ModalBody>
                 <ModalFooter>
