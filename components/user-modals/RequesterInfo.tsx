@@ -2,8 +2,6 @@
 
 import {
   Button,
-  Checkbox,
-  CheckboxGroup,
   Input,
   Modal,
   ModalBody,
@@ -13,6 +11,8 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useState } from "react";
+import { UploadDropzone } from "~/lib/uploadthing";
+import { titleCase } from "~/lib/utils";
 import BaptismModal from "./BaptismModal";
 import ConfirmationModal from "./ConfirmationModal";
 import DeathModal from "./DeathModal";
@@ -26,39 +26,36 @@ export default function RequesterInfo({
   disclosure: ReturnType<typeof useDisclosure>;
 }) {
   const [requesterName, setRequesterName] = useState("");
-  const [selectedRequirements, setSelectedRequirements] = useState<string[]>([]);
-  const submittedRequirements = selectedRequirements.join(", ");
+  const [uploadedFileUrls, setUploadedFileUrls] = useState<string[]>([]);
   const inputDisclosure = useDisclosure();
-
-  // TODO: control checkbox values based on state above
 
   return (
     <>
       {type === "baptism" && (
         <BaptismModal
           requesterName={requesterName}
-          submittedRequirements={submittedRequirements}
+          submittedRequirements={JSON.stringify(uploadedFileUrls)}
           disclosure={inputDisclosure}
         />
       )}
       {type === "confirmation" && (
         <ConfirmationModal
           requesterName={requesterName}
-          submittedRequirements={submittedRequirements}
+          submittedRequirements={JSON.stringify(uploadedFileUrls)}
           disclosure={inputDisclosure}
         />
       )}
       {type === "death" && (
         <DeathModal
           requesterName={requesterName}
-          submittedRequirements={submittedRequirements}
+          submittedRequirements={JSON.stringify(uploadedFileUrls)}
           disclosure={inputDisclosure}
         />
       )}
       {type === "marriage" && (
         <MarriageModal
           requesterName={requesterName}
-          submittedRequirements={submittedRequirements}
+          submittedRequirements={JSON.stringify(uploadedFileUrls)}
           disclosure={inputDisclosure}
         />
       )}
@@ -66,91 +63,123 @@ export default function RequesterInfo({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Request Confirmation</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                {titleCase(type)} Certificate Request
+              </ModalHeader>
               <ModalBody>
                 <Input
+                  variant="faded"
                   label="Requester's Name"
                   labelPlacement="outside"
                   placeholder="Enter your name"
                   value={requesterName}
                   onValueChange={setRequesterName}
                 />
-                <CheckboxGroup>
-                  <Checkbox
-                    value="Birth certificate"
-                    onValueChange={(value) => {
-                      if (value) {
-                        if (!selectedRequirements.includes("Birth certificate"))
-                          setSelectedRequirements([...selectedRequirements, "Birth certificate"]);
-                      } else {
-                        setSelectedRequirements(
-                          selectedRequirements.filter(
-                            (requirement) => requirement !== "Birth certificate"
-                          )
-                        );
-                      }
-                    }}
-                  >
-                    Birth Certificate/NSO
-                  </Checkbox>
-                  <Checkbox
-                    value="Original Baptismal Certificate"
-                    onValueChange={(value) => {
-                      if (value) {
-                        if (!selectedRequirements.includes("Original Baptismal Certificate"))
-                          setSelectedRequirements([
-                            ...selectedRequirements,
-                            "Original Baptismal Certificate",
-                          ]);
-                      } else {
-                        setSelectedRequirements(
-                          selectedRequirements.filter(
-                            (requirement) => requirement !== "Original Baptismal Certificate"
-                          )
-                        );
-                      }
-                    }}
-                  >
-                    Baptismal Certificate (Original)
-                  </Checkbox>
-                  <Checkbox
-                    value="Baptismal Certificate (photocopy)"
-                    onValueChange={(value) => {
-                      if (value) {
-                        if (!selectedRequirements.includes("Baptismal Certificate (photocopy)")) {
-                          setSelectedRequirements([
-                            ...selectedRequirements,
-                            "Baptismal Certificate (photocopy)",
-                          ]);
-                        }
-                      } else {
-                        setSelectedRequirements(
-                          selectedRequirements.filter(
-                            (requirement) => requirement !== "Baptismal Certificate (photocopy)"
-                          )
-                        );
-                      }
-                    }}
-                  >
-                    Baptismal Certificate (Photocopy)
-                  </Checkbox>
-                  <Checkbox
-                    value="Valid ID"
-                    onValueChange={(value) => {
-                      if (value) {
-                        if (!selectedRequirements.includes("Valid ID")) {
-                          setSelectedRequirements([...selectedRequirements, "Valid ID"]);
-                        }
-                      } else {
-                        setSelectedRequirements(
-                          selectedRequirements.filter((requirement) => requirement !== "Valid ID")
-                        );
-                      }
-                    }}
-                  >
-                    Valid ID (Requester&apos;s ID)
-                  </Checkbox>
-                </CheckboxGroup>
+                <div className="flex flex-col gap-1 rounded-md border-2 border-neutral-200 bg-neutral-50 p-2 text-xs">
+                  Reminder, please provide the following requirements for {titleCase(type)}{" "}
+                  Certificate to be processed:
+                  {type === "confirmation" ? (
+                    <>
+                      <div>
+                        - <span className="font-bold">Birth certificate</span> (PSA/NSO)
+                      </div>
+                      <div>
+                        - Amount to pay for request is <span className="font-bold">PHP 100.00</span>
+                      </div>
+                    </>
+                  ) : type === "death" ? (
+                    <>
+                      <div>
+                        -{" "}
+                        <span className="font-bold">
+                          Authentic death certificate from Municipal
+                        </span>{" "}
+                        (PSA/NSO)
+                      </div>
+                      <div>
+                        - Amount to pay for request is <span className="font-bold">PHP 100.00</span>
+                      </div>
+                    </>
+                  ) : type === "marriage" ? (
+                    <>
+                      <div>
+                        - <span className="font-bold">Birth certificates</span> (PSA/NSO) for groom
+                        and bride
+                      </div>
+                      <div>
+                        - <span className="font-bold">Certificates of no marriage (CENOMAR)</span>{" "}
+                        (PSA/NSO) for groom and bride
+                      </div>
+                      <div>
+                        - <span className="font-bold">Seminar</span> from Pre-Marriage Counseling
+                        (Every Tuesday: 8:00 AM up to 5:00 PM) for groom and bride
+                      </div>
+                      <div>
+                        - <span className="font-bold">Barangay Certificate</span> (groom and bride)
+                        for residency
+                      </div>
+                      <div>
+                        - <span className="font-bold">Valid IDs</span> (groom and bride)
+                      </div>
+                      <div className="font-bold">
+                        NOTE: At least 4 photocopies of each documents.
+                      </div>
+                      <div>
+                        - Amount to pay for request is <span className="font-bold">PHP 325.00</span>{" "}
+                        for Marriage License
+                      </div>
+                      <div>
+                        - Amount to pay for request is <span className="font-bold">PHP 300.00</span>{" "}
+                        additional fee for solemnization / Civil Wedding
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        - <span className="font-bold">Birth certificate</span> (PSA/NSO)
+                      </div>
+                      <div>
+                        - Amount to pay for request is <span className="font-bold">PHP 100.00</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <p>Attach the required document(s) below to proceed.</p>
+                <UploadDropzone
+                  onClientUploadComplete={(res) => {
+                    const oldLinks = [...uploadedFileUrls];
+                    oldLinks.push(...res.map((r) => r.url));
+                    setUploadedFileUrls(oldLinks);
+                  }}
+                  config={{ mode: "auto" }}
+                  endpoint="imageUploader"
+                />
+                <div className="flex h-24 flex-wrap gap-2">
+                  {uploadedFileUrls.map((file, i) => (
+                    <div className="relative" key={i}>
+                      <div className="absolute flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-20 opacity-0 transition hover:opacity-100">
+                        <a
+                          href={file}
+                          target="_blank"
+                          className="rounded-md bg-white px-2 py-1 text-xs"
+                        >
+                          View
+                        </a>
+                        <button
+                          onClick={() => {
+                            const oldLinks = [...uploadedFileUrls];
+                            oldLinks.splice(i, 1);
+                            setUploadedFileUrls(oldLinks);
+                          }}
+                          className="rounded-md bg-red-300 px-2 py-1 text-xs"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <img alt="uploaded file" src={file} width="72" className="object-cover" />
+                    </div>
+                  ))}
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="default" variant="light" onPress={onClose}>
@@ -163,8 +192,8 @@ export default function RequesterInfo({
                       alert("Requester's name must not be empty.");
                       return;
                     }
-                    if (selectedRequirements.length === 0) {
-                      alert("At least 1 requirement must be submitted.");
+                    if (!uploadedFileUrls || !uploadedFileUrls.length) {
+                      alert("At least 1 file must be uploaded.");
                       return;
                     }
                     onClose();

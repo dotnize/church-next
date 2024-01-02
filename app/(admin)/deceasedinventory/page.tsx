@@ -195,6 +195,12 @@ export default function DeceasedInventory() {
                       <SelectItem key="Invalid" value="Invalid">
                         Invalid
                       </SelectItem>
+                      <SelectItem key="For releasing" value="For releasing">
+                        For releasing
+                      </SelectItem>
+                      <SelectItem key="Releasing" value="Releasing">
+                        Releasing
+                      </SelectItem>
                       <SelectItem key="Released" value="Released">
                         Released
                       </SelectItem>

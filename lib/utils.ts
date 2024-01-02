@@ -10,3 +10,13 @@ export function getOrdinal(n: number | string) {
 export function dateFormatter(date) {
     return format(new Date(date), "MMMM do");
 }
+
+export function titleCase(str: string) {
+    return str
+        .toLowerCase()
+        .split(" ")
+        .map(function (word) {
+            return word.replace(word[0], word[0].toUpperCase());
+        })
+        .join(" ");
+}
