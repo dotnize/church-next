@@ -21,18 +21,25 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
+import blobStream from "blob-stream";
+import { compareAsc, format } from "date-fns";
+import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { useEffect, useState } from "react";
+
+import { getMassReservations } from "~/actions/massreservation";
 import { createPriest, deletePriest, getPriests, updatePriest } from "~/actions/priests";
 
 export default function Priests() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [priests, setPriests] = useState<any>([]);
+  const [reservations, setReservations] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isViewMode, setIsViewMode] = useState<boolean>(false);
 
   const columns = [
     { header: "ID", key: "id" },
     { header: "Parish Priest Name", key: "name" },
+    { header: "Schedule", key: "schedule" },
     { header: "Actions", key: "actions" },
   ];
 
@@ -40,9 +47,53 @@ export default function Priests() {
     const priestData = await getPriests();
     setPriests(priestData);
   }
+  async function fetchReservations() {
+    const reservationData = await getMassReservations();
+    setReservations(reservationData);
+  }
+
+  function getSchedule(index: number) {
+    const priest = priests[index];
+    const currentReservations = reservations.filter(
+      (r) => r.priest_id === priest.id && compareAsc(r.date_scheduled, new Date()) === 1
+    );
+    if (!currentReservations || !currentReservations.length) {
+      alert("Selected priest has no upcoming mass reservations.");
+      return;
+    }
+
+    const doc = new PDFDocument();
+    const stream = doc.pipe(blobStream());
+
+    doc.fontSize(25).text("Saint Michael Parish Church", 164, 80);
+
+    doc.fontSize(14).text("Upcoming Mass Reservations schedule for", 100, 130);
+    doc.fontSize(16).text(priest.name, 100, 148);
+
+    const reservationsText = currentReservations.map(
+      (r) =>
+        `${format(r.date_scheduled, "yyyy-MM-dd")} ${format(
+          new Date(`2021-01-01 ${r.schedule_time_start}`),
+          "hh:mm a"
+        )}-${format(new Date(`2021-01-01 ${r.schedule_time_end}`), "hh:mm a")} - ${
+          r.type_of_mass
+        } - ${r.place_of_mass_event}`
+    );
+
+    doc.list(reservationsText, 100, 196);
+
+    doc.end();
+    stream.on("finish", function () {
+      //const blob = stream.toBlob("application/pdf");
+      // or get a blob URL for display in the browser
+      const url = stream.toBlobURL("application/pdf");
+      window.open(url);
+    });
+  }
 
   useEffect(() => {
     fetchPriests();
+    fetchReservations();
   }, []);
   function Top() {
     return (
@@ -137,20 +188,17 @@ export default function Priests() {
                           } else if (key === "delete") {
                             await deletePriest(row.id);
                             fetchPriests();
-                          } else if (key === "view") {
-                            setSelectedId(row.id);
-                            setIsViewMode(true);
-                            onOpen();
                           }
                         }}
                       >
                         <DropdownItem key="edit">Edit</DropdownItem>
-                        <DropdownItem key="view">View</DropdownItem>
                         <DropdownItem key="delete" color="danger" className="text-danger">
                           Delete
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
+                  ) : column.key === "schedule" ? (
+                    <Button onPress={() => getSchedule(rowIndex)}>View schedule</Button>
                   ) : (
                     row[column.key]
                   )}

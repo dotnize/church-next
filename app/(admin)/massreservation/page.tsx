@@ -281,26 +281,6 @@ export default function MassReservation() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <Input
-                      type="date"
-                      autoFocus
-                      name="date_requested"
-                      value={
-                        selectedId
-                          ? format(
-                              data.find((d) => d.id === selectedId)?.date_requested,
-                              "yyyy-MM-dd"
-                            )
-                          : undefined
-                      }
-                      isReadOnly
-                      className="pointer-events-none"
-                      label="Date Requested"
-                      placeholder="Date Requested"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    />
 
                     <Select
                       autoFocus
@@ -351,6 +331,31 @@ export default function MassReservation() {
                       labelPlacement="outside"
                       size="lg"
                     />
+
+                    <Select
+                      autoFocus
+                      label="Status"
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [data.find((d) => d.id === selectedId)?.status.toString()]
+                          : ["Pending"]
+                      }
+                      name="status"
+                      placeholder="Select status"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Approved
+                      </SelectItem>
+                      <SelectItem key="For releasing" value="For releasing">
+                        Not approved
+                      </SelectItem>
+                    </Select>
                     <Select
                       autoFocus
                       name="time"
@@ -466,6 +471,28 @@ export default function MassReservation() {
                         </SelectItem>
                       ))}
                     </Select>
+                    {selectedId && (
+                      <Input
+                        type="date"
+                        autoFocus
+                        name="date_requested"
+                        value={
+                          selectedId
+                            ? format(
+                                data.find((d) => d.id === selectedId)?.date_requested,
+                                "yyyy-MM-dd"
+                              )
+                            : undefined
+                        }
+                        isReadOnly
+                        className="pointer-events-none"
+                        label="Date Requested"
+                        placeholder="Date Requested"
+                        variant="bordered"
+                        labelPlacement="outside"
+                        size="lg"
+                      />
+                    )}
                   </div>
                 </ModalBody>
                 <ModalFooter>
