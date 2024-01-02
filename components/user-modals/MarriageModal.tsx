@@ -28,6 +28,7 @@ export default function MarriageModal({
 }) {
   const [priests, setPriests] = useState<any>([]);
   const router = useRouter();
+  const [husbandFields, setHusbandFields] = useState(false);
 
   async function fetchPriests() {
     const priestData = await getPriests();
@@ -61,6 +62,9 @@ export default function MarriageModal({
                 <input type="hidden" name="requester_name" value={requesterName} />
                 <input type="hidden" name="submitted_requirements" value={submittedRequirements} />
                 <Input
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   autoFocus
                   label="Husband Name"
                   isRequired
@@ -72,6 +76,9 @@ export default function MarriageModal({
                 />
                 <Input
                   autoFocus
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   label="Husband Actual Address"
                   name="husband_actual_address"
                   isRequired
@@ -82,6 +89,9 @@ export default function MarriageModal({
                 />
                 <Input
                   autoFocus
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   label="Husband Age"
                   pattern="[0-9]+"
                   name="husband_age"
@@ -94,6 +104,9 @@ export default function MarriageModal({
 
                 <Input
                   autoFocus
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   label="Husband Place of Birth"
                   isRequired
                   name="husband_place_of_birth"
@@ -102,18 +115,12 @@ export default function MarriageModal({
                   labelPlacement="outside"
                   size="lg"
                 />
-                <Input
-                  autoFocus
-                  label="Husband Witness"
-                  name="husband_witness"
-                  isRequired
-                  placeholder="Enter witness"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
+
                 <Select
                   autoFocus
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
                   label="Parish Priest"
                   isRequired
                   name="parish_priest"
@@ -128,6 +135,58 @@ export default function MarriageModal({
                     </SelectItem>
                   ))}
                 </Select>
+                <Input
+                  autoFocus
+                  label="Wife Witness"
+                  name="wife_witness"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  isRequired
+                  placeholder="Enter witness"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Solemnization Place"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  isRequired
+                  name="solemnization_place"
+                  placeholder="Enter solemnization place"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Wife's Mother Name"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  isRequired
+                  name="wife_mother"
+                  placeholder="Enter wife's mother name"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Wife's Father Name"
+                  name="wife_father"
+                  isRequired
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  placeholder="Enter wife's father name"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
               </div>
               <div className="flex w-full flex-col gap-8">
                 <Input
@@ -135,6 +194,9 @@ export default function MarriageModal({
                   label="Husband's Mother Name"
                   isRequired
                   name="husband_mother"
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   placeholder="Enter husband's mother name"
                   variant="bordered"
                   labelPlacement="outside"
@@ -145,6 +207,9 @@ export default function MarriageModal({
                   label="Husband's Father Name"
                   isRequired
                   name="husband_father"
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   placeholder="Enter husband's father name"
                   variant="bordered"
                   labelPlacement="outside"
@@ -158,9 +223,83 @@ export default function MarriageModal({
                   placeholder="Enter husband date of baptism"
                   variant="bordered"
                   labelPlacement="outside"
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   type="date"
                   size="lg"
                 />
+
+                <Input
+                  autoFocus
+                  label="Solemnization Date"
+                  isRequired
+                  type="date"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  name="solemnization_date"
+                  placeholder="Enter solemnization date"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Wife Date of Baptism"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  type="date"
+                  name="wife_date_of_baptism"
+                  isRequired
+                  placeholder="Enter wife date of baptism"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Wife Place of Baptism"
+                  name="wife_place_of_baptism"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  isRequired
+                  placeholder="Enter wife place of baptism"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Wife Legal Status"
+                  isRequired
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  name="wife_legal_status"
+                  placeholder="Enter legal status"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Date of Marriage"
+                  isRequired
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
+                  type="date"
+                  name="date_of_marriage"
+                  placeholder="Enter date of marriage"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+              </div>
+              <div className="flex w-full flex-col gap-8">
                 <Input
                   autoFocus
                   label="Husband Place of Baptism"
@@ -168,6 +307,9 @@ export default function MarriageModal({
                   name="husband_place_of_baptism"
                   placeholder="Enter husband place of baptism"
                   variant="bordered"
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   labelPlacement="outside"
                   size="lg"
                 />
@@ -179,26 +321,32 @@ export default function MarriageModal({
                   placeholder="Enter legal status"
                   variant="bordered"
                   labelPlacement="outside"
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
                   size="lg"
                 />
                 <Input
                   autoFocus
-                  label="Solemnization Date"
+                  className={
+                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                  }
+                  label="Husband Witness"
+                  name="husband_witness"
                   isRequired
-                  name="solemnization_date"
-                  placeholder="Enter solemnization date"
+                  placeholder="Enter witness"
                   variant="bordered"
                   labelPlacement="outside"
-                  type="date"
                   size="lg"
                 />
-              </div>
-              <div className="flex w-full flex-col gap-8">
                 <Input
                   autoFocus
                   label="Wife Name"
                   placeholder="Enter wife name"
                   isRequired
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
                   name="wife_name"
                   variant="bordered"
                   labelPlacement="outside"
@@ -208,6 +356,9 @@ export default function MarriageModal({
                   autoFocus
                   label="Wife Actual Address"
                   isRequired
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
                   name="wife_actual_address"
                   placeholder="Enter wife address"
                   variant="bordered"
@@ -219,6 +370,9 @@ export default function MarriageModal({
                   label="Wife Age"
                   pattern="[0-9]+"
                   name="wife_age"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
                   isRequired
                   placeholder="Enter wife age"
                   variant="bordered"
@@ -230,94 +384,13 @@ export default function MarriageModal({
                   autoFocus
                   label="Wife Place of Birth"
                   name="wife_place_of_birth"
+                  className={
+                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                  }
                   isRequired
                   placeholder="Enter wife place of birth"
                   variant="bordered"
                   labelPlacement="outside"
-                  size="lg"
-                />
-                <Input
-                  autoFocus
-                  label="Wife Witness"
-                  name="wife_witness"
-                  isRequired
-                  placeholder="Enter witness"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
-                <Input
-                  autoFocus
-                  label="Solemnization Place"
-                  isRequired
-                  name="solemnization_place"
-                  placeholder="Enter solemnization place"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
-              </div>
-              <div className="flex w-full flex-col gap-8">
-                <Input
-                  autoFocus
-                  label="Wife's Mother Name"
-                  isRequired
-                  name="wife_mother"
-                  placeholder="Enter wife's mother name"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
-                <Input
-                  autoFocus
-                  label="Wife's Father Name"
-                  name="wife_father"
-                  isRequired
-                  placeholder="Enter wife's father name"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
-                <Input
-                  autoFocus
-                  label="Wife Date of Baptism"
-                  name="wife_date_of_baptism"
-                  isRequired
-                  placeholder="Enter wife date of baptism"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  type="date"
-                  size="lg"
-                />
-                <Input
-                  autoFocus
-                  label="Wife Place of Baptism"
-                  name="wife_place_of_baptism"
-                  isRequired
-                  placeholder="Enter wife place of baptism"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
-                <Input
-                  autoFocus
-                  label="Wife Legal Status"
-                  isRequired
-                  name="wife_legal_status"
-                  placeholder="Enter legal status"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
-                <Input
-                  autoFocus
-                  label="Date of Marriage"
-                  isRequired
-                  name="date_of_marriage"
-                  placeholder="Enter date of marriage"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  type="date"
                   size="lg"
                 />
               </div>
@@ -368,11 +441,18 @@ export default function MarriageModal({
                 /> */}
             </ModalBody>
             <ModalFooter>
-              <Button variant="flat" onPress={onClose}>
-                Close
+              <Button
+                variant="flat"
+                onPress={husbandFields ? () => setHusbandFields(false) : onClose}
+              >
+                {husbandFields ? "Back" : "Close"}
               </Button>
-              <Button color="primary" type="submit">
-                Submit
+              <Button
+                color="primary"
+                type={husbandFields ? "submit" : undefined}
+                onPress={!husbandFields ? () => setHusbandFields(true) : undefined}
+              >
+                {husbandFields ? "Submit" : "Next"}
               </Button>
             </ModalFooter>
           </form>
