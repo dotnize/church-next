@@ -36,6 +36,7 @@ export default function BaptismCertTable() {
   const [priests, setPriests] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [data, setData] = useState<any>([]);
+  const [searchValue, setSearchValue] = useState("");
 
   const columns = [
     { header: "Child Name", key: "child_name" },
@@ -184,7 +185,15 @@ export default function BaptismCertTable() {
   function Top() {
     return (
       <div className="flex items-center justify-between">
-        <h2 className="text-4xl font-bold">Baptism Certificate</h2>
+        <Input
+          className="w-96"
+          placeholder="Search by Transaction ID..."
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+          }}
+          autoFocus
+        />
         <Button
           className="text-xl"
           size="lg"
@@ -590,53 +599,57 @@ export default function BaptismCertTable() {
           ))}
         </TableHeader>
         <TableBody emptyContent={"No rows to display."}>
-          {data.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {columns.map((column) => (
-                <TableCell key={column.key}>
-                  {column.key === "actions" ? (
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button endContent={<IconCaretDownFilled />} variant="bordered">
-                          Actions
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                        aria-label="Dynamic Actions"
-                        onAction={async (key) => {
-                          if (key === "edit") {
-                            setSelectedId(row.id);
-                            setIsViewMode(false);
-                            onOpen();
-                          } else if (key === "delete") {
-                            await deleteBaptism(row.id);
-                            fetchBaptism();
-                          } else if (key === "print") {
-                            printData(row);
-                          } else if (key === "view") {
-                            setSelectedId(row.id);
-                            setIsViewMode(true);
-                            onOpen();
-                          }
-                        }}
-                      >
-                        <DropdownItem key="edit">Edit</DropdownItem>
-                        <DropdownItem key="view">View</DropdownItem>
-                        <DropdownItem key="print">Generate Certificate</DropdownItem>
-                        <DropdownItem key="delete" color="danger" className="text-danger">
-                          Delete
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  ) : column.key.startsWith("date") ? (
-                    format(row[column.key], "yyyy-MM-dd")
-                  ) : (
-                    row[column.key]
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {data
+            .filter((d) =>
+              searchValue ? d.transactionId.toLowerCase().includes(searchValue.toLowerCase()) : true
+            )
+            .map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {columns.map((column) => (
+                  <TableCell key={column.key}>
+                    {column.key === "actions" ? (
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button endContent={<IconCaretDownFilled />} variant="bordered">
+                            Actions
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          aria-label="Dynamic Actions"
+                          onAction={async (key) => {
+                            if (key === "edit") {
+                              setSelectedId(row.id);
+                              setIsViewMode(false);
+                              onOpen();
+                            } else if (key === "delete") {
+                              await deleteBaptism(row.id);
+                              fetchBaptism();
+                            } else if (key === "print") {
+                              printData(row);
+                            } else if (key === "view") {
+                              setSelectedId(row.id);
+                              setIsViewMode(true);
+                              onOpen();
+                            }
+                          }}
+                        >
+                          <DropdownItem key="edit">Edit</DropdownItem>
+                          <DropdownItem key="view">View</DropdownItem>
+                          <DropdownItem key="print">Generate Certificate</DropdownItem>
+                          <DropdownItem key="delete" color="danger" className="text-danger">
+                            Delete
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
+                    ) : column.key.startsWith("date") ? (
+                      format(row[column.key], "yyyy-MM-dd")
+                    ) : (
+                      row[column.key]
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

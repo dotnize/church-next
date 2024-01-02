@@ -37,6 +37,7 @@ export default function MarriageCertTable() {
   const [marriage, setMarriage] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isViewMode, setIsViewMode] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const columns = [
     { header: "Husband Name", key: "husband_name" },
@@ -252,7 +253,15 @@ export default function MarriageCertTable() {
   function Top() {
     return (
       <div className="flex items-center justify-between">
-        <h2 className="text-4xl font-bold">Marriage Certificate</h2>
+        <Input
+          className="w-96"
+          placeholder="Search by Transaction ID..."
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+          }}
+          autoFocus
+        />
         <Button
           className="text-xl"
           size="lg"
@@ -947,56 +956,60 @@ export default function MarriageCertTable() {
           ))}
         </TableHeader>
         <TableBody emptyContent={"No rows to display."}>
-          {marriage.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {columns.map((column) => (
-                <TableCell key={column.key}>
-                  {column.key === "actions" ? (
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button endContent={<IconCaretDownFilled />} variant="bordered">
-                          Actions
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                        aria-label="Dynamic Actions"
-                        onAction={async (key) => {
-                          if (key === "edit") {
-                            setSelectedId(row.id);
-                            setIsViewMode(false);
-                            onOpen();
-                          } else if (key === "delete") {
-                            await deleteMarriage(row.id);
-                            fetchMarriage();
-                          } else if (key === "print") {
-                            printData(row);
-                          } else if (key === "view") {
-                            setSelectedId(row.id);
-                            setIsViewMode(true);
-                            onOpen();
-                          }
-                        }}
-                      >
-                        <DropdownItem key="edit">Edit</DropdownItem>
-                        <DropdownItem key="view">View</DropdownItem>
-                        <DropdownItem key="print">Generate Certificate</DropdownItem>
-                        <DropdownItem key="delete" color="danger" className="text-danger">
-                          Delete
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  ) : column.key === "husband_date_of_baptism" ||
-                    column.key === "wife_date_of_baptism" ||
-                    column.key === "date_of_marriage" ||
-                    column.key === "solemnization_date" ? (
-                    row[column.key]?.toDateString()
-                  ) : (
-                    row[column.key]
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {marriage
+            .filter((d) =>
+              searchValue ? d.transactionId.toLowerCase().includes(searchValue.toLowerCase()) : true
+            )
+            .map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {columns.map((column) => (
+                  <TableCell key={column.key}>
+                    {column.key === "actions" ? (
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button endContent={<IconCaretDownFilled />} variant="bordered">
+                            Actions
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          aria-label="Dynamic Actions"
+                          onAction={async (key) => {
+                            if (key === "edit") {
+                              setSelectedId(row.id);
+                              setIsViewMode(false);
+                              onOpen();
+                            } else if (key === "delete") {
+                              await deleteMarriage(row.id);
+                              fetchMarriage();
+                            } else if (key === "print") {
+                              printData(row);
+                            } else if (key === "view") {
+                              setSelectedId(row.id);
+                              setIsViewMode(true);
+                              onOpen();
+                            }
+                          }}
+                        >
+                          <DropdownItem key="edit">Edit</DropdownItem>
+                          <DropdownItem key="view">View</DropdownItem>
+                          <DropdownItem key="print">Generate Certificate</DropdownItem>
+                          <DropdownItem key="delete" color="danger" className="text-danger">
+                            Delete
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
+                    ) : column.key === "husband_date_of_baptism" ||
+                      column.key === "wife_date_of_baptism" ||
+                      column.key === "date_of_marriage" ||
+                      column.key === "solemnization_date" ? (
+                      row[column.key]?.toDateString()
+                    ) : (
+                      row[column.key]
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

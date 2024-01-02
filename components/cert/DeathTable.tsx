@@ -36,6 +36,7 @@ export default function DeathCertTable() {
   const [deceased, setDeceased] = useState<any>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isViewMode, setIsViewMode] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const columns = [
     { key: "lastName", header: "Last name" },
@@ -163,7 +164,15 @@ export default function DeathCertTable() {
   function Top() {
     return (
       <div className="flex items-center justify-between">
-        <h2 className="text-4xl font-bold">Death Certificate</h2>
+        <Input
+          className="w-96"
+          placeholder="Search by Transaction ID..."
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+          }}
+          autoFocus
+        />
         <Button
           className="text-xl"
           size="lg"
@@ -626,55 +635,59 @@ export default function DeathCertTable() {
           ))}
         </TableHeader>
         <TableBody emptyContent={"No rows to display."}>
-          {deceased.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {columns.map((column) => (
-                <TableCell key={column.key}>
-                  {column.key === "actions" ? (
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button endContent={<IconCaretDownFilled />} variant="bordered">
-                          Actions
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                        aria-label="Dynamic Actions"
-                        onAction={async (key) => {
-                          if (key === "edit") {
-                            setSelectedId(row.id);
-                            setIsViewMode(false);
-                            onOpen();
-                          } else if (key === "delete") {
-                            await deleteDeceased(row.id);
-                            fetchDeceased();
-                          } else if (key === "print") {
-                            printData(row);
-                          } else if (key === "view") {
-                            setSelectedId(row.id);
-                            setIsViewMode(true);
-                            onOpen();
-                          }
-                        }}
-                      >
-                        <DropdownItem key="edit">Edit</DropdownItem>
-                        <DropdownItem key="view">View</DropdownItem>
-                        <DropdownItem key="print">Generate Certificate</DropdownItem>
-                        <DropdownItem key="delete" color="danger" className="text-danger">
-                          Delete
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  ) : column.key === "dateOfBurial" ||
-                    column.key === "dateOfDeath" ||
-                    column.key === "date_of_issue" ? (
-                    row[column.key]?.toDateString()
-                  ) : (
-                    row[column.key]
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {deceased
+            .filter((d) =>
+              searchValue ? d.transactionId.toLowerCase().includes(searchValue.toLowerCase()) : true
+            )
+            .map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {columns.map((column) => (
+                  <TableCell key={column.key}>
+                    {column.key === "actions" ? (
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button endContent={<IconCaretDownFilled />} variant="bordered">
+                            Actions
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          aria-label="Dynamic Actions"
+                          onAction={async (key) => {
+                            if (key === "edit") {
+                              setSelectedId(row.id);
+                              setIsViewMode(false);
+                              onOpen();
+                            } else if (key === "delete") {
+                              await deleteDeceased(row.id);
+                              fetchDeceased();
+                            } else if (key === "print") {
+                              printData(row);
+                            } else if (key === "view") {
+                              setSelectedId(row.id);
+                              setIsViewMode(true);
+                              onOpen();
+                            }
+                          }}
+                        >
+                          <DropdownItem key="edit">Edit</DropdownItem>
+                          <DropdownItem key="view">View</DropdownItem>
+                          <DropdownItem key="print">Generate Certificate</DropdownItem>
+                          <DropdownItem key="delete" color="danger" className="text-danger">
+                            Delete
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
+                    ) : column.key === "dateOfBurial" ||
+                      column.key === "dateOfDeath" ||
+                      column.key === "date_of_issue" ? (
+                      row[column.key]?.toDateString()
+                    ) : (
+                      row[column.key]
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </div>

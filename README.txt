@@ -6,8 +6,8 @@ https://nodejs.org/en
     Type the command:   npm install
 
 
-2. To start the app:
-    Type the command:   npm start
+2. To start the app in dev mode:
+    Type the command:   npm run dev
 
 
 3. Modify the ".env" file accordingly to your MySQL connection details
