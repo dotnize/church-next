@@ -23,7 +23,8 @@ export async function createMassReservation(formData: FormData) {
             type_of_mass: formData.get("type_of_mass"),
             priest_id: formData.get("priest_id"),
             place_of_mass_event: formData.get("place_of_mass_event"),
-            date_requested: formData.get("date_requested"),
+            date_scheduled: formData.get("date_scheduled"),
+            date_requested: new Date(),
             schedule_time_start,
             schedule_time_end,
         });
@@ -48,7 +49,7 @@ export async function updateMassReservation(formData: FormData) {
                 type_of_mass: formData.get("type_of_mass"),
                 priest_id: formData.get("priest_id"),
                 place_of_mass_event: formData.get("place_of_mass_event"),
-                date_requested: formData.get("date_requested"),
+                date_scheduled: formData.get("date_scheduled"),
                 schedule_time_start,
                 schedule_time_end,
             },

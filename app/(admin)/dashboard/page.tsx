@@ -120,12 +120,12 @@ export default function Dashboard() {
     deceased.filter((deceased: any) => deceased.status === "Released").length;
 
   const reservationsToday = reservations.filter((reservation: any) =>
-    isToday(new Date(reservation.date_requested))
+    isToday(new Date(reservation.date_scheduled))
   ).length;
   const upcomingReservations = reservations.filter(
     (reservation: any) =>
-      compareAsc(new Date(reservation.date_requested), new Date()) === 1 &&
-      !isToday(new Date(reservation.date_requested))
+      compareAsc(new Date(reservation.date_scheduled), new Date()) === 1 &&
+      !isToday(new Date(reservation.date_scheduled))
   ).length;
 
   return (

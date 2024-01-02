@@ -62,10 +62,38 @@ export default function DeathModal({
                 <input type="hidden" name="submitted_requirements" value={submittedRequirements} />
                 <Input
                   autoFocus
-                  label="Name of Deceased"
+                  label="First name"
                   isRequired
-                  name="deceasedName"
-                  placeholder="Enter name of deceased"
+                  name="firstName"
+                  placeholder="Enter first name"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Last name"
+                  isRequired
+                  name="lastName"
+                  placeholder="Enter last name"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Middle initial"
+                  name="middleInitial"
+                  placeholder="Enter middle initial"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Input
+                  autoFocus
+                  label="Suffix"
+                  name="suffix"
+                  placeholder="Enter suffix"
                   variant="bordered"
                   labelPlacement="outside"
                   size="lg"
@@ -93,32 +121,6 @@ export default function DeathModal({
                   type="date"
                   size="lg"
                 />
-                <Input
-                  autoFocus
-                  label="Relative Information"
-                  isRequired
-                  name="relativeInfo"
-                  placeholder="Enter relative information"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                />
-                <Select
-                  autoFocus
-                  label="Parish Priest"
-                  isRequired
-                  name="parish_priest"
-                  placeholder="Select parish priest"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  size="lg"
-                >
-                  {priests.map((priest) => (
-                    <SelectItem value={priest.name} key={priest.name}>
-                      {priest.name}
-                    </SelectItem>
-                  ))}
-                </Select>
               </div>
               <div className="flex w-full flex-col gap-8">
                 <Input
@@ -162,6 +164,32 @@ export default function DeathModal({
                   labelPlacement="outside"
                   size="lg"
                 />
+                <Input
+                  autoFocus
+                  label="Relative Information"
+                  isRequired
+                  name="relativeInfo"
+                  placeholder="Enter relative information"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                />
+                <Select
+                  autoFocus
+                  label="Parish Priest"
+                  isRequired
+                  name="parish_priest"
+                  placeholder="Select parish priest"
+                  variant="bordered"
+                  labelPlacement="outside"
+                  size="lg"
+                >
+                  {priests.map((priest) => (
+                    <SelectItem value={priest.name} key={priest.name}>
+                      {priest.name}
+                    </SelectItem>
+                  ))}
+                </Select>
               </div>
               {/* <Input
                   autoFocus

@@ -38,13 +38,15 @@ export default function DeathCertTable() {
   const [isViewMode, setIsViewMode] = useState(false);
 
   const columns = [
-    { header: "Name of Deceased", key: "deceasedName" },
+    { key: "lastName", header: "Last name" },
+    { key: "firstName", header: "First name" },
+    { key: "middleInitial", header: "Middle Initial" },
+    { key: "suffix", header: "Suffix" },
     { header: "Residence", key: "residence" },
     { header: "Age", key: "age" },
     { header: "Date of Death", key: "dateOfDeath" },
     { header: "Date of Burial", key: "dateOfBurial" },
     { header: "Place of Burial", key: "placeOfBurial" },
-    { header: "Relative Information", key: "relativeInfo" },
     { header: "Status", key: "status" },
     { header: "Actions", key: "actions" },
   ];
@@ -70,7 +72,8 @@ export default function DeathCertTable() {
       !selectedData.volume ||
       !selectedData.pageNumber ||
       !selectedData.entryNumber ||
-      !selectedData.deceasedName ||
+      !selectedData.firstName ||
+      !selectedData.lastName ||
       !selectedData.residence ||
       !selectedData.age ||
       !selectedData.dateOfDeath ||
@@ -94,7 +97,12 @@ export default function DeathCertTable() {
     const volume = selectedData.volume;
     const pageNumber = selectedData.pageNumber;
     const entryNumber = selectedData.entryNumber;
-    const deceasedName = selectedData.deceasedName;
+    const deceasedName = [
+      selectedData.firstName,
+      selectedData.middleInitial || undefined,
+      selectedData.lastName,
+      selectedData.suffix || undefined,
+    ].join(" ");
     const residence = selectedData.residence;
     const age = selectedData.age;
     const dateOfDeath = format(selectedData.dateOfDeath, "MMMM dd, yyyy");
@@ -181,16 +189,58 @@ export default function DeathCertTable() {
                     {selectedId && <input type="hidden" name="id" value={selectedId} />}
                     <Input
                       autoFocus
-                      label="Name of Deceased"
+                      label="First name"
                       isRequired={!isViewMode}
                       readOnly={isViewMode}
-                      name="deceasedName"
+                      name="firstName"
                       defaultValue={
                         selectedId
-                          ? deceased.find((d) => d.id === selectedId)?.deceasedName
+                          ? deceased.find((d) => d.id === selectedId)?.firstName
                           : undefined
                       }
-                      placeholder="Enter name of deceased"
+                      placeholder="Enter first name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Last name"
+                      isRequired={!isViewMode}
+                      readOnly={isViewMode}
+                      name="lastName"
+                      defaultValue={
+                        selectedId ? deceased.find((d) => d.id === selectedId)?.lastName : undefined
+                      }
+                      placeholder="Enter last name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Middle initial"
+                      readOnly={isViewMode}
+                      name="middleInitial"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.middleInitial
+                          : undefined
+                      }
+                      placeholder="Enter middle initial"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Suffix"
+                      readOnly={isViewMode}
+                      name="suffix"
+                      defaultValue={
+                        selectedId ? deceased.find((d) => d.id === selectedId)?.suffix : undefined
+                      }
+                      placeholder="Enter suffix"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
@@ -247,60 +297,6 @@ export default function DeathCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <Select
-                      autoFocus
-                      label="Parish Priest"
-                      isRequired={!isViewMode}
-                      disabled={isViewMode}
-                      defaultSelectedKeys={
-                        selectedId
-                          ? [deceased.find((d) => d.id === selectedId)?.parish_priest.toString()]
-                          : undefined
-                      }
-                      name="parish_priest"
-                      placeholder="Select parish priest"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    >
-                      {priests.map((priest) => (
-                        <SelectItem value={priest.name} key={priest.name}>
-                          {priest.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                    <Select
-                      autoFocus
-                      label="Status"
-                      disabled={isViewMode}
-                      isRequired={!isViewMode}
-                      defaultSelectedKeys={
-                        selectedId
-                          ? [deceased.find((d) => d.id === selectedId)?.status.toString()]
-                          : undefined
-                      }
-                      name="status"
-                      placeholder="Select status"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    >
-                      <SelectItem key="Pending" value="Pending">
-                        Pending
-                      </SelectItem>
-                      <SelectItem key="Invalid" value="Invalid">
-                        Invalid
-                      </SelectItem>
-                      <SelectItem key="For releasing" value="For releasing">
-                        For releasing
-                      </SelectItem>
-                      <SelectItem key="Releasing" value="Releasing">
-                        Releasing
-                      </SelectItem>
-                      <SelectItem key="Released" value="Released">
-                        Released
-                      </SelectItem>
-                    </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -387,6 +383,60 @@ export default function DeathCertTable() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    <Select
+                      autoFocus
+                      label="Parish Priest"
+                      isRequired={!isViewMode}
+                      disabled={isViewMode}
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [deceased.find((d) => d.id === selectedId)?.parish_priest.toString()]
+                          : undefined
+                      }
+                      name="parish_priest"
+                      placeholder="Select parish priest"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest) => (
+                        <SelectItem value={priest.name} key={priest.name}>
+                          {priest.name}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Select
+                      autoFocus
+                      label="Status"
+                      disabled={isViewMode}
+                      isRequired={!isViewMode}
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [deceased.find((d) => d.id === selectedId)?.status.toString()]
+                          : undefined
+                      }
+                      name="status"
+                      placeholder="Select status"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Invalid
+                      </SelectItem>
+                      <SelectItem key="For releasing" value="For releasing">
+                        For releasing
+                      </SelectItem>
+                      <SelectItem key="Releasing" value="Releasing">
+                        Releasing
+                      </SelectItem>
+                      <SelectItem key="Released" value="Released">
+                        Released
+                      </SelectItem>
+                    </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input

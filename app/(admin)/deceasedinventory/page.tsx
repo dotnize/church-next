@@ -26,7 +26,10 @@ import { getPriests } from "~/actions/priests";
 
 const columns = [
   { key: "id", label: "ID" },
-  { key: "deceasedName", label: "Name of Deceased" },
+  { key: "lastName", label: "Last name" },
+  { key: "firstName", label: "First name" },
+  { key: "middleInitial", label: "Middle Initial" },
+  { key: "suffix", label: "Suffix" },
   { key: "residence", label: "Residence" },
   { key: "age", label: "Age" },
   { key: "dateOfDeath", label: "Date of Death" },
@@ -61,7 +64,7 @@ export default function DeceasedInventory() {
   }, []);
 
   const filteredDeceased = deceased.filter((item: any) =>
-    item.deceasedName.toLowerCase().includes(searchValue.toLowerCase())
+    [item.lastName, item.firstName].join(" ").toLowerCase().includes(searchValue.toLowerCase())
   );
 
   function TopContent() {
@@ -90,15 +93,56 @@ export default function DeceasedInventory() {
                     {selectedId && <input type="hidden" name="id" value={selectedId} />}
                     <Input
                       autoFocus
-                      label="Name of Deceased"
+                      label="Last name"
                       readOnly
-                      name="deceasedName"
+                      name="lastName"
+                      defaultValue={
+                        selectedId ? deceased.find((d) => d.id === selectedId)?.lastName : undefined
+                      }
+                      placeholder="Enter last name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="First name"
+                      readOnly
+                      name="firstName"
                       defaultValue={
                         selectedId
-                          ? deceased.find((d) => d.id === selectedId)?.deceasedName
+                          ? deceased.find((d) => d.id === selectedId)?.firstName
                           : undefined
                       }
-                      placeholder="Enter name of deceased"
+                      placeholder="Enter first name"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Middle Initial"
+                      readOnly
+                      name="middleInitial"
+                      defaultValue={
+                        selectedId
+                          ? deceased.find((d) => d.id === selectedId)?.middleInitial
+                          : undefined
+                      }
+                      placeholder="Enter middle initial"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      autoFocus
+                      label="Name suffix"
+                      readOnly
+                      name="suffix"
+                      defaultValue={
+                        selectedId ? deceased.find((d) => d.id === selectedId)?.suffix : undefined
+                      }
+                      placeholder="Enter suffix"
                       variant="bordered"
                       labelPlacement="outside"
                       size="lg"
@@ -152,59 +196,6 @@ export default function DeceasedInventory() {
                       labelPlacement="outside"
                       size="lg"
                     />
-                    <Select
-                      autoFocus
-                      label="Parish Priest"
-                      isRequired
-                      disabled
-                      defaultSelectedKeys={
-                        selectedId
-                          ? [deceased.find((d) => d.id === selectedId)?.parish_priest.toString()]
-                          : undefined
-                      }
-                      name="parish_priest"
-                      placeholder="Select parish priest"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    >
-                      {priests.map((priest) => (
-                        <SelectItem value={priest.name} key={priest.name}>
-                          {priest.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                    <Select
-                      autoFocus
-                      label="Status"
-                      disabled
-                      defaultSelectedKeys={
-                        selectedId
-                          ? [deceased.find((d) => d.id === selectedId)?.status.toString()]
-                          : undefined
-                      }
-                      name="status"
-                      placeholder="Select status"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      size="lg"
-                    >
-                      <SelectItem key="Pending" value="Pending">
-                        Pending
-                      </SelectItem>
-                      <SelectItem key="Invalid" value="Invalid">
-                        Invalid
-                      </SelectItem>
-                      <SelectItem key="For releasing" value="For releasing">
-                        For releasing
-                      </SelectItem>
-                      <SelectItem key="Releasing" value="Releasing">
-                        Releasing
-                      </SelectItem>
-                      <SelectItem key="Released" value="Released">
-                        Released
-                      </SelectItem>
-                    </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input
@@ -286,6 +277,59 @@ export default function DeceasedInventory() {
                       labelPlacement="outside"
                       size="lg"
                     />
+                    <Select
+                      autoFocus
+                      label="Parish Priest"
+                      isRequired
+                      disabled
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [deceased.find((d) => d.id === selectedId)?.parish_priest.toString()]
+                          : undefined
+                      }
+                      name="parish_priest"
+                      placeholder="Select parish priest"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      {priests.map((priest) => (
+                        <SelectItem value={priest.name} key={priest.name}>
+                          {priest.name}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Select
+                      autoFocus
+                      label="Status"
+                      disabled
+                      defaultSelectedKeys={
+                        selectedId
+                          ? [deceased.find((d) => d.id === selectedId)?.status.toString()]
+                          : undefined
+                      }
+                      name="status"
+                      placeholder="Select status"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    >
+                      <SelectItem key="Pending" value="Pending">
+                        Pending
+                      </SelectItem>
+                      <SelectItem key="Invalid" value="Invalid">
+                        Invalid
+                      </SelectItem>
+                      <SelectItem key="For releasing" value="For releasing">
+                        For releasing
+                      </SelectItem>
+                      <SelectItem key="Releasing" value="Releasing">
+                        Releasing
+                      </SelectItem>
+                      <SelectItem key="Released" value="Released">
+                        Released
+                      </SelectItem>
+                    </Select>
                   </div>
                   <div className="flex w-full flex-col gap-8">
                     <Input

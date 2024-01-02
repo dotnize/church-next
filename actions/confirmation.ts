@@ -33,6 +33,7 @@ export async function createConfirmation(formData: FormData) {
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "Pending",
+            date_requested: new Date(),
         });
         return (insertResult[0] as ResultSetHeader).insertId;
     } catch (err) {

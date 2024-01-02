@@ -51,7 +51,7 @@ export default function MassReservation() {
     { header: "Type of Mass", key: "type_of_mass" },
     { header: "Mass Presider", key: "priest_id" },
     { header: "Place of Mass Event", key: "place_of_mass_event" },
-    { header: "Date Requested", key: "date_requested" },
+    { header: "Date Scheduled", key: "date_scheduled" },
     { header: "Schedule Time Start", key: "schedule_time_start" },
     { header: "Schedule Time End", key: "schedule_time_end" },
     { header: "Actions", key: "actions" },
@@ -87,7 +87,7 @@ export default function MassReservation() {
   );
   const [selectedDate, setSelectedDate] = useState<string>(
     selectedId
-      ? format(data.find((d) => d.id === selectedId)?.date_requested, "yyyy-MM-dd")
+      ? format(data.find((d) => d.id === selectedId)?.date_scheduled, "yyyy-MM-dd")
       : undefined
   );
   const [selectedPriest, setSelectedPriest] = useState<Selection>(
@@ -112,7 +112,7 @@ export default function MassReservation() {
         )}`,
       ])
     );
-    setSelectedDate(format(data.find((d) => d.id === selectedId)?.date_requested, "yyyy-MM-dd"));
+    setSelectedDate(format(data.find((d) => d.id === selectedId)?.date_scheduled, "yyyy-MM-dd"));
     setSelectedPriest(new Set([data.find((d) => d.id === selectedId)?.priest_id.toString()]));
   }, [selectedId, data]);
 
@@ -129,7 +129,7 @@ export default function MassReservation() {
     const priestId = parseInt(Array.from(selectedPriest)[0] as string);
     const priestReservationsThisDay = data.filter(
       (d) =>
-        isSameDay(new Date(d.date_requested), new Date(selectedDate)) && d.priest_id === priestId
+        isSameDay(new Date(d.date_scheduled), new Date(selectedDate)) && d.priest_id === priestId
     );
 
     const selectedTimeStart = format(
@@ -170,7 +170,7 @@ export default function MassReservation() {
     }
     return priests.map((p) => {
       const priestReservationsThisDay = data.filter(
-        (d) => isSameDay(new Date(d.date_requested), new Date(selectedDate)) && d.priest_id === p.id
+        (d) => isSameDay(new Date(d.date_scheduled), new Date(selectedDate)) && d.priest_id === p.id
       );
 
       const selectedTimeStart = format(
@@ -271,8 +271,28 @@ export default function MassReservation() {
                     <Input
                       type="date"
                       autoFocus
-                      name="date_requested"
+                      name="date_scheduled"
                       value={selectedDate}
+                      isReadOnly
+                      className="pointer-events-none"
+                      label="Date Scheduled"
+                      placeholder="Date Scheduled"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      type="date"
+                      autoFocus
+                      name="date_requested"
+                      value={
+                        selectedId
+                          ? format(
+                              data.find((d) => d.id === selectedId)?.date_requested,
+                              "yyyy-MM-dd"
+                            )
+                          : undefined
+                      }
                       isReadOnly
                       className="pointer-events-none"
                       label="Date Requested"
@@ -379,10 +399,28 @@ export default function MassReservation() {
                     <Input
                       type="date"
                       autoFocus
-                      name="date_requested"
+                      name="date_scheduled"
                       isRequired
                       onValueChange={setSelectedDate}
                       value={selectedDate}
+                      label="Date Scheduled"
+                      placeholder="Date Scheduled"
+                      variant="bordered"
+                      labelPlacement="outside"
+                      size="lg"
+                    />
+                    <Input
+                      type="date"
+                      autoFocus
+                      name="date_requested"
+                      isRequired
+                      isReadOnly
+                      value={format(
+                        selectedId
+                          ? data.find((d) => d.id === selectedId)?.date_requested
+                          : new Date(),
+                        "yyyy-MM-dd"
+                      )}
                       label="Date Requested"
                       placeholder="Date Requested"
                       variant="bordered"
@@ -491,7 +529,7 @@ export default function MassReservation() {
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
-                  ) : column.key === "date_requested" ? (
+                  ) : column.key === "date_scheduled" ? (
                     row[column.key]?.toDateString()
                   ) : column.key.startsWith("schedule_time") ? (
                     format(new Date(`2021-01-01 ${row[column.key]}`), "hh:mm a")

@@ -137,8 +137,10 @@ export default function Calendar() {
           </div>
         </div>
         <div className="h-[564px] w-[600px] py-4">
-          <p className="flex justify-center text-2xl font-semibold uppercase text-indigo-500">
-            {format(firstDayOfMonth, "MMMM yyyy")}
+          <p className="flex justify-center">
+            <span className="text-2xl font-semibold uppercase text-indigo-500">
+              {format(firstDayOfMonth, "MMMM yyyy")}
+            </span>
           </p>
           <hr className="my-6" />
           <div className="grid grid-cols-7 place-items-center gap-6 sm:gap-12">
@@ -163,7 +165,7 @@ export default function Calendar() {
                     }`}
                   >
                     {format(day, "d")}
-                    {reservations.find((r) => isSameDay(r.date_requested, day)) && (
+                    {reservations.find((r) => isSameDay(r.date_scheduled, day)) && (
                       <div
                         className={`absolute bottom-0 h-1.5 w-1.5 rounded-full ${
                           compareAsc(day, new Date()) === 1 ? "bg-red-500" : "bg-emerald-500"
@@ -178,14 +180,25 @@ export default function Calendar() {
         </div>
         <div className="flex h-full w-80 flex-col items-center gap-8 bg-gray-200 p-4">
           <h2 className="mt-4 text-xl font-semibold">{format(selectedDate, "MMMM d, yyyy")}</h2>
-          {!reservations.find((r) => isSameDay(r.date_requested, selectedDate)) && (
+          {!reservations.find((r) => isSameDay(r.date_scheduled, selectedDate)) && (
             <div className="rounded-md border-2 border-indigo-400 bg-indigo-100 p-2 text-indigo-900">
               No scheduled reservations for this day.
             </div>
           )}
-          <div className="flex flex-col gap-8">
+          <div className="relative flex h-full w-full flex-col gap-8">
+            <div className="absolute bottom-0 flex w-full flex-col gap-1 text-xs">
+              Legend:
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded-full bg-red-500" />
+                Upcoming events
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                Finished/previous events
+              </div>
+            </div>
             {reservations
-              .filter((r) => isSameDay(r.date_requested, selectedDate))
+              .filter((r) => isSameDay(r.date_scheduled, selectedDate))
               .map((r, i) => (
                 <div className="group flex items-center gap-2" key={i}>
                   <div
@@ -229,8 +242,8 @@ export default function Calendar() {
                       {previewedReservation?.place_of_mass_event}
                     </p>
                     <p>
-                      <span className="font-bold">Date Requested: </span>
-                      {format(previewedReservation?.date_requested, "yyyy-MM-dd")}
+                      <span className="font-bold">Date Scheduled: </span>
+                      {format(previewedReservation?.date_scheduled, "yyyy-MM-dd")}
                     </p>
                     <p>
                       <span className="font-bold">Schedule Time Start: </span>
