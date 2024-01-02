@@ -17,7 +17,7 @@ export async function getConfirmationById(id: string) {
 
 export async function createConfirmation(formData: FormData) {
     try {
-        const transactionId = nanoid(8);
+        const transactionId = nanoid(6);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO confirmationcert SET ?", {
             name: formData.get("name"),

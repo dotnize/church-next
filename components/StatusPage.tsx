@@ -72,7 +72,22 @@ export default function Status({ type, id }: { type: "c" | "m" | "b" | "d"; id: 
                 {cert.status}
               </span>
             </div>
+            <div className="flex gap-2">
+              Transaction ID:
+              <span className="rounded-md bg-white p-1 font-mono">{id}</span>
+            </div>
             <div>Requested by: {cert.requester_name.split(" ")[0]}</div>
+            {cert.status === "For releasing" && (
+              <div className="rounded-md border-2 border-neutral-300 bg-neutral-50 p-2 text-xs">
+                NOTE: Please prepare the exact amount and bring the required documents to the church
+                office.
+              </div>
+            )}
+            {cert.status === "Releasing" && (
+              <div className="rounded-md border-2 border-neutral-300 bg-neutral-50 p-2 text-xs">
+                NOTE: Please bring the transaction ID and receipt to the church office for claiming.
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-sm">Save the link below to check the status anytime:</span>

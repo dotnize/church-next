@@ -17,7 +17,7 @@ export async function getBaptismById(id: string) {
 
 export async function createBaptism(formData: FormData) {
     try {
-        const transactionId = nanoid(8);
+        const transactionId = nanoid(6);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO baptismcert SET ?", {
             child_name: formData.get("child_name"),

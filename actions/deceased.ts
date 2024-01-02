@@ -19,7 +19,7 @@ export async function getDeceasedById(id: string) {
 
 export async function createDeceased(formData: FormData) {
     try {
-        const transactionId = nanoid(8);
+        const transactionId = nanoid(6);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO deceased_information SET ?", {
             volume: formData.get("volume"),
@@ -41,6 +41,7 @@ export async function createDeceased(formData: FormData) {
             requester_name: formData.get("requester_name"),
             submitted_requirements: formData.get("submitted_requirements"),
             status: formData.get("status") || "Pending",
+            date_requested: new Date(),
             transactionId,
             receiptNo: formData.get("receiptNo") || null,
         });
@@ -74,7 +75,6 @@ export async function updateDeceased(formData: FormData) {
                 parish_priest: formData.get("parish_priest"),
                 requester_name: formData.get("requester_name"),
                 status: formData.get("status") || "pending",
-                date_requested: new Date(),
                 receiptNo: formData.get("receiptNo") || null,
             },
             formData.get("id"),
