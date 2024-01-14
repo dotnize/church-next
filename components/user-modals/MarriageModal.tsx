@@ -57,13 +57,15 @@ export default function MarriageModal({
             <ModalHeader className="flex flex-col gap-1 text-2xl">
               Request Marriage Certificate
             </ModalHeader>
-            <ModalBody className="flex-row p-8">
+            <ModalBody className="flex-row">
               <div className="flex w-full flex-col gap-8">
                 <input type="hidden" name="requester_name" value={requesterName} />
                 <input type="hidden" name="submitted_requirements" value={submittedRequirements} />
                 <Input
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   autoFocus
                   label="Husband Name"
@@ -77,7 +79,9 @@ export default function MarriageModal({
                 <Input
                   autoFocus
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   label="Husband Actual Address"
                   name="husband_actual_address"
@@ -90,7 +94,9 @@ export default function MarriageModal({
                 <Input
                   autoFocus
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   label="Husband Age"
                   pattern="[0-9]+"
@@ -105,7 +111,9 @@ export default function MarriageModal({
                 <Input
                   autoFocus
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   label="Husband Place of Birth"
                   isRequired
@@ -119,7 +127,9 @@ export default function MarriageModal({
                 <Select
                   autoFocus
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   label="Parish Priest"
                   isRequired
@@ -140,7 +150,9 @@ export default function MarriageModal({
                   label="Wife Witness"
                   name="wife_witness"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   isRequired
                   placeholder="Enter witness"
@@ -152,7 +164,9 @@ export default function MarriageModal({
                   autoFocus
                   label="Solemnization Place"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   isRequired
                   name="solemnization_place"
@@ -165,7 +179,9 @@ export default function MarriageModal({
                   autoFocus
                   label="Wife's Mother Name"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   isRequired
                   name="wife_mother"
@@ -180,7 +196,9 @@ export default function MarriageModal({
                   name="wife_father"
                   isRequired
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   placeholder="Enter wife's father name"
                   variant="bordered"
@@ -195,7 +213,9 @@ export default function MarriageModal({
                   isRequired
                   name="husband_mother"
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   placeholder="Enter husband's mother name"
                   variant="bordered"
@@ -208,7 +228,9 @@ export default function MarriageModal({
                   isRequired
                   name="husband_father"
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   placeholder="Enter husband's father name"
                   variant="bordered"
@@ -224,7 +246,9 @@ export default function MarriageModal({
                   variant="bordered"
                   labelPlacement="outside"
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   type="date"
                   size="lg"
@@ -236,7 +260,9 @@ export default function MarriageModal({
                   isRequired
                   type="date"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   name="solemnization_date"
                   placeholder="Enter solemnization date"
@@ -248,7 +274,9 @@ export default function MarriageModal({
                   autoFocus
                   label="Wife Date of Baptism"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   type="date"
                   name="wife_date_of_baptism"
@@ -263,7 +291,9 @@ export default function MarriageModal({
                   label="Wife Place of Baptism"
                   name="wife_place_of_baptism"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   isRequired
                   placeholder="Enter wife place of baptism"
@@ -276,7 +306,9 @@ export default function MarriageModal({
                   label="Wife Legal Status"
                   isRequired
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   name="wife_legal_status"
                   placeholder="Enter legal status"
@@ -289,7 +321,9 @@ export default function MarriageModal({
                   label="Date of Marriage"
                   isRequired
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   type="date"
                   name="date_of_marriage"
@@ -308,7 +342,9 @@ export default function MarriageModal({
                   placeholder="Enter husband place of baptism"
                   variant="bordered"
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   labelPlacement="outside"
                   size="lg"
@@ -322,14 +358,18 @@ export default function MarriageModal({
                   variant="bordered"
                   labelPlacement="outside"
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   size="lg"
                 />
                 <Input
                   autoFocus
                   className={
-                    husbandFields ? undefined : "pointer-events-none absolute -z-50 opacity-0"
+                    husbandFields
+                      ? undefined
+                      : "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
                   }
                   label="Husband Witness"
                   name="husband_witness"
@@ -345,7 +385,9 @@ export default function MarriageModal({
                   placeholder="Enter wife name"
                   isRequired
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   name="wife_name"
                   variant="bordered"
@@ -357,7 +399,9 @@ export default function MarriageModal({
                   label="Wife Actual Address"
                   isRequired
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   name="wife_actual_address"
                   placeholder="Enter wife address"
@@ -371,7 +415,9 @@ export default function MarriageModal({
                   pattern="[0-9]+"
                   name="wife_age"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   isRequired
                   placeholder="Enter wife age"
@@ -385,7 +431,9 @@ export default function MarriageModal({
                   label="Wife Place of Birth"
                   name="wife_place_of_birth"
                   className={
-                    husbandFields ? "pointer-events-none absolute -z-50 opacity-0" : undefined
+                    husbandFields
+                      ? "pointer-events-none absolute -z-50 h-0 w-0 opacity-0"
+                      : undefined
                   }
                   isRequired
                   placeholder="Enter wife place of birth"

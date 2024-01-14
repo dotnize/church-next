@@ -17,7 +17,7 @@ export async function getMarriageById(id: string) {
 
 export async function createMarriage(formData: FormData) {
     try {
-        const transactionId = nanoid(6);
+        const transactionId = nanoid(7);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO marriagecert SET ?", {
             husband_legal_status: formData.get("husband_legal_status"),

@@ -63,9 +63,11 @@ export default function DeceasedInventory() {
     fetchPriests();
   }, []);
 
-  const filteredDeceased = deceased.filter((item: any) =>
-    [item.lastName, item.firstName].join(" ").toLowerCase().includes(searchValue.toLowerCase())
-  );
+  const filteredDeceased = deceased
+    .toReversed()
+    .filter((item: any) =>
+      [item.lastName, item.firstName].join(" ").toLowerCase().includes(searchValue.toLowerCase())
+    );
 
   function TopContent() {
     return (

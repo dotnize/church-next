@@ -639,6 +639,7 @@ export default function DeathCertTable() {
             .filter((d) =>
               searchValue ? d.transactionId.toLowerCase().includes(searchValue.toLowerCase()) : true
             )
+            .toReversed()
             .map((row, rowIndex) => (
               <TableRow key={rowIndex}>
                 {columns.map((column) => (

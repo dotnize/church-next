@@ -19,7 +19,7 @@ export async function getDeceasedById(id: string) {
 
 export async function createDeceased(formData: FormData) {
     try {
-        const transactionId = nanoid(6);
+        const transactionId = nanoid(7);
         const db = await getConnection();
         const insertResult = await db.query("INSERT INTO deceased_information SET ?", {
             volume: formData.get("volume"),

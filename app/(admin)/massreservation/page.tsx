@@ -527,7 +527,7 @@ export default function MassReservation() {
           ))}
         </TableHeader>
         <TableBody emptyContent={"No rows to display."}>
-          {data.map((row, rowIndex) => (
+          {data.toReversed().map((row, rowIndex) => (
             <TableRow key={rowIndex}>
               {columns.map((column) => (
                 <TableCell key={column.key}>

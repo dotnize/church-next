@@ -598,6 +598,7 @@ export default function ConfirmationCert() {
             .filter((d) =>
               searchValue ? d.transactionId.toLowerCase().includes(searchValue.toLowerCase()) : true
             )
+            .toReversed()
             .map((row, rowIndex) => (
               <TableRow key={rowIndex}>
                 {columns.map((column) => (
