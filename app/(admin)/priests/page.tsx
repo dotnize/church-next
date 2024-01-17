@@ -22,7 +22,7 @@ import {
 } from "@nextui-org/react";
 import { IconCaretDownFilled } from "@tabler/icons-react";
 import blobStream from "blob-stream";
-import { compareAsc, format } from "date-fns";
+import { compareAsc, format, isSameDay } from "date-fns";
 import PDFDocument from "pdfkit/js/pdfkit.standalone";
 import { useEffect, useState } from "react";
 
@@ -55,7 +55,9 @@ export default function Priests() {
   function getSchedule(index: number) {
     const priest = priests[index];
     const currentReservations = reservations.filter(
-      (r) => r.priest_id === priest.id && compareAsc(r.date_scheduled, new Date()) === 1
+      (r) =>
+        r.priest_id === priest.id &&
+        (isSameDay(r.date_scheduled, new Date()) || compareAsc(r.date_scheduled, new Date()) >= 0)
     );
     if (!currentReservations || !currentReservations.length) {
       alert("Selected priest has no upcoming mass reservations.");
