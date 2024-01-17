@@ -168,7 +168,16 @@ export default function Calendar() {
                     {reservations.find((r) => isSameDay(r.date_scheduled, day)) && (
                       <div
                         className={`absolute bottom-0 h-1.5 w-1.5 rounded-full ${
-                          compareAsc(day, new Date()) >= 0 ? "bg-red-500" : "bg-emerald-500"
+                          reservations.find(
+                            (r) =>
+                              isSameDay(r.date_scheduled, day) &&
+                              compareAsc(
+                                new Date(day.toDateString() + " " + r.schedule_time_start),
+                                new Date()
+                              ) === 1
+                          )
+                            ? "bg-red-500"
+                            : "bg-emerald-500"
                         }`}
                       />
                     )}
@@ -203,7 +212,12 @@ export default function Calendar() {
                 <div className="group flex items-center gap-2" key={i}>
                   <div
                     className={`h-3 w-3 rounded-full ${
-                      compareAsc(selectedDate, new Date()) >= 0 ? "bg-red-500" : "bg-emerald-500"
+                      compareAsc(
+                        new Date(selectedDate.toDateString() + " " + r.schedule_time_start),
+                        new Date()
+                      ) === 1
+                        ? "bg-red-500"
+                        : "bg-emerald-500"
                     }`}
                   ></div>
                   <div>
